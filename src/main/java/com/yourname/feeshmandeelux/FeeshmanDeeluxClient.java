@@ -88,7 +88,8 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
     private long sessionStartTime = 0;
 
     // Sound volume control (0.0 to 1.0)
-    private float biteAlertVolume = 0.7f;
+    private static float biteAlertVolume = 0.7f;
+    private static boolean staticAutoFishEnabled = false;
 
     // Lucky catch compliments
     private final String[] LUCKY_COMPLIMENTS = {
@@ -121,6 +122,10 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         System.out.println("🎣 Feeshman Deelux Initializing!");
+
+        // Load configuration
+        FeeshmanConfig.load();
+        biteAlertVolume = FeeshmanConfig.getBiteAlertVolume();
 
         // Register sound event
         Registry.register(Registries.SOUND_EVENT, BITE_ALERT_ID, BITE_ALERT_SOUND);
@@ -169,6 +174,7 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
 
             if (toggleKey.wasPressed()) {
                 autoFishEnabled = !autoFishEnabled;
+                staticAutoFishEnabled = autoFishEnabled;
                 if (client.player != null) {
                     String status = autoFishEnabled ? "§a§lEnabled" : "§c§lDisabled";
                     client.player.sendMessage(Text.literal("🎣 §6§lFeeshman Deelux " + status), false);
@@ -307,12 +313,14 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
                             // Play bite alert sound with configurable volume
                             if (client.world != null && client.player != null) {
                                 client.world.playSound(
-                                    client.player,
-                                    client.player.getBlockPos(),
+                                    client.player.getX(),
+                                    client.player.getY(), 
+                                    client.player.getZ(),
                                     BITE_ALERT_SOUND,
                                     SoundCategory.PLAYERS,
-                                    biteAlertVolume, // Configurable volume
-                                    1.0f  // Pitch
+                                    FeeshmanConfig.getBiteAlertVolume(), // Configurable volume
+                                    1.0f,  // Pitch
+                                    false  // Use distance
                                 );
                             }
                             
@@ -468,11 +476,12 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
             return false;
         }
         
-        // Check if bobber has moved significantly (much larger threshold)
+        // Check if bobber has moved significantly (even more lenient threshold)
         double distance = currentPos.distanceTo(bobberStuckCheckPos);
-        if (distance < STUCK_MOVEMENT_THRESHOLD) { // 0.5 blocks instead of 0.1
+        if (distance < STUCK_MOVEMENT_THRESHOLD) { // 0.5 blocks
             bobberStuckTicks++;
-            if (bobberStuckTicks >= BOBBER_STUCK_THRESHOLD) { // 10 seconds instead of 3
+            // Only consider stuck after 15 seconds (300 ticks) of no movement
+            if (bobberStuckTicks >= 300) { // Increased from 200 to 300 ticks (15 seconds)
                 return true; // Bobber is stuck
             }
         } else {
@@ -483,6 +492,8 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
         
         return false;
     }
+    
+
     
     private void showFeeshmanHelp(ClientPlayerEntity player) {
         player.sendMessage(Text.literal("§6§l=== 🎣 Feeshman Deelux Help ==="), false);

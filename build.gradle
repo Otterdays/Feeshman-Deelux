@@ -14,6 +14,7 @@ repositories {
     // for more information about repositories.
     mavenCentral()
     maven { url 'https://maven.fabricmc.net/' }
+    maven { url 'https://maven.terraformersmc.com/' }
 }
 
 dependencies {
@@ -21,6 +22,10 @@ dependencies {
     mappings "net.fabricmc:yarn:1.21.4+build.1"
     modImplementation "net.fabricmc:fabric-loader:0.16.9"
     modImplementation "net.fabricmc.fabric-api:fabric-api:0.119.3+1.21.4"
+    
+    // ModMenu integration
+    modImplementation "com.terraformersmc:modmenu:13.0.3"
+    
     // For example:
     // modImplementation "com.example:example-mod:1.0.0"
 }
@@ -32,6 +37,9 @@ processResources {
     filesMatching("fabric.mod.json") {
         expand "version": project.version, "mod_id": project.mod_id
     }
+    
+    // Ensure UTF-8 encoding for all resource files
+    filteringCharset = 'UTF-8'
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -49,6 +57,10 @@ java {
     // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the publish task
     // if it is present. If you remove this line, sources will not be published.
     withSourcesJar()
+    
+    // Ensure UTF-8 encoding
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
 
 jar {

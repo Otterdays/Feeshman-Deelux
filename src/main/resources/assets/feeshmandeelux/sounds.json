@@ -1,11 +1,11 @@
 {
   "bite_alert": {
-    "category": "master",
+    "category": "player",
     "subtitle": "subtitles.feeshmandeelux.bite_alert",
     "sounds": [
       {
         "name": "feeshmandeelux:bite_alert",
-        "volume": 0.7,
+        "volume": 1.0,
         "pitch": 1.0
       }
     ]

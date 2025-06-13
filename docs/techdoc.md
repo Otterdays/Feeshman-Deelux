@@ -92,21 +92,17 @@ AutoFishing Mod
 
 ### 4.4 Configuration Options
 
-```json
-{
-  "enabled": true,
-  "reactionSpeed": "normal",
-  "customDelayMin": 100,
-  "customDelayMax": 300,
-  "recastDelay": 400,
-  "randomization": true,
-  "debugMode": false,
-  "keybinds": {
-    "toggle": "R",
-    "configGui": "O"
-  }
-}
+```properties
+# Feeshman Deelux Configuration
+biteAlertVolume=0.7
+autoFishEnabled=false
 ```
+
+**ModMenu Integration:**
+- Professional config screen accessible via ModMenu
+- Real-time volume slider with live preview
+- Auto-saving configuration system
+- Persistent settings between sessions
 
 ## 5. User Interface
 
@@ -116,19 +112,39 @@ AutoFishing Mod
 - Session statistics (fish caught, time elapsed)
 
 ### 5.2 Configuration GUI
-- ModMenu integration for easy access
-- Slider controls for timing adjustments
-- Preset profiles (Legit/Normal/Fast)
-- Real-time preview of timing settings
+- **ModMenu Integration**: Professional config screen with modern UI
+- **Volume Controls**: Real-time bite alert volume slider (0-100%)
+- **Auto-Fish Toggle**: Enable/disable auto-fishing from config screen
+- **Persistent Settings**: Configuration automatically saved to file
+- **User-Friendly Interface**: Clean, intuitive design with helpful tooltips
 
 ### 5.3 Keybinds
-- Toggle mod on/off (default: R key)
-- Open config GUI (default: O key)
-- Emergency stop (default: ESC)
+- **Toggle Auto-Fishing** (default: O key)
+- **Config Access**: Via ModMenu interface
+- **Emergency Stop**: ESC key (closes any screen)
 
-## 6. Anti-Detection Measures
+## 6. Enhanced Features (v2.0)
 
-### 6.1 Behavioral Randomization
+### 6.1 Improved Stuck Detection
+- **Extended Threshold**: 15-second detection window (300 ticks)
+- **Movement Sensitivity**: 0.5-block movement threshold for reset
+- **Smart Recasting**: Intelligent bobber replacement with proper delays
+
+### 6.2 ModMenu Integration
+- **Professional UI**: Clean, modern configuration interface
+- **Real-time Controls**: Live volume adjustment with immediate feedback
+- **Persistent Storage**: Settings saved to `config/feeshman-deelux.properties`
+- **User Experience**: Intuitive design following Minecraft UI conventions
+
+### 6.3 Enhanced Sound System
+- **Proper Registration**: Sound events registered with correct categories
+- **Volume Control**: Configurable bite alert volume (0-100%)
+- **Sound Category**: Uses PLAYERS category for proper volume mixing
+- **Audio Feedback**: Immediate sound preview when adjusting volume
+
+## 7. Anti-Detection Measures
+
+### 7.1 Behavioral Randomization
 - Vary reaction times within human-reasonable ranges
 - Occasional "missed" bites (1-3% miss rate)
 - Random micro-movements during waiting periods

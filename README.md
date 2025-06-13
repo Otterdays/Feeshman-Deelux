@@ -32,7 +32,8 @@
 - 🎭 **Personalized Item Announcements**: Unique messages for every type of fishing loot (IMPROVED!)
 
 ### 🔊 **Audio & Alerts**
-- 🔔 **Bite Alert Sound**: Configurable audio notification when fish bite (0.7 volume default)
+- 🔔 **Bite Alert Sound**: Configurable audio notification when fish bite with volume slider
+- 🎛️ **ModMenu Integration**: Professional config screen with sound volume controls
 - 🌟 **Lucky Catch Compliments**: Random encouraging messages (5% chance) after catches
 - 🪓 **Rod Durability Warning**: Alert when fishing rod has ≤10 uses remaining
 - 🎭 **Fishing Quotes**: Inspirational fishing wisdom on world join and mod enable
@@ -47,7 +48,8 @@
 - 🎒 **Rod Detection**: Automatically pauses when no fishing rod is equipped
 - 🔄 **Intelligent Timing**: Human-like delays and randomization to avoid detection
 - 🌊 **Water Validation**: Ensures bobber is properly in water before bite detection
-- 🐙 **Mob Collision Detection**: Automatically detects and resolves bobber collisions with mobs
+- 🐙 **Enhanced Mob Collision Detection**: Automatically detects and resolves bobber collisions with mobs
+- 🎯 **Improved Stuck Detection**: Even smarter bobber stuck detection (15-second threshold)
 - ⚠️ **Comprehensive Error Handling**: Graceful handling of edge cases and errors
 
 ## 🎯 Planned Features (45+ Amazing Ideas!)
@@ -150,10 +152,12 @@ cd feeshman-deelux
 | **Chat Messages** | `Enabled` | Beautiful status notifications |
 | **Session Tracking** | `Enabled` | Monitor usage statistics |
 | **Welcome Message** | `5 seconds` | Delay after joining world |
-| **Bite Alert Volume** | `0.7` | Sound volume for bite alerts |
+| **Bite Alert Volume** | `0.7` | Sound volume for bite alerts (configurable via ModMenu) |
 | **HUD Display** | `Enabled` | Multi-element information panel |
+| **ModMenu Integration** | `Enabled` | Professional config screen with volume controls |
+| **Config File** | `Auto-saved` | Settings persist between sessions |
 
-*More configuration options coming with future updates!*
+*Access configuration via ModMenu mod for easy sound and setting adjustments!*
 
 ## 🛠️ Technical Details
 
@@ -175,8 +179,10 @@ cd feeshman-deelux
 | 📝 **Statistics Commands** | ✅ **Complete** | `/feeshstats` and `/feeshstats biome` |
 | 🏆 **Achievement System** | ✅ **Complete** | Toast notifications for milestones |
 | 🎭 **Fishing Quotes** | ✅ **Complete** | Inspirational quotes on world join and mod enable |
-| 🔧 **Smart Bobber Management** | ✅ **Complete** | Stuck detection + mob collision detection with intelligent recasting |
+| 🔧 **Smart Bobber Management** | ✅ **Complete** | Enhanced stuck detection (15s) + mob collision detection with intelligent recasting |
 | 🎨 **Polished HUD Interface** | ✅ **Complete** | Bordered panel with title header and professional styling |
+| 🎛️ **ModMenu Integration** | ✅ **Complete** | Professional config screen with sound volume controls |
+| 💾 **Configuration System** | ✅ **Complete** | Persistent settings with auto-save functionality |
 | 🎣 **Command System** | ✅ **Complete** | `/feeshman` help command with colorized interface |
 
 ### Performance Optimizations

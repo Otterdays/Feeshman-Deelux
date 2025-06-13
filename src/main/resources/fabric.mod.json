@@ -17,6 +17,9 @@
   "entrypoints": {
     "client": [
       "com.yourname.feeshmandeelux.FeeshmanDeeluxClient"
+    ],
+    "modmenu": [
+      "com.yourname.feeshmandeelux.ModMenuIntegration"
     ]
   },
   "mixins": [
@@ -28,6 +31,7 @@
     "minecraft": "~1.21.4"
   },
   "suggests": {
+    "modmenu": "*",
     "another-mod": "*"
   }
 }
