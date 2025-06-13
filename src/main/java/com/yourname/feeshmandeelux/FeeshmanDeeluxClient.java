@@ -39,10 +39,10 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
     private int fishingSessionTicks = 0;
     private int totalFishCaught = 0;
 
-    // Human-like timing
+    // Human-like timing - Made faster and more responsive
     private int humanReactionDelay = 0;
-    private final int MIN_REACTION_TIME = 10; // 0.5 seconds
-    private final int MAX_REACTION_TIME = 30; // 1.5 seconds
+    private final int MIN_REACTION_TIME = 3; // 0.15 seconds (was 0.5s)
+    private final int MAX_REACTION_TIME = 12; // 0.6 seconds (was 1.5s)
 
     // Welcome message system
     private boolean hasShownWelcomeMessage = false;
@@ -187,32 +187,36 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
             return false;
         }
         
-        // Enhanced bite detection with multiple methods
+        // Enhanced bite detection with multiple methods - Made more sensitive
         
-        // Method 1: Velocity-based detection (primary)
+        // Method 1: Velocity-based detection (primary) - More sensitive
         double velocityChange = currentVelocity.distanceTo(lastBobberVelocity);
-        boolean suddenVelocityChange = velocityChange > 0.1; // Threshold for bite detection
+        boolean suddenVelocityChange = velocityChange > 0.05; // Lowered from 0.1 for faster detection
         
-        // Method 2: Downward movement detection (fish pulling bobber down)
-        boolean suddenDownwardMovement = currentVelocity.y < -0.15 && lastBobberVelocity.y > -0.05;
+        // Method 2: Downward movement detection (fish pulling bobber down) - More sensitive
+        boolean suddenDownwardMovement = currentVelocity.y < -0.1 && lastBobberVelocity.y > -0.03; // More sensitive thresholds
         
-        // Method 3: Check if bobber is in water and moving unusually
+        // Method 3: Check if bobber is in water and moving unusually - More sensitive
         boolean inWater = bobber.isInFluid();
-        boolean unusualMovement = currentVelocity.horizontalLength() > 0.05;
+        boolean unusualMovement = currentVelocity.horizontalLength() > 0.03; // Lowered from 0.05
         
-        // Method 4: Position-based detection (bobber being pulled)
+        // Method 4: Position-based detection (bobber being pulled) - More sensitive
         double positionChange = currentPos.distanceTo(lastBobberPos);
-        boolean suddenPositionChange = positionChange > 0.2;
+        boolean suddenPositionChange = positionChange > 0.1; // Lowered from 0.2
         
-        // Combine detection methods for better accuracy
+        // Method 5: Y-position drop detection (immediate bobber dip)
+        boolean bobberDipped = currentPos.y < lastBobberPos.y - 0.05; // New: detect immediate dip
+        
+        // Combine detection methods for better accuracy and speed
         boolean biteDetected = inWater && (
             (suddenVelocityChange && unusualMovement) ||
             suddenDownwardMovement ||
-            (suddenPositionChange && velocityChange > 0.05)
+            (suddenPositionChange && velocityChange > 0.03) ||
+            bobberDipped // New method for immediate detection
         );
         
         if (biteDetected) {
-            biteDetectionCooldown = 60; // 3 second cooldown to prevent spam detection
+            biteDetectionCooldown = 30; // Reduced from 60 (1.5 seconds instead of 3)
             return true;
         }
         
