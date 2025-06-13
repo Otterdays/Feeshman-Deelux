@@ -24,7 +24,7 @@
 
 #### 1. ✅ **Toggle System** 
 - **Status**: ✅ **COMPLETE**
-- **Keybind**: F key (configurable)
+- **Keybind**: O key (configurable)
 - **Implementation**: `FeeshmanDeeluxClient.java:25-35`
 - **Features**:
   - Instant toggle on/off

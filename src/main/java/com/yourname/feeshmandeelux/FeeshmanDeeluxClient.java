@@ -8,6 +8,10 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Identifier;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import org.lwjgl.glfw.GLFW;
 
 public class FeeshmanDeeluxClient implements ClientModInitializer {
@@ -17,6 +21,10 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
     private int recastDelayTicks = 0;
     private final int RECAST_DELAY = 40; // 2 seconds at 20 TPS
 
+    // Sound events
+    public static final Identifier BITE_ALERT_ID = Identifier.of("feeshmandeelux", "bite_alert");
+    public static final SoundEvent BITE_ALERT_SOUND = SoundEvent.of(BITE_ALERT_ID);
+
     // Placeholder for fishing detection logic
     private boolean shouldReelIn = false; 
 
@@ -24,10 +32,13 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
     public void onInitializeClient() {
         System.out.println("Feeshman Deelux Initializing!");
 
+        // Register sound event
+        Registry.register(Registries.SOUND_EVENT, BITE_ALERT_ID, BITE_ALERT_SOUND);
+
         toggleKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.feeshmandeelux.toggle",
                 InputUtil.Type.KEYSYM,
-                GLFW.GLFW_KEY_F,
+                GLFW.GLFW_KEY_O,
                 "category.feeshmandeelux.general"
         ));
 

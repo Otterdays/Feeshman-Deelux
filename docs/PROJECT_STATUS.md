@@ -24,7 +24,7 @@ Feeshman Deelux is a Minecraft 1.21.4 Fabric mod that provides intelligent auto-
 ### ✅ **COMPLETED FEATURES** (4/45)
 
 #### 1. 🎮 **Toggle System** - 100% Complete
-- **Implementation**: F key keybind with instant toggle
+- **Implementation**: O key keybind with instant toggle
 - **Features**: Chat feedback, session state tracking
 - **Code**: `FeeshmanDeeluxClient.java:25-35`
 - **Status**: Production ready

@@ -111,7 +111,7 @@ $env:JAVA_HOME = "C:\Program Files\Java\jdk-21"
 ### Getting Started
 1. **Launch Minecraft** with Fabric profile
 2. **Join any world** (single-player or multiplayer)
-3. **Press F** to toggle Feeshman Deelux on/off
+3. **Press O** to toggle Feeshman Deelux on/off
 4. **Hold a fishing rod** and enjoy the automation!
 
 ### 🎯 Pro Tips
@@ -125,7 +125,7 @@ $env:JAVA_HOME = "C:\Program Files\Java\jdk-21"
 
 | Setting | Default | Description |
 |---------|---------|-------------|
-| **Toggle Key** | `F` | Enable/disable auto-fishing |
+| **Toggle Key** | `O` | Enable/disable auto-fishing |
 | **Chat Messages** | `Enabled` | Beautiful status notifications |
 | **Session Tracking** | `Enabled` | Monitor usage statistics |
 | **Welcome Message** | `10 seconds` | Delay after joining world |
@@ -137,7 +137,7 @@ $env:JAVA_HOME = "C:\Program Files\Java\jdk-21"
 ### Current Implementation Status
 | Component | Status | Description |
 |-----------|--------|-------------|
-| 🎮 **Keybind System** | ✅ **Complete** | F key toggle with chat feedback |
+| 🎮 **Keybind System** | ✅ **Complete** | O key toggle with chat feedback |
 | 💬 **Chat Integration** | ✅ **Complete** | Colorful, formatted messages |
 | ⏰ **Session Tracking** | ✅ **Complete** | Toggle count and time tracking |
 | 🎣 **Fishing Detection** | 🚧 **In Progress** | Bobber monitoring system |

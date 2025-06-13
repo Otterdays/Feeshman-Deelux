@@ -156,7 +156,7 @@ public class TimingController {
 
 #### **Manual Testing Checklist**
 - [ ] Mod loads without errors
-- [ ] Keybind works (F key toggle)
+- [ ] Keybind works (O key toggle)
 - [ ] Chat messages appear correctly
 - [ ] No console errors during gameplay
 - [ ] Compatible with multiplayer servers
@@ -443,7 +443,7 @@ public class FeeshmanDeeluxClient {
 ### 🎮 **Testing Scenarios**
 
 #### **Basic Functionality Tests**
-1. **Toggle Test**: F key enables/disables mod
+1. **Toggle Test**: O key enables/disables mod
 2. **Chat Test**: Messages appear with correct formatting
 3. **Persistence Test**: State maintained across world changes
 4. **Multiplayer Test**: Works on servers without issues
