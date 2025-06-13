@@ -20,7 +20,7 @@
 ### 🎯 The Core Concept
 
 Imagine you're by a peaceful lake, fishing rod in hand, but instead of staring at your bobber for hours, you can:
-- 🎮 **Press F** to toggle auto-fishing
+- 🎮 **Press O** to toggle auto-fishing
 - 🍃 **Go AFK** and let the mod work its magic
 - 🎣 **Return to chests full of fish** and treasures!
 
@@ -44,7 +44,7 @@ The mod intelligently detects fish bites, reels them in with human-like timing, 
 <td width="50%">
 
 ### 🎮 **User Experience**
-- 🔥 **F-Key Toggle** - Simple on/off control
+- 🔥 **O-Key Toggle** - Simple on/off control
 - 💬 **Chat Notifications** - Clear status messages
 - 🎨 **Client-Side Only** - No server installation needed
 - ⚙️ **Zero Configuration** - Works out of the box
@@ -191,7 +191,7 @@ Meet **Feeshman** - not your ordinary fisherman! 🎣
 
 | 🎣 **Traditional Fishing** | 🌟 **Feeshman Deluxe Fishing** |
 |---------------------------|--------------------------------|
-| 😴 Stare at bobber for hours | 🎮 Press F and go adventure! |
+| 😴 Stare at bobber for hours | 🎮 Press O and go adventure! |
 | 🖱️ Click... click... click... | 🤖 Smooth automation magic |
 | 😵 Miss fish due to distraction | 🎯 Never miss a catch again |
 | 🐌 Slow, tedious process | ⚡ Efficient, fun experience |
@@ -228,7 +228,7 @@ Meet **Feeshman** - not your ordinary fisherman! 🎣
 
 | Key | Action | Result |
 |-----|--------|--------|
-| **F** | Toggle Auto-Fishing | 🟢 Enabled / 🔴 Disabled |
+| **O** | Toggle Auto-Fishing | 🟢 Enabled / 🔴 Disabled |
 | **Hold Fishing Rod** | Activate Detection | 🎯 Ready to fish |
 | **Switch Items** | Auto-Disable | 🛑 Safety stop |
 
