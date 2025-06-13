@@ -71,7 +71,10 @@ The mod intelligently detects fish bites, reels them in with human-like timing, 
 │               └── 📄 en_us.json            # 🌐 Translations
 ├── 📄 build.gradle                          # 🔨 Build configuration
 ├── 📄 gradle.properties                     # ⚙️ Version settings
-├── 📄 BUILD_GUIDE.md                        # 📖 Comprehensive build guide
+├── 📂 docs/                                 # 📚 Documentation
+│   ├── 📄 BUILD_GUIDE.md                    # 📖 Comprehensive build guide
+│   ├── 📄 helpfromchat.md                   # 💬 Chat log with development help
+│   └── 📄 techdoc.md                        # 🔧 Technical design document
 └── 📂 gradle/wrapper/                       # 🎁 Gradle wrapper
 ```
 
@@ -372,7 +375,7 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 ### 💬 **Get Help**
 
-- 📖 **Read** the [BUILD_GUIDE.md](BUILD_GUIDE.md) for detailed setup instructions
+- 📖 **Read** the [BUILD_GUIDE.md](docs/BUILD_GUIDE.md) for detailed setup instructions
 - 🐛 **Report Issues** on our GitHub Issues page
 - 💡 **Suggest Features** through GitHub Discussions
 
