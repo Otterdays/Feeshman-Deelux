@@ -21,13 +21,16 @@
 - 🔧 **Smart Bobber Management**: Detects stuck bobbers AND mob collisions (squids, drowned, zombies, skeletons)
 
 ### 🎨 **Enhanced Visual Experience**
-- 📊 **Polished HUD Interface**: Beautiful bordered panel with "Feeshman!" title header
-- 🌈 **Color-Coded Information**: Live display with professional styling:
-  - 🐟 Fish count (green)
+- 📊 **Ultra-Enhanced HUD Interface**: Professional bordered panel with animated "🎣 Feeshman! 🎣" title
+- 🌈 **Comprehensive Information Display**: Live multi-element panel with advanced styling:
+  - 🐟 Fish count with "fish" label (green)
   - ⏰ Session timer in MM:SS format (yellow)
   - 🔧 Rod durability with percentage (color-coded: green/yellow/red)
+  - 🌦️ **Weather indicator** (☀️ Clear, 🌧️ Rainy, ⛈️ Stormy)
+  - 🌙 **Day/Night & Moon Phases** with 8 dynamic moon emojis
   - 🗺️ Current biome with proper capitalization (cyan)
-  - 🎣 Status indicator (green)
+  - 📈 **Live catch rate** (fish per minute calculation)
+  - 🎣 **Dynamic status** (Active, Bite!, Recasting...)
 - 💬 **Rich Chat Messages**: Colorful, informative status updates and notifications
 - 🎭 **Personalized Item Announcements**: Unique messages for every type of fishing loot (IMPROVED!)
 
@@ -49,7 +52,7 @@
 - 🔄 **Intelligent Timing**: Human-like delays and randomization to avoid detection
 - 🌊 **Water Validation**: Ensures bobber is properly in water before bite detection
 - 🐙 **Enhanced Mob Collision Detection**: Automatically detects and resolves bobber collisions with mobs
-- 🎯 **Improved Stuck Detection**: Even smarter bobber stuck detection (15-second threshold)
+- 🎯 **Ultra-Smart Stuck Detection**: Multi-layered validation with 30s+ threshold and water state analysis
 - ⚠️ **Comprehensive Error Handling**: Graceful handling of edge cases and errors
 
 ## 🎯 Planned Features (45+ Amazing Ideas!)
@@ -151,7 +154,7 @@ cd feeshman-deelux
 | **Toggle Key** | `O` | Enable/disable auto-fishing |
 | **Chat Messages** | `Enabled` | Beautiful status notifications |
 | **Session Tracking** | `Enabled` | Monitor usage statistics |
-| **Welcome Message** | `5 seconds` | Delay after joining world |
+| **Enhanced Welcome Message** | `5 seconds` | Detailed feature overview with colorful presentation |
 | **Bite Alert Volume** | `0.7` | Sound volume for bite alerts (configurable via ModMenu) |
 | **HUD Display** | `Enabled` | Multi-element information panel |
 | **ModMenu Integration** | `Enabled` | Professional config screen with volume controls |
@@ -167,7 +170,7 @@ cd feeshman-deelux
 | 🎮 **Keybind System** | ✅ **Complete** | O key toggle with chat feedback |
 | 💬 **Chat Integration** | ✅ **Complete** | Colorful, formatted messages |
 | ⏰ **Session Tracking** | ✅ **Complete** | Toggle count and time tracking |
-| 🌟 **Welcome Message** | ✅ **Complete** | 5-second delay after world join |
+| 🌟 **Enhanced Welcome Message** | ✅ **Complete** | Detailed feature overview with colorful Unicode presentation |
 | 🎣 **Fishing Detection** | ✅ **Complete** | 5-method bobber monitoring with enhanced sensitivity |
 | 🤖 **Auto-Reeling** | ✅ **Complete** | Proper right-click simulation |
 | 🔊 **Sound System** | ✅ **Complete** | Bite alert with configurable volume |
@@ -179,8 +182,8 @@ cd feeshman-deelux
 | 📝 **Statistics Commands** | ✅ **Complete** | `/feeshstats` and `/feeshstats biome` |
 | 🏆 **Achievement System** | ✅ **Complete** | Toast notifications for milestones |
 | 🎭 **Fishing Quotes** | ✅ **Complete** | Inspirational quotes on world join and mod enable |
-| 🔧 **Smart Bobber Management** | ✅ **Complete** | Enhanced stuck detection (15s) + mob collision detection with intelligent recasting |
-| 🎨 **Polished HUD Interface** | ✅ **Complete** | Bordered panel with title header and professional styling |
+| 🔧 **Ultra-Smart Bobber Management** | ✅ **Complete** | Multi-layered stuck detection (30s+) with water validation + mob collision detection |
+| 🎨 **Ultra-Enhanced HUD Interface** | ✅ **Complete** | Advanced multi-element display with weather, moon phases, and catch rate |
 | 🎛️ **ModMenu Integration** | ✅ **Complete** | Professional config screen with sound volume controls |
 | 💾 **Configuration System** | ✅ **Complete** | Persistent settings with auto-save functionality |
 | 🎣 **Command System** | ✅ **Complete** | `/feeshman` help command with colorized interface |
@@ -196,6 +199,43 @@ cd feeshman-deelux
 - ✅ **Multiplayer**: Works on most servers (check server rules)
 - ✅ **Modded Minecraft**: Compatible with most other mods
 - ✅ **Resource Packs**: Visual elements work with custom textures
+
+## 🔧 **Troubleshooting**
+
+### **IDE Import Errors**
+If you see import errors like `"The import com.terraformersmc cannot be resolved"`:
+
+1. **Not a Code Problem**: The mod compiles and works perfectly! These are IDE caching issues.
+2. **For VS Code/Cursor**:
+   - Press `Ctrl+Shift+P` → "Developer: Reload Window"
+   - Press `Ctrl+Shift+P` → "Java: Restart Projects"
+3. **For IntelliJ IDEA**:
+   - File → Invalidate Caches and Restart
+   - Click Gradle tool window → Refresh icon
+4. **Command Line Fix**: Run `.\gradlew clean build` (Windows) or `./gradlew clean build` (Mac/Linux)
+
+### **Dependencies Used**
+- ✅ **ModMenu 13.0.3**: Latest configuration interface for MC 1.21.4
+- ✅ **Text Placeholder API 2.5.2+1.21.3**: Required by ModMenu 13.0.3
+
+### **Recent Updates (Latest Version)**
+- 🚀 **Enhanced ModMenu Integration**: Beautiful config screen with detailed descriptions
+- ⚡ **Faster Recasting**: Reduced recast delay from 2 seconds to 1 second (50% faster)
+- 🔊 **Improved Sound System**: Doubled volume with fallback audio methods for better reliability
+- 🎨 **Enhanced HUD Styling**: Modern gradient borders, better transparency, and improved spacing
+- 🧹 **Code Cleanup**: Removed unused fields and improved structure
+- 📝 **Better Documentation**: Enhanced mod description and feature highlights
+
+### **Build Verification**
+```bash
+# Windows
+.\gradlew clean build
+
+# Mac/Linux  
+./gradlew clean build
+
+# Should show: BUILD SUCCESSFUL
+```
 
 ## 🤝 **Contributing**
 

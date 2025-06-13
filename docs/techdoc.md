@@ -140,6 +140,29 @@ autoFishEnabled=false
 - **Proper Registration**: Sound events registered with correct categories
 - **Volume Control**: Configurable bite alert volume (0-100%)
 - **Sound Category**: Uses PLAYERS category for proper volume mixing
+
+### 6.4 Ultra-Enhanced HUD System (v3.0)
+- **Expanded Information Panel**: 160x110 pixel display with 9 data elements
+- **Weather Integration**: Real-time weather display (☀️ Clear, 🌧️ Rainy, ⛈️ Stormy)
+- **Astronomical Features**: Day/night indicator with 8 moon phase emojis
+- **Performance Metrics**: Live catch rate calculation (fish per minute)
+- **Dynamic Status**: Context-aware status indicators (Active, Bite!, Recasting...)
+- **Enhanced Visuals**: Animated title header with improved spacing and colors
+
+### 6.5 Ultra-Smart Stuck Detection (v3.0)
+- **Multi-Layered Validation**: 30-second base threshold with water state analysis
+- **Consecutive Check System**: Requires 100+ consecutive stuck checks (5+ seconds)
+- **Water State Awareness**: Different thresholds for in-water vs on-land bobbers
+- **Movement Sensitivity**: 0.3-block threshold for more precise movement detection
+- **False Positive Prevention**: Multiple validation systems prevent unnecessary recasts
+- **Intelligent Thresholds**: 60-second threshold for in-water bobbers, 30s for land-stuck
+
+### 6.6 Enhanced Welcome Experience (v3.0)
+- **Comprehensive Feature Overview**: Detailed explanation of all detection methods
+- **Colorful Unicode Presentation**: Professional bordered layout with emojis and colors
+- **Educational Content**: Explains 5-method bite detection and safety features
+- **Visual Appeal**: Box-drawing characters and organized sections
+- **User Guidance**: Clear instructions for ModMenu access and key bindings
 - **Audio Feedback**: Immediate sound preview when adjusting volume
 
 ## 7. Anti-Detection Measures

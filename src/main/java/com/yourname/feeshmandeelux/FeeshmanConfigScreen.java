@@ -79,18 +79,30 @@ public class FeeshmanConfigScreen extends Screen {
         // Draw background
         this.renderBackground(context, mouseX, mouseY, delta);
         
-        // Draw title
-        context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 20, 0xFFFFFF);
-        
-        // Draw description
+        // Draw enhanced title with emoji
         context.drawCenteredTextWithShadow(this.textRenderer, 
-            Text.literal("Configure your Feeshman Deelux settings").formatted(Formatting.GRAY), 
+            Text.literal("🎣 Feeshman Deelux Configuration"), 
+            this.width / 2, 20, 0x00CCFF);
+        
+        // Draw enhanced description
+        context.drawCenteredTextWithShadow(this.textRenderer, 
+            Text.literal("Ultimate Auto-Fishing Experience Settings").formatted(Formatting.GRAY), 
             this.width / 2, 40, 0xAAAAAA);
         
-        // Draw current keybind info
+        // Draw feature highlights
         context.drawCenteredTextWithShadow(this.textRenderer, 
-            Text.literal("Press [O] to toggle auto-fishing in-game").formatted(Formatting.YELLOW), 
-            this.width / 2, this.height - 40, 0xFFFF55);
+            Text.literal("⚡ Advanced Bite Detection • 🛡️ Smart Safety Features • 📊 Live Statistics").formatted(Formatting.DARK_GRAY), 
+            this.width / 2, 55, 0x888888);
+        
+        // Draw current keybind info with more details
+        context.drawCenteredTextWithShadow(this.textRenderer, 
+            Text.literal("Press [O] to toggle auto-fishing • Use /feeshstats for statistics").formatted(Formatting.YELLOW), 
+            this.width / 2, this.height - 50, 0xFFFF55);
+            
+        // Draw additional help info
+        context.drawCenteredTextWithShadow(this.textRenderer, 
+            Text.literal("ModMenu Integration • Volume Controls • Human-like Timing").formatted(Formatting.GREEN), 
+            this.width / 2, this.height - 35, 0x55FF55);
         
         super.render(context, mouseX, mouseY, delta);
     }

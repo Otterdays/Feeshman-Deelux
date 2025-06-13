@@ -3,13 +3,14 @@
   "id": "${mod_id}",
   "version": "${version}",
   "name": "Feeshman Deelux",
-  "description": "Automatically reels in and recasts your fishing rod!",
+  "description": "🎣 Ultimate Auto-Fishing Experience! Advanced bite detection, beautiful HUD, statistics tracking, smart automation, ModMenu integration with sound controls, and comprehensive safety features. Perfect for AFK fishing with human-like timing and intelligent stuck detection.",
   "authors": [
     "YourName"
   ],
   "contact": {
-    "homepage": "",
-    "sources": ""
+    "homepage": "https://github.com/yourusername/feeshman-deelux",
+    "sources": "https://github.com/yourusername/feeshman-deelux",
+    "issues": "https://github.com/yourusername/feeshman-deelux/issues"
   },
   "license": "MIT",
   "icon": "assets/feeshmandeelux/icon.png",

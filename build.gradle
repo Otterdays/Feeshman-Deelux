@@ -15,6 +15,7 @@ repositories {
     mavenCentral()
     maven { url 'https://maven.fabricmc.net/' }
     maven { url 'https://maven.terraformersmc.com/' }
+    maven { url 'https://maven.nucleoid.xyz/' }
 }
 
 dependencies {
@@ -23,8 +24,9 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:0.16.9"
     modImplementation "net.fabricmc.fabric-api:fabric-api:0.119.3+1.21.4"
     
-    // ModMenu integration
+    // ModMenu integration (requires Text Placeholder API)
     modImplementation "com.terraformersmc:modmenu:13.0.3"
+    modImplementation "eu.pb4:placeholder-api:2.5.2+1.21.3"
     
     // For example:
     // modImplementation "com.example:example-mod:1.0.0"
@@ -48,6 +50,9 @@ tasks.withType(JavaCompile).configureEach {
     // see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
     // If Javadoc is generated, this must be specified in that task too.
     it.options.encoding = "UTF-8"
+    
+    // Show deprecation warnings
+    it.options.compilerArgs.add("-Xlint:deprecation")
 
     // Minecraft 1.20.5 and later requires Java 21.
     it.options.release = 21

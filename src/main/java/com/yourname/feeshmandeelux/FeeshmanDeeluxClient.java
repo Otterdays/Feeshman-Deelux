@@ -5,7 +5,6 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.minecraft.client.option.KeyBinding;
@@ -27,21 +26,17 @@ import net.minecraft.entity.mob.SkeletonEntity;
 import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Box;
-import net.minecraft.util.ActionResult;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.toast.SystemToast;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.command.CommandSource;
 import org.lwjgl.glfw.GLFW;
 import java.util.Random;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
-import java.util.Arrays;
 import java.util.ArrayList;
 
 public class FeeshmanDeeluxClient implements ClientModInitializer {
@@ -49,7 +44,7 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
     private static KeyBinding toggleKey;
     private boolean autoFishEnabled = false;
     private int recastDelayTicks = 0;
-    private final int BASE_RECAST_DELAY = 40; // 2 seconds at 20 TPS
+    private final int BASE_RECAST_DELAY = 20; // 1 second at 20 TPS (was 2 seconds)
     private final Random random = new Random();
 
     // Sound events
@@ -64,12 +59,15 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
     private int totalFishCaught = 0;
     private int lifetimeFishCaught = 0;
 
-    // Enhanced bobber stuck detection
+    // Enhanced bobber stuck detection with multiple validation systems
     private Vec3d bobberStuckCheckPos = null;
     private int bobberStuckTicks = 0;
-    private final int BOBBER_STUCK_THRESHOLD = 200; // 10 seconds without significant movement
-    private final double STUCK_MOVEMENT_THRESHOLD = 0.5; // Larger threshold for stuck detection
+    private final int BOBBER_STUCK_THRESHOLD = 600; // 30 seconds without significant movement (much more lenient)
+    private final double STUCK_MOVEMENT_THRESHOLD = 0.3; // Smaller threshold for more sensitive movement detection
     private boolean hasWarnedAboutMob = false;
+    private boolean bobberInWater = false;
+    private int consecutiveStuckChecks = 0;
+    private Vec3d lastValidBobberPos = null;
 
     // Human-like timing - Made faster and more responsive
     private int humanReactionDelay = 0;
@@ -87,9 +85,7 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
     private List<ItemStack> previousInventorySnapshot = new ArrayList<>();
     private long sessionStartTime = 0;
 
-    // Sound volume control (0.0 to 1.0)
-    private static float biteAlertVolume = 0.7f;
-    private static boolean staticAutoFishEnabled = false;
+    // Sound volume control removed - using FeeshmanConfig.getBiteAlertVolume() directly
 
     // Lucky catch compliments
     private final String[] LUCKY_COMPLIMENTS = {
@@ -125,7 +121,6 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
 
         // Load configuration
         FeeshmanConfig.load();
-        biteAlertVolume = FeeshmanConfig.getBiteAlertVolume();
 
         // Register sound event
         Registry.register(Registries.SOUND_EVENT, BITE_ALERT_ID, BITE_ALERT_SOUND);
@@ -138,7 +133,7 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
         ));
 
         // Register enhanced HUD renderer
-        HudRenderCallback.EVENT.register((context, tickDelta) -> {
+        HudRenderCallback.EVENT.register((context, tickCounter) -> {
             if (autoFishEnabled) {
                 renderPolishedHUD(context);
             }
@@ -167,14 +162,12 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
                 welcomeMessageTimer--;
                 if (welcomeMessageTimer <= 0) {
                     hasShownWelcomeMessage = true;
-                    client.player.sendMessage(Text.literal("🎣 §6§lFeeshman Deelux §r§7is ready! Press §a§lO§r§7 to toggle auto-fishing. §e✨"), false);
-                    client.player.sendMessage(Text.literal("§7🐟 Advanced bite detection, smart timing, and bite alerts included! Happy fishing! 🌊"), false);
+                    showEnhancedWelcomeMessage(client.player);
                 }
             }
 
             if (toggleKey.wasPressed()) {
                 autoFishEnabled = !autoFishEnabled;
-                staticAutoFishEnabled = autoFishEnabled;
                 if (client.player != null) {
                     String status = autoFishEnabled ? "§a§lEnabled" : "§c§lDisabled";
                     client.player.sendMessage(Text.literal("🎣 §6§lFeeshman Deelux " + status), false);
@@ -274,6 +267,9 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
                         Vec3d currentPos = bobber.getPos();
                         Vec3d currentVelocity = bobber.getVelocity();
                         
+                        // Update bobber water status for smarter stuck detection
+                        bobberInWater = bobber.isInFluid();
+                        
                         // Check for mob collision first
                         if (checkMobCollision(client, bobber)) {
                             if (!hasWarnedAboutMob) {
@@ -310,18 +306,22 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
                             // Fish bite detected!
                             System.out.println("🐟 Feeshman Deelux: Fish bite detected!");
                             
-                            // Play bite alert sound with configurable volume
+                            // Play bite alert sound with enhanced volume
                             if (client.world != null && client.player != null) {
+                                float volume = Math.min(1.0f, FeeshmanConfig.getBiteAlertVolume() * 2.0f); // Double the volume but cap at 1.0
+                                
+                                // Primary sound method - play at player's location
                                 client.world.playSound(
-                                    client.player.getX(),
-                                    client.player.getY(), 
-                                    client.player.getZ(),
+                                    client.player,
+                                    client.player.getBlockPos(),
                                     BITE_ALERT_SOUND,
                                     SoundCategory.PLAYERS,
-                                    FeeshmanConfig.getBiteAlertVolume(), // Configurable volume
-                                    1.0f,  // Pitch
-                                    false  // Use distance
+                                    volume,
+                                    1.0f  // Pitch
                                 );
+                                
+                                // Fallback method for better audio reliability
+                                client.player.playSound(BITE_ALERT_SOUND, volume, 1.0f);
                             }
                             
                             // Add human-like reaction delay
@@ -370,40 +370,51 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
         var client = net.minecraft.client.MinecraftClient.getInstance();
         var textRenderer = client.textRenderer;
         
-        // HUD dimensions and positioning
+        // Enhanced HUD dimensions and positioning
         int hudX = 4;
         int hudY = 4;
-        int hudWidth = 140;
-        int hudHeight = 78;
-        int borderColor = 0x88000000; // Semi-transparent black
-        int titleBgColor = 0xAA006699; // Semi-transparent blue
-        int contentBgColor = 0x77000000; // Darker semi-transparent
+        int hudWidth = 170; // Increased width
+        int hudHeight = 120; // Increased height for more info
         
-        // Draw main background with border
-        context.fill(hudX - 2, hudY - 2, hudX + hudWidth + 2, hudY + hudHeight + 2, borderColor);
+        // Modern gradient colors with better transparency
+        int outerBorderColor = 0xDD000000; // Darker outer border
+        int innerBorderColor = 0xBB333333; // Lighter inner border
+        int titleBgColor = 0xEE0066AA; // Stronger blue gradient
+        int contentBgColor = 0xAA111111; // Darker content background
+        int accentColor = 0xFF00CCFF; // Bright cyan accent
+        
+        // Draw layered border effect
+        context.fill(hudX - 3, hudY - 3, hudX + hudWidth + 3, hudY + hudHeight + 3, outerBorderColor);
+        context.fill(hudX - 2, hudY - 2, hudX + hudWidth + 2, hudY + hudHeight + 2, innerBorderColor);
+        context.fill(hudX - 1, hudY - 1, hudX + hudWidth + 1, hudY + hudHeight + 1, accentColor);
         context.fill(hudX, hudY, hudX + hudWidth, hudY + hudHeight, contentBgColor);
         
-        // Draw title background
-        context.fill(hudX, hudY, hudX + hudWidth, hudY + 14, titleBgColor);
+        // Draw title background with gradient effect
+        context.fill(hudX, hudY, hudX + hudWidth, hudY + 16, titleBgColor);
+        context.fill(hudX, hudY + 14, hudX + hudWidth, hudY + 16, accentColor); // Accent line
         
-        // Title header
-        String title = "§l§fFeeshman!";
-        int titleWidth = textRenderer.getWidth("Feeshman!");
+        // Title header with enhanced styling
+        String title = "§l§f🎣 Feeshman Deelux 🎣";
+        int titleWidth = textRenderer.getWidth("🎣 Feeshman Deelux 🎣");
         int titleX = hudX + (hudWidth - titleWidth) / 2;
-        context.drawText(textRenderer, title, titleX, hudY + 3, 0xFFFFFF, true);
+        context.drawText(textRenderer, title, titleX, hudY + 4, 0xFFFFFF, true);
         
         // Content area starts below title
-        int contentY = hudY + 18;
+        int contentY = hudY + 20;
+        int lineHeight = 12; // Increased line height for better spacing
+        int currentLine = 0;
         
-        // Main fish counter
-        String fishText = "🐟 " + totalFishCaught;
-        context.drawText(textRenderer, fishText, hudX + 4, contentY, 0x55FF55, true);
+        // Main fish counter with enhanced display
+        String fishText = "🐟 " + totalFishCaught + " fish";
+        context.drawText(textRenderer, fishText, hudX + 4, contentY + (currentLine * lineHeight), 0x55FF55, true);
+        currentLine++;
         
         // Session time
         int sessionMinutes = fishingSessionTicks / 1200;
         int sessionSeconds = (fishingSessionTicks % 1200) / 20;
         String timeText = String.format("⏰ %02d:%02d", sessionMinutes, sessionSeconds);
-        context.drawText(textRenderer, timeText, hudX + 4, contentY + 12, 0xFFFF55, true);
+        context.drawText(textRenderer, timeText, hudX + 4, contentY + (currentLine * lineHeight), 0xFFFF55, true);
+        currentLine++;
         
         // Rod durability
         if (client.player != null) {
@@ -416,8 +427,35 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
                 
                 String durabilityText = "🔧 " + remainingUses + " (" + durabilityPercent + "%)";
                 int color = durabilityPercent > 50 ? 0x55FF55 : durabilityPercent > 20 ? 0xFFFF55 : 0xFF5555;
-                context.drawText(textRenderer, durabilityText, hudX + 4, contentY + 24, color, true);
+                context.drawText(textRenderer, durabilityText, hudX + 4, contentY + (currentLine * lineHeight), color, true);
+                currentLine++;
             }
+        }
+        
+        // Weather and time indicators
+        if (client.player != null && client.world != null) {
+            // Weather indicator
+            String weatherIcon = client.world.isRaining() ? (client.world.isThundering() ? "⛈️" : "🌧️") : "☀️";
+            String weatherText = weatherIcon + " " + (client.world.isRaining() ? "Rainy" : "Clear");
+            int weatherColor = client.world.isRaining() ? 0x5599FF : 0xFFDD55;
+            context.drawText(textRenderer, weatherText, hudX + 4, contentY + (currentLine * lineHeight), weatherColor, true);
+            currentLine++;
+            
+            // Day/Night and moon phase indicator
+            long timeOfDay = client.world.getTimeOfDay() % 24000;
+            boolean isDay = timeOfDay < 12000;
+            String timeIcon = isDay ? "☀️" : "🌙";
+            String dayNightText = timeIcon + " " + (isDay ? "Day" : "Night");
+            
+            if (!isDay) {
+                int moonPhase = client.world.getMoonPhase();
+                String[] moonPhases = {"🌑", "🌒", "🌓", "🌔", "🌕", "🌖", "🌗", "🌘"};
+                dayNightText = moonPhases[moonPhase] + " " + (isDay ? "Day" : "Night");
+            }
+            
+            int timeColor = isDay ? 0xFFDD55 : 0xCCCCFF;
+            context.drawText(textRenderer, dayNightText, hudX + 4, contentY + (currentLine * lineHeight), timeColor, true);
+            currentLine++;
         }
         
         // Current biome
@@ -426,12 +464,26 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
             String biomeName = biome.getKey().map(key -> key.getValue().toString()).orElse("unknown");
             biomeName = biomeName.replace("minecraft:", "").replace("_", " ");
             String biomeText = "🗺️ " + capitalizeWords(biomeName);
-            context.drawText(textRenderer, biomeText, hudX + 4, contentY + 36, 0x55FFFF, true);
+            context.drawText(textRenderer, biomeText, hudX + 4, contentY + (currentLine * lineHeight), 0x55FFFF, true);
+            currentLine++;
         }
         
-        // Status indicator
+        // Catch rate indicator
+        if (fishingSessionTicks > 0) {
+            float catchRate = (float) totalFishCaught / (fishingSessionTicks / 1200.0f); // fish per minute
+            String rateText = String.format("📈 %.1f/min", Math.max(0, catchRate));
+            context.drawText(textRenderer, rateText, hudX + 4, contentY + (currentLine * lineHeight), 0xAAFF55, true);
+            currentLine++;
+        }
+        
+        // Status indicator with enhanced info
         String statusText = "🎣 Active";
-        context.drawText(textRenderer, statusText, hudX + 4, contentY + 48, 0x55FF55, true);
+        if (humanReactionDelay > 0) {
+            statusText = "🐟 Bite!";
+        } else if (recastDelayTicks > 0) {
+            statusText = "🔄 Recasting...";
+        }
+        context.drawText(textRenderer, statusText, hudX + 4, contentY + (currentLine * lineHeight), 0x55FF55, true);
     }
     
     private String capitalizeWords(String str) {
@@ -473,24 +525,90 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
         if (bobberStuckCheckPos == null) {
             bobberStuckCheckPos = currentPos;
             bobberStuckTicks = 0;
+            consecutiveStuckChecks = 0;
+            lastValidBobberPos = currentPos;
             return false;
         }
         
-        // Check if bobber has moved significantly (even more lenient threshold)
+        // Check if bobber has moved significantly (more sensitive movement detection)
         double distance = currentPos.distanceTo(bobberStuckCheckPos);
-        if (distance < STUCK_MOVEMENT_THRESHOLD) { // 0.5 blocks
-            bobberStuckTicks++;
-            // Only consider stuck after 15 seconds (300 ticks) of no movement
-            if (bobberStuckTicks >= 300) { // Increased from 200 to 300 ticks (15 seconds)
-                return true; // Bobber is stuck
-            }
-        } else {
-            // Bobber moved significantly, reset tracking
+        double distanceFromLastValid = lastValidBobberPos != null ? currentPos.distanceTo(lastValidBobberPos) : distance;
+        
+        // Multiple validation systems to prevent false positives
+        boolean hasMovedRecently = distance >= STUCK_MOVEMENT_THRESHOLD;
+        boolean hasMovedFromLastValid = distanceFromLastValid >= STUCK_MOVEMENT_THRESHOLD;
+        
+        if (hasMovedRecently || hasMovedFromLastValid) {
+            // Bobber moved significantly, reset all tracking
             bobberStuckCheckPos = currentPos;
             bobberStuckTicks = 0;
+            consecutiveStuckChecks = 0;
+            lastValidBobberPos = currentPos;
+            return false;
+        } else {
+            // Bobber hasn't moved much
+            bobberStuckTicks++;
+            consecutiveStuckChecks++;
+            
+            // Only consider stuck after much longer time AND multiple consecutive checks
+            if (bobberStuckTicks >= BOBBER_STUCK_THRESHOLD && consecutiveStuckChecks >= 100) { // 30 seconds + 5 seconds of consecutive checks
+                // Additional validation: check if bobber is actually in a problematic state
+                if (bobberInWater) {
+                    // If bobber is in water and hasn't moved for 30+ seconds, it might be legitimately fishing
+                    // Only recast if we're absolutely sure it's stuck
+                    return bobberStuckTicks >= (BOBBER_STUCK_THRESHOLD * 2); // 60 seconds for in-water bobbers
+                } else {
+                    // Bobber not in water and hasn't moved - likely stuck on land/blocks
+                    return true;
+                }
+            }
         }
         
         return false;
+    }
+    
+    private void showEnhancedWelcomeMessage(ClientPlayerEntity player) {
+        // Enhanced welcome message with detailed detection methods and colorful presentation
+        player.sendMessage(Text.literal(""), false);
+        player.sendMessage(Text.literal("§6§l╔══════════════════════════════════════════════════════════════╗"), false);
+        player.sendMessage(Text.literal("§6§l║                    🎣 §b§lFEESHMAN DEELUX §6§l🎣                    ║"), false);
+        player.sendMessage(Text.literal("§6§l╚══════════════════════════════════════════════════════════════╝"), false);
+        player.sendMessage(Text.literal(""), false);
+        
+        player.sendMessage(Text.literal("§a✨ §6§lWelcome to the Ultimate Auto-Fishing Experience! §a✨"), false);
+        player.sendMessage(Text.literal("§7Press §a§l[O]§r§7 to toggle auto-fishing §8• §7ModMenu for settings"), false);
+        player.sendMessage(Text.literal(""), false);
+        
+        player.sendMessage(Text.literal("§e§l🔬 ADVANCED DETECTION SYSTEMS:"), false);
+        player.sendMessage(Text.literal("§7▸ §b§lVelocity Analysis§7: Monitors bobber movement patterns"), false);
+        player.sendMessage(Text.literal("§7▸ §b§lDownward Motion§7: Detects fish pulling bobber underwater"), false);
+        player.sendMessage(Text.literal("§7▸ §b§lPosition Tracking§7: Analyzes sudden position changes"), false);
+        player.sendMessage(Text.literal("§7▸ §b§lWater Validation§7: Ensures bobber is properly submerged"), false);
+        player.sendMessage(Text.literal("§7▸ §b§lBobber Dip Detection§7: Instant response to Y-axis drops"), false);
+        player.sendMessage(Text.literal(""), false);
+        
+        player.sendMessage(Text.literal("§e§l🛡️ SMART SAFETY FEATURES:"), false);
+        player.sendMessage(Text.literal("§7▸ §c§lMob Collision Detection§7: Auto-avoids squids, drowned, etc."), false);
+        player.sendMessage(Text.literal("§7▸ §c§lIntelligent Stuck Detection§7: 30s threshold with water validation"), false);
+        player.sendMessage(Text.literal("§7▸ §c§lHuman-like Timing§7: 0.15-0.6s reaction delays"), false);
+        player.sendMessage(Text.literal("§7▸ §c§lDurability Monitoring§7: Warns at low rod durability"), false);
+        player.sendMessage(Text.literal(""), false);
+        
+        player.sendMessage(Text.literal("§e§l📊 ENHANCED HUD DISPLAY:"), false);
+        player.sendMessage(Text.literal("§7▸ §d§lReal-time Statistics§7: Fish count, session time, catch rate"), false);
+        player.sendMessage(Text.literal("§7▸ §d§lWeather & Time§7: Rain indicator, day/night, moon phases"), false);
+        player.sendMessage(Text.literal("§7▸ §d§lBiome Tracking§7: Current location and catch analytics"), false);
+        player.sendMessage(Text.literal("§7▸ §d§lStatus Indicators§7: Live fishing state and activity"), false);
+        player.sendMessage(Text.literal(""), false);
+        
+        player.sendMessage(Text.literal("§a🎵 §7Bite alert sounds §8• §a🏆 §7Achievement toasts §8• §a📈 §7Statistics tracking"), false);
+        player.sendMessage(Text.literal("§a🎭 §7Fishing quotes §8• §a🌟 §7Lucky compliments §8• §a🎛️ §7ModMenu integration"), false);
+        player.sendMessage(Text.literal(""), false);
+        
+        player.sendMessage(Text.literal("§6§l═══════════════════════════════════════════════════════════════"), false);
+        player.sendMessage(Text.literal("§7🌊 §b§lHappy Fishing, and may your lines be tight! §7🐟✨"), false);
+        player.sendMessage(Text.literal("§6§l═══════════════════════════════════════════════════════════════"), false);
+        player.sendMessage(Text.literal(""), false);
     }
     
 
