@@ -2,6 +2,7 @@ package com.yourname.feeshmandeelux;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
@@ -15,6 +16,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.entity.projectile.FishingBobberEntity;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.ActionResult;
 import org.lwjgl.glfw.GLFW;
 import java.util.Random;
 
@@ -42,6 +44,11 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
     private final int MIN_REACTION_TIME = 10; // 0.5 seconds
     private final int MAX_REACTION_TIME = 30; // 1.5 seconds
 
+    // Welcome message system
+    private boolean hasShownWelcomeMessage = false;
+    private int welcomeMessageDelay = 100; // 5 seconds at 20 TPS
+    private int welcomeMessageTimer = 0;
+
     @Override
     public void onInitializeClient() {
         System.out.println("🎣 Feeshman Deelux Initializing!");
@@ -56,7 +63,23 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
                 "category.feeshmandeelux.general"
         ));
 
+        // Register world join event for welcome message
+        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
+            hasShownWelcomeMessage = false;
+            welcomeMessageTimer = welcomeMessageDelay;
+        });
+
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            // Handle welcome message
+            if (!hasShownWelcomeMessage && client.player != null && welcomeMessageTimer > 0) {
+                welcomeMessageTimer--;
+                if (welcomeMessageTimer <= 0) {
+                    hasShownWelcomeMessage = true;
+                    client.player.sendMessage(Text.literal("🎣 §6§lFeeshman Deelux §r§7is ready! Press §a§lO§r§7 to toggle auto-fishing. §e✨"), false);
+                    client.player.sendMessage(Text.literal("§7🐟 Advanced bite detection, smart timing, and bite alerts included! Happy fishing! 🌊"), false);
+                }
+            }
+
             if (toggleKey.wasPressed()) {
                 autoFishEnabled = !autoFishEnabled;
                 if (client.player != null) {
@@ -89,9 +112,12 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
                 if (humanReactionDelay > 0) {
                     humanReactionDelay--;
                     if (humanReactionDelay == 0 && client.player.fishHook != null) {
-                        // Time to reel in the fish!
+                        // Time to reel in the fish! Use proper right-click simulation
                         System.out.println("🎣 Feeshman Deelux: Reeling in fish!");
+                        
+                        // Proper right-click simulation for fishing - reel in the fish
                         client.interactionManager.interactItem(client.player, Hand.MAIN_HAND);
+                        
                         recastDelayTicks = BASE_RECAST_DELAY + random.nextInt(40); // 2-4 seconds
                         totalFishCaught++;
                         
@@ -110,7 +136,10 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
                     if (player.fishHook == null) {
                         // Auto-recast with randomized delay
                         System.out.println("🎣 Feeshman Deelux: Recasting rod...");
+                        
+                        // Proper right-click simulation for casting
                         client.interactionManager.interactItem(player, Hand.MAIN_HAND);
+                        
                         recastDelayTicks = BASE_RECAST_DELAY + random.nextInt(20); // 2-3 seconds
                         lastBobberPos = null;
                         lastBobberVelocity = null;
@@ -158,24 +187,35 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
             return false;
         }
         
+        // Enhanced bite detection with multiple methods
+        
         // Method 1: Velocity-based detection (primary)
         double velocityChange = currentVelocity.distanceTo(lastBobberVelocity);
         boolean suddenVelocityChange = velocityChange > 0.1; // Threshold for bite detection
         
-        // Method 2: Downward movement detection
+        // Method 2: Downward movement detection (fish pulling bobber down)
         boolean suddenDownwardMovement = currentVelocity.y < -0.15 && lastBobberVelocity.y > -0.05;
         
         // Method 3: Check if bobber is in water and moving unusually
         boolean inWater = bobber.isInFluid();
         boolean unusualMovement = currentVelocity.horizontalLength() > 0.05;
         
-        if ((suddenVelocityChange || suddenDownwardMovement) && inWater) {
+        // Method 4: Position-based detection (bobber being pulled)
+        double positionChange = currentPos.distanceTo(lastBobberPos);
+        boolean suddenPositionChange = positionChange > 0.2;
+        
+        // Combine detection methods for better accuracy
+        boolean biteDetected = inWater && (
+            (suddenVelocityChange && unusualMovement) ||
+            suddenDownwardMovement ||
+            (suddenPositionChange && velocityChange > 0.05)
+        );
+        
+        if (biteDetected) {
             biteDetectionCooldown = 60; // 3 second cooldown to prevent spam detection
             return true;
         }
         
         return false;
     }
-    
-
 }

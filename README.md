@@ -20,24 +20,25 @@
 ## ✨ Current Features
 
 ### 🎮 **Core Functionality**
-- 🎣 **Smart Toggle System**: Press **F** to enable/disable auto-fishing
+- 🎣 **Smart Toggle System**: Press **O** to enable/disable auto-fishing
 - 💬 **Beautiful Chat Messages**: Colorful, styled in-game notifications
 - ⏰ **Session Tracking**: Monitor your fishing time and toggle count
 - 🎨 **Visual Feedback**: Elegant status indicators and welcome messages
 - 🛡️ **Client-Side Only**: Works on any server without installation
+- 🌟 **Welcome Message**: Friendly greeting 5 seconds after joining any world
 
-### 🚧 **In Development**
-- 🔍 **Intelligent Bite Detection**: Advanced bobber monitoring system
-- 🎯 **Auto-Reel & Recast**: Seamless fishing automation
-- ⚡ **Human-Like Timing**: Randomized delays to avoid detection
-- 📊 **Enhanced Statistics**: Detailed catch tracking and analytics
+### 🎣 **Advanced Fishing System** ✅ **COMPLETE**
+- 🔍 **Intelligent Bite Detection**: Multi-method bobber monitoring system
+- 🎯 **Auto-Reel & Recast**: Seamless fishing automation with proper right-click simulation
+- ⚡ **Human-Like Timing**: Randomized delays to avoid detection (0.5-1.5s reaction time)
+- 🔔 **Bite Alert Sounds**: Audio notifications for multitasking
+- 📊 **Enhanced Statistics**: Detailed catch tracking and milestone notifications
 
 ## 🎯 Planned Features (45+ Amazing Ideas!)
 
 Our [**Ultimate Feature Roadmap**](suggestions.md) includes incredible features like:
 
 ### 🔥 **Quick Wins** (Coming Soon!)
-- 🔔 **Bite Alert Sounds** - Audio notifications for multitasking
 - 💦 **Splash Particles** - Beautiful water effects on catches
 - 🌟 **Lucky Catch Celebrations** - Random compliments and effects
 - 📊 **HUD Counter** - Live fish count display
@@ -68,10 +69,20 @@ Our [**Ultimate Feature Roadmap**](suggestions.md) includes incredible features 
 
 ## 🔧 Prerequisites
 
+### For Players
 - ☕ **Java 21** or newer ([Download from Adoptium](https://adoptium.net/releases.html))
 - 🎮 **Minecraft Java Edition 1.21.4**
 - 🧵 **Fabric Loader 0.16.9** (latest for 1.21.4)
 - 📦 **Fabric API 0.119.3+1.21.4** or newer
+
+### For Developers & Builders
+- ☕ **Java 21** or newer (Required for MC 1.21.4)
+- 🎮 **Minecraft Java Edition 1.21.4**
+- 🧵 **Fabric Loader 0.16.9**
+- 📦 **Fabric API 0.119.3+1.21.4** or newer
+- 🏗️ **Gradle 8.8+** (automatically handled by gradlew)
+- 🧶 **Fabric Loom 1.8-SNAPSHOT** (build tool for Fabric mods)
+- 📚 **Yarn Mappings 1.21.4+build.1** (for proper code compilation)
 
 ## 🏗️ Building the Mod
 
@@ -128,7 +139,7 @@ $env:JAVA_HOME = "C:\Program Files\Java\jdk-21"
 | **Toggle Key** | `O` | Enable/disable auto-fishing |
 | **Chat Messages** | `Enabled` | Beautiful status notifications |
 | **Session Tracking** | `Enabled` | Monitor usage statistics |
-| **Welcome Message** | `10 seconds` | Delay after joining world |
+| **Welcome Message** | `5 seconds` | Delay after joining world |
 
 *More configuration options coming with future updates!*
 
@@ -140,9 +151,11 @@ $env:JAVA_HOME = "C:\Program Files\Java\jdk-21"
 | 🎮 **Keybind System** | ✅ **Complete** | O key toggle with chat feedback |
 | 💬 **Chat Integration** | ✅ **Complete** | Colorful, formatted messages |
 | ⏰ **Session Tracking** | ✅ **Complete** | Toggle count and time tracking |
-| 🎣 **Fishing Detection** | 🚧 **In Progress** | Bobber monitoring system |
-| 🤖 **Auto-Reeling** | 🚧 **In Progress** | Automated catch handling |
-| ⚡ **Smart Timing** | 📋 **Planned** | Human-like randomization |
+| 🌟 **Welcome Message** | ✅ **Complete** | 5-second delay after world join |
+| 🎣 **Fishing Detection** | ✅ **Complete** | Multi-method bobber monitoring |
+| 🤖 **Auto-Reeling** | ✅ **Complete** | Proper right-click simulation |
+| ⚡ **Smart Timing** | ✅ **Complete** | Human-like randomization |
+| 🔔 **Bite Alert Sound** | ✅ **Complete** | Audio notifications system |
 
 ### Project Architecture
 ```
@@ -191,12 +204,15 @@ src/main/resources/
 
 ### Phase 2: Core Fishing ✅ **COMPLETE**
 - [x] Advanced bobber detection system
-- [x] Smart auto-reel mechanism  
+- [x] Smart auto-reel mechanism with proper right-click simulation
 - [x] Intelligent auto-recast functionality
-- [x] Human-like timing randomization
+- [x] Human-like timing randomization (0.5-1.5s reaction delays)
 - [x] Bite alert sound system
+- [x] Welcome message system (5 seconds after world join)
+- [x] Enhanced bite detection with multiple methods
+- [x] Session statistics and milestone notifications
 
-### Phase 3: Enhancement 🚧 **CURRENT FOCUS**
+### Phase 3: Enhancement �� **CURRENT FOCUS**
 - [ ] AFK safety timer
 - [ ] Rod durability warnings
 - [ ] Configuration system
