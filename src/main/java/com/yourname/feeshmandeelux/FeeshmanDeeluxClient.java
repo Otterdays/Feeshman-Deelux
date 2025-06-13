@@ -19,7 +19,14 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.entity.projectile.FishingBobberEntity;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.entity.passive.SquidEntity;
+import net.minecraft.entity.mob.DrownedEntity;
+import net.minecraft.entity.mob.SkeletonEntity;
+import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.ActionResult;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -57,10 +64,12 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
     private int totalFishCaught = 0;
     private int lifetimeFishCaught = 0;
 
-    // Bobber stuck detection
+    // Enhanced bobber stuck detection
     private Vec3d bobberStuckCheckPos = null;
     private int bobberStuckTicks = 0;
-    private final int BOBBER_STUCK_THRESHOLD = 60; // 3 seconds without movement
+    private final int BOBBER_STUCK_THRESHOLD = 200; // 10 seconds without significant movement
+    private final double STUCK_MOVEMENT_THRESHOLD = 0.5; // Larger threshold for stuck detection
+    private boolean hasWarnedAboutMob = false;
 
     // Human-like timing - Made faster and more responsive
     private int humanReactionDelay = 0;
@@ -126,7 +135,7 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
         // Register enhanced HUD renderer
         HudRenderCallback.EVENT.register((context, tickDelta) -> {
             if (autoFishEnabled) {
-                renderEnhancedHUD(context);
+                renderPolishedHUD(context);
             }
         });
 
@@ -168,6 +177,7 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
                         fishingSessionTicks = 0;
                         totalFishCaught = 0;
                         hasWarnedDurability = false;
+                        hasWarnedAboutMob = false;
                         takeInventorySnapshot(client.player);
                         client.player.sendMessage(Text.literal("§7Press O again to disable. Happy fishing! 🐟"), false);
                         
@@ -251,20 +261,38 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
                         lastBobberVelocity = null;
                         bobberStuckCheckPos = null;
                         bobberStuckTicks = 0;
+                        hasWarnedAboutMob = false;
                     } else {
                         // Monitor bobber for bite detection and stuck detection
                         FishingBobberEntity bobber = player.fishHook;
                         Vec3d currentPos = bobber.getPos();
                         Vec3d currentVelocity = bobber.getVelocity();
                         
-                        // Check if bobber is stuck
+                        // Check for mob collision first
+                        if (checkMobCollision(client, bobber)) {
+                            if (!hasWarnedAboutMob) {
+                                client.player.sendMessage(Text.literal("§e⚠️ Bobber hooked a mob! Recasting..."), false);
+                                hasWarnedAboutMob = true;
+                            }
+                            
+                            // Force recast
+                            client.interactionManager.interactItem(player, Hand.MAIN_HAND);
+                            recastDelayTicks = 40; // 2 second delay before next cast
+                            lastBobberPos = null;
+                            lastBobberVelocity = null;
+                            bobberStuckCheckPos = null;
+                            bobberStuckTicks = 0;
+                            return;
+                        }
+                        
+                        // Check if bobber is stuck (less aggressive)
                         if (checkBobberStuck(currentPos)) {
                             System.out.println("🎣 Feeshman Deelux: Bobber appears stuck, recasting...");
                             client.player.sendMessage(Text.literal("§e⚠️ Bobber stuck detected, recasting..."), false);
                             
                             // Force recast
                             client.interactionManager.interactItem(player, Hand.MAIN_HAND);
-                            recastDelayTicks = 20; // 1 second delay before next cast
+                            recastDelayTicks = 40; // 2 second delay before next cast
                             lastBobberPos = null;
                             lastBobberVelocity = null;
                             bobberStuckCheckPos = null;
@@ -304,8 +332,17 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
             }
         });
 
-        // Register /feeshstats command
+        // Register commands with colorized help
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
+            // Main /feeshman command with help
+            dispatcher.register(ClientCommandManager.literal("feeshman")
+                .executes(context -> {
+                    showFeeshmanHelp(context.getSource().getPlayer());
+                    return 1;
+                })
+            );
+            
+            // /feeshstats command
             dispatcher.register(ClientCommandManager.literal("feeshstats")
                 .executes(context -> {
                     showFishingStats(context.getSource().getPlayer());
@@ -321,21 +358,46 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
         });
     }
     
-    private void renderEnhancedHUD(DrawContext context) {
+    private void renderPolishedHUD(DrawContext context) {
         var client = net.minecraft.client.MinecraftClient.getInstance();
         var textRenderer = client.textRenderer;
         
-        // Main fish counter (top-left)
-        String fishText = "🐟 " + totalFishCaught;
-        context.drawText(textRenderer, fishText, 4, 4, 0x55FF55, true);
+        // HUD dimensions and positioning
+        int hudX = 4;
+        int hudY = 4;
+        int hudWidth = 140;
+        int hudHeight = 78;
+        int borderColor = 0x88000000; // Semi-transparent black
+        int titleBgColor = 0xAA006699; // Semi-transparent blue
+        int contentBgColor = 0x77000000; // Darker semi-transparent
         
-        // Session time (below fish counter)
+        // Draw main background with border
+        context.fill(hudX - 2, hudY - 2, hudX + hudWidth + 2, hudY + hudHeight + 2, borderColor);
+        context.fill(hudX, hudY, hudX + hudWidth, hudY + hudHeight, contentBgColor);
+        
+        // Draw title background
+        context.fill(hudX, hudY, hudX + hudWidth, hudY + 14, titleBgColor);
+        
+        // Title header
+        String title = "§l§fFeeshman!";
+        int titleWidth = textRenderer.getWidth("Feeshman!");
+        int titleX = hudX + (hudWidth - titleWidth) / 2;
+        context.drawText(textRenderer, title, titleX, hudY + 3, 0xFFFFFF, true);
+        
+        // Content area starts below title
+        int contentY = hudY + 18;
+        
+        // Main fish counter
+        String fishText = "🐟 " + totalFishCaught;
+        context.drawText(textRenderer, fishText, hudX + 4, contentY, 0x55FF55, true);
+        
+        // Session time
         int sessionMinutes = fishingSessionTicks / 1200;
         int sessionSeconds = (fishingSessionTicks % 1200) / 20;
         String timeText = String.format("⏰ %02d:%02d", sessionMinutes, sessionSeconds);
-        context.drawText(textRenderer, timeText, 4, 16, 0xFFFF55, true);
+        context.drawText(textRenderer, timeText, hudX + 4, contentY + 12, 0xFFFF55, true);
         
-        // Rod durability (below time)
+        // Rod durability
         if (client.player != null) {
             ItemStack rod = client.player.getMainHandStack();
             if (rod.getItem() == Items.FISHING_ROD) {
@@ -346,22 +408,22 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
                 
                 String durabilityText = "🔧 " + remainingUses + " (" + durabilityPercent + "%)";
                 int color = durabilityPercent > 50 ? 0x55FF55 : durabilityPercent > 20 ? 0xFFFF55 : 0xFF5555;
-                context.drawText(textRenderer, durabilityText, 4, 28, color, true);
+                context.drawText(textRenderer, durabilityText, hudX + 4, contentY + 24, color, true);
             }
         }
         
-        // Current biome (below durability)
+        // Current biome
         if (client.player != null && client.world != null) {
             RegistryEntry<Biome> biome = client.world.getBiome(client.player.getBlockPos());
             String biomeName = biome.getKey().map(key -> key.getValue().toString()).orElse("unknown");
             biomeName = biomeName.replace("minecraft:", "").replace("_", " ");
             String biomeText = "🗺️ " + capitalizeWords(biomeName);
-            context.drawText(textRenderer, biomeText, 4, 40, 0x55FFFF, true);
+            context.drawText(textRenderer, biomeText, hudX + 4, contentY + 36, 0x55FFFF, true);
         }
         
-        // Status indicator (below biome)
+        // Status indicator
         String statusText = "🎣 Active";
-        context.drawText(textRenderer, statusText, 4, 52, 0x55FF55, true);
+        context.drawText(textRenderer, statusText, hudX + 4, contentY + 48, 0x55FF55, true);
     }
     
     private String capitalizeWords(String str) {
@@ -377,6 +439,28 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
         return result.toString().trim();
     }
     
+    private boolean checkMobCollision(net.minecraft.client.MinecraftClient client, FishingBobberEntity bobber) {
+        if (client.world == null) return false;
+        
+        // Check for entities near the bobber
+        Vec3d pos = bobber.getPos();
+        Box searchBox = new Box(pos.x - 1.5, pos.y - 1.5, pos.z - 1.5, pos.x + 1.5, pos.y + 1.5, pos.z + 1.5);
+        List<Entity> nearbyEntities = client.world.getOtherEntities(bobber, searchBox);
+        
+        for (Entity entity : nearbyEntities) {
+            // Check for mobs that commonly interfere with fishing
+            if (entity instanceof SquidEntity || 
+                entity instanceof DrownedEntity || 
+                entity instanceof ZombieEntity || 
+                entity instanceof SkeletonEntity ||
+                (entity instanceof MobEntity && entity.getBoundingBox().intersects(bobber.getBoundingBox()))) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
     private boolean checkBobberStuck(Vec3d currentPos) {
         if (bobberStuckCheckPos == null) {
             bobberStuckCheckPos = currentPos;
@@ -384,20 +468,41 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
             return false;
         }
         
-        // Check if bobber has moved significantly
+        // Check if bobber has moved significantly (much larger threshold)
         double distance = currentPos.distanceTo(bobberStuckCheckPos);
-        if (distance < 0.1) { // Very small movement threshold
+        if (distance < STUCK_MOVEMENT_THRESHOLD) { // 0.5 blocks instead of 0.1
             bobberStuckTicks++;
-            if (bobberStuckTicks >= BOBBER_STUCK_THRESHOLD) {
+            if (bobberStuckTicks >= BOBBER_STUCK_THRESHOLD) { // 10 seconds instead of 3
                 return true; // Bobber is stuck
             }
         } else {
-            // Bobber moved, reset tracking
+            // Bobber moved significantly, reset tracking
             bobberStuckCheckPos = currentPos;
             bobberStuckTicks = 0;
         }
         
         return false;
+    }
+    
+    private void showFeeshmanHelp(ClientPlayerEntity player) {
+        player.sendMessage(Text.literal("§6§l=== 🎣 Feeshman Deelux Help ==="), false);
+        player.sendMessage(Text.literal(""), false);
+        player.sendMessage(Text.literal("§e§lCommands:"), false);
+        player.sendMessage(Text.literal("§a/feeshman §7- §fShow this help message"), false);
+        player.sendMessage(Text.literal("§a/feeshstats §7- §fView fishing statistics"), false);
+        player.sendMessage(Text.literal("§a/feeshstats biome §7- §fView biome catch breakdown"), false);
+        player.sendMessage(Text.literal(""), false);
+        player.sendMessage(Text.literal("§e§lControls:"), false);
+        player.sendMessage(Text.literal("§a[O] §7- §fToggle auto-fishing on/off"), false);
+        player.sendMessage(Text.literal(""), false);
+        player.sendMessage(Text.literal("§e§lFeatures:"), false);
+        player.sendMessage(Text.literal("§7• §fAdvanced 5-method bite detection"), false);
+        player.sendMessage(Text.literal("§7• §fSmart bobber stuck & mob collision detection"), false);
+        player.sendMessage(Text.literal("§7• §fLive HUD with session stats & rod durability"), false);
+        player.sendMessage(Text.literal("§7• §fItem announcements & achievement toasts"), false);
+        player.sendMessage(Text.literal("§7• §fBiome tracking & fishing statistics"), false);
+        player.sendMessage(Text.literal(""), false);
+        player.sendMessage(Text.literal("§7Happy fishing! 🐟✨"), false);
     }
     
     private void checkRodDurability(ClientPlayerEntity player) {

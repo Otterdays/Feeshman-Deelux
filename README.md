@@ -18,11 +18,16 @@
 - 🧠 **5-Method Bite Detection**: Advanced algorithms with 3-5x faster response times
 - ⚡ **Lightning-Fast Reactions**: 0.15-0.6 second response time (human-like but optimized)
 - 🎣 **Intelligent Recasting**: Automatic rod management with randomized timing
-- 🔧 **Bobber Stuck Detection**: Automatically detects and resolves stuck bobbers (NEW!)
+- 🔧 **Smart Bobber Management**: Detects stuck bobbers AND mob collisions (squids, drowned, zombies, skeletons)
 
 ### 🎨 **Enhanced Visual Experience**
-- 📊 **Beautiful Multi-Element HUD**: Live display of fish count, session time, rod durability, current biome, and status
-- 🌈 **Color-Coded Information**: Green for good, yellow for caution, red for warnings
+- 📊 **Polished HUD Interface**: Beautiful bordered panel with "Feeshman!" title header
+- 🌈 **Color-Coded Information**: Live display with professional styling:
+  - 🐟 Fish count (green)
+  - ⏰ Session timer in MM:SS format (yellow)
+  - 🔧 Rod durability with percentage (color-coded: green/yellow/red)
+  - 🗺️ Current biome with proper capitalization (cyan)
+  - 🎣 Status indicator (green)
 - 💬 **Rich Chat Messages**: Colorful, informative status updates and notifications
 - 🎭 **Personalized Item Announcements**: Unique messages for every type of fishing loot (IMPROVED!)
 
@@ -42,6 +47,7 @@
 - 🎒 **Rod Detection**: Automatically pauses when no fishing rod is equipped
 - 🔄 **Intelligent Timing**: Human-like delays and randomization to avoid detection
 - 🌊 **Water Validation**: Ensures bobber is properly in water before bite detection
+- 🐙 **Mob Collision Detection**: Automatically detects and resolves bobber collisions with mobs
 - ⚠️ **Comprehensive Error Handling**: Graceful handling of edge cases and errors
 
 ## 🎯 Planned Features (45+ Amazing Ideas!)
@@ -115,7 +121,8 @@ cd feeshman-deelux
 - ✅ Watch chat for **beautiful status messages**
 - ✅ Perfect for **AFK fishing** (when server rules allow)
 
-### 📊 **New Commands & Features**
+### 📊 **Commands & Features**
+- 🎣 **`/feeshman`** - Main help command with colorized interface and feature overview
 - 📝 **`/feeshstats`** - View your fishing statistics (session and lifetime)
 - 🗺️ **`/feeshstats biome`** - See your top 3 fishing biomes
 - 📊 **Enhanced HUD Display** - Live multi-element information panel including:
@@ -132,7 +139,8 @@ cd feeshman-deelux
 - 🪓 **Durability Warnings** - Get alerted when your rod is almost broken
 - 🏆 **Achievement Toasts** - Milestone notifications for 1st, 10th, 25th, 50th, 100th+ fish
 - 🎭 **Fishing Quotes** - Inspirational fishing wisdom appears randomly
-- ⚠️ **Bobber Stuck Detection** - Automatically detects and resolves stuck bobbers
+- 🔧 **Smart Bobber Management** - Detects stuck bobbers AND mob collisions with intelligent recasting
+- 🎨 **Polished HUD Interface** - Beautiful bordered panel with title header and professional styling
 
 ## ⚙️ Configuration
 
@@ -167,7 +175,9 @@ cd feeshman-deelux
 | 📝 **Statistics Commands** | ✅ **Complete** | `/feeshstats` and `/feeshstats biome` |
 | 🏆 **Achievement System** | ✅ **Complete** | Toast notifications for milestones |
 | 🎭 **Fishing Quotes** | ✅ **Complete** | Inspirational quotes on world join and mod enable |
-| ⚠️ **Bobber Stuck Detection** | ✅ **Complete** | Automatic detection and resolution of stuck bobbers |
+| 🔧 **Smart Bobber Management** | ✅ **Complete** | Stuck detection + mob collision detection with intelligent recasting |
+| 🎨 **Polished HUD Interface** | ✅ **Complete** | Bordered panel with title header and professional styling |
+| 🎣 **Command System** | ✅ **Complete** | `/feeshman` help command with colorized interface |
 
 ### Performance Optimizations
 - **Ultra-Fast Bite Detection**: 0.15-0.6 second response times
