@@ -1,4 +1,9 @@
-# AutoFishing Mod - Technical Design Document
+# 🔧 Feeshman Deelux - Technical Design Document
+
+> **Comprehensive technical specification and implementation guide**  
+> *Deep dive into the architecture, algorithms, and engineering decisions*
+
+---
 
 ## 1. Project Overview
 

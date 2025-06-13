@@ -5,29 +5,30 @@
   "name": "Feeshman Deelux",
   "description": "Automatically reels in and recasts your fishing rod!",
   "authors": [
-    "YourName"
+    "YourName" // Replace with your name
   ],
   "contact": {
     "homepage": "",
     "sources": ""
   },
-  "license": "MIT",
+  "license": "MIT", // Or your preferred license
   "icon": "assets/feeshmandeelux/icon.png",
-  "environment": "client",
+  "environment": "client", // This mod is client-side only
   "entrypoints": {
     "main": [
+      // For client-side mods, 'main' is often not needed if you only have client entrypoints
     ],
     "client": [
-      "com.yourname.feeshmandeelux.FeeshmanDeeluxClient"
+      "com.yourname.feeshmandeelux.FeeshmanDeeluxClient" // Replace with your actual package and class
     ]
   },
   "mixins": [
     "feeshmandeelux.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.16.9",
-    "fabric-api": ">=0.119.3+1.21.4",
-    "minecraft": "~1.21.4"
+    "fabricloader": ">=0.15.11", // Corresponds to fabric_loader_version in gradle.properties
+    "fabric-api": ">=0.97.0+1.21.4", // Corresponds to fabric_api_version in gradle.properties
+    "minecraft": "~1.21.4" // Corresponds to minecraft_version in gradle.properties
   },
   "suggests": {
     "another-mod": "*"

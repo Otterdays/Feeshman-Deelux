@@ -1,83 +1,51 @@
-# Gradle files
+# Gradle
 .gradle/
 build/
-!gradle/wrapper/gradle-wrapper.jar
-!**/src/main/**/build/
-!**/src/test/**/build/
 
 # IntelliJ IDEA
 .idea/
-*.iws
 *.iml
 *.ipr
+*.iws
 out/
-!**/src/main/**/out/
-!**/src/test/**/out/
 
 # Eclipse
-.apt_generated
 .classpath
-.factorypath
 .project
-.settings
-.springBeans
-.sts4-cache
+.settings/
 bin/
-!**/src/main/**/bin/
-!**/src/test/**/bin/
 
 # NetBeans
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
+nbproject/private/
+build/
+dist/
+nbbuild/
+.nb-gradle/
 
-# VS Code
+# Visual Studio Code
 .vscode/
 
-# Mac
+# OS-specific
 .DS_Store
-
-# Windows
 Thumbs.db
-ehthumbs.db
-Desktop.ini
 
-# Fabric
-run/
-
-# Minecraft
+# Log files
+*.log
 logs/
-crash-reports/
-screenshots/
-saves/
-resourcepacks/
-shaderpacks/
-options.txt
-optionsof.txt
-optionsshaders.txt
-usercache.json
-usernamecache.json
 
-# Temporary files
-*.tmp
-*.bak
-*.swp
-*~.nib
-local.properties
-
-# Package Files
+# Runtime files
 *.jar
-*.war
-*.nar
-*.ear
 *.zip
 *.tar.gz
 *.rar
 
-# Virtual machine crash logs
-hs_err_pid*
+# Fabric Loom
+.cache/
+remappedSrc/
 
-# JVM Crash logs
-replay_pid*
+# User-specific files (often in .gradle or home directory, but good to list if they might appear in project)
+local.properties
+gradle-user-home/
+
+# Minecraft runs
+runs/
