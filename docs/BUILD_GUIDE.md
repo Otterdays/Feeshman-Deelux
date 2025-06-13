@@ -13,7 +13,7 @@
 ### Key Dependencies
 ```gradle
 minecraft "com.mojang:minecraft:1.21.4"
-mappings loom.officialMojangMappings()
+mappings "net.fabricmc:yarn:1.21.4+build.1"
 modImplementation "net.fabricmc:fabric-loader:0.16.9"
 modImplementation "net.fabricmc.fabric-api:fabric-api:0.119.3+1.21.4"
 ```
@@ -24,8 +24,38 @@ modImplementation "net.fabricmc.fabric-api:fabric-api:0.119.3+1.21.4"
 - **Gradle Version**: 8.8 (required for Fabric Loom 1.7.4+)
 - **Fabric Loom**: 1.7.4 (using legacy plugin syntax)
 - **Java Compatibility Level**: 21 (required for MC 1.21.4)
+- **Mappings**: Yarn 1.21.4+build.1 (CRITICAL FIX!)
 
 ## ✅ FINAL WORKING SOLUTION
+
+### 🎯 **CRITICAL FIX: Yarn Mappings**
+
+The **key issue** was using Official Mojang mappings instead of Yarn mappings. Here's the fix:
+
+#### ❌ **Before (BROKEN):**
+```gradle
+dependencies {
+    minecraft "com.mojang:minecraft:1.21.4"
+    mappings loom.officialMojangMappings()  // This caused all import errors!
+    modImplementation "net.fabricmc:fabric-loader:0.16.9"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:0.119.3+1.21.4"
+}
+```
+
+#### ✅ **After (WORKING):**
+```gradle
+repositories {
+    mavenCentral()
+    maven { url 'https://maven.fabricmc.net/' }  // Required for Yarn mappings
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:1.21.4"
+    mappings "net.fabricmc:yarn:1.21.4+build.1"  // YARN MAPPINGS FIX!
+    modImplementation "net.fabricmc:fabric-loader:0.16.9"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:0.119.3+1.21.4"
+}
+```
 
 ### 1. Correct Gradle Wrapper Configuration
 Update `gradle/wrapper/gradle-wrapper.properties`:
@@ -34,7 +64,7 @@ distributionUrl=https://services.gradle.org/distributions/gradle-8.8-bin.zip
 ```
 
 ### 2. Correct build.gradle Configuration
-Use **legacy plugin syntax** for Fabric Loom (this was the key fix):
+Use **legacy plugin syntax** for Fabric Loom:
 ```gradle
 buildscript {
     repositories {
@@ -105,66 +135,107 @@ loom_version=1.8
 # Verify Java 21 is installed
 java -version
 
-# Clean and build
-./gradlew.bat clean build
+# Apply the Yarn mappings fix
+./gradlew clean build
 
 # Expected output:
 # BUILD SUCCESSFUL in 2s
-# 7 actionable tasks: 6 executed, 1 up-to-date
+# 7 actionable tasks: 7 executed
 ```
 
 ### Build Output
 After successful build, you'll find:
 ```
 build/libs/
-├── feeshmandeelux-1.0.0.jar         # Main mod jar (4.4KB)
-└── feeshmandeelux-1.0.0-sources.jar # Source jar (4.0KB)
+├── feeshmandeelux-1.0.0.jar         # Main mod jar (6.7KB)
+└── feeshmandeelux-1.0.0-sources.jar # Source jar (5.3KB)
 ```
 
-## 🔍 Key Issues Resolved
+## 🔍 Issues Resolved
 
-### 1. ✅ Fabric Loom Plugin Resolution
+### 1. ✅ Import Resolution (MAJOR FIX)
+**Problem**: All Minecraft class imports failing
+```
+❌ import net.minecraft.client.option.KeyBinding;     // Package does not exist
+❌ import net.minecraft.client.util.InputUtil;        // Package does not exist  
+❌ import net.minecraft.text.Text;                    // Package does not exist
+❌ import net.minecraft.util.Formatting;              // Class not found
+❌ import net.minecraft.client.MinecraftClient;       // Class not found
+```
+
+**Solution**: Switch to Yarn mappings
+```
+✅ import net.minecraft.client.option.KeyBinding;     // Now works!
+✅ import net.minecraft.client.util.InputUtil;        // Now works!
+✅ import net.minecraft.text.Text;                    // Now works!
+✅ import net.minecraft.util.Formatting;              // Now works!
+✅ net.minecraft.client.MinecraftClient               // Now works!
+```
+
+### 2. ✅ Fabric Loom Plugin Resolution
 **Problem**: Plugin [id: 'fabric-loom', version: 'X.X'] was not found
 **Solution**: Use legacy plugin syntax with buildscript block
 
-### 2. ✅ Gradle Version Compatibility
+### 3. ✅ Gradle Version Compatibility
 **Problem**: Gradle 8.6 incompatible with Fabric Loom 1.7.4
 **Solution**: Upgrade to Gradle 8.8
 
-### 3. ✅ Template Expansion Error
+### 4. ✅ Template Expansion Error
 **Problem**: Missing property (mod_id) for Groovy template expansion
 **Solution**: Add mod_id to processResources inputs and expand map
 
-### 4. ✅ Java Version Verification
+### 5. ✅ Java Version Verification
 **Problem**: Minecraft 1.21.4 requires Java 21
 **Solution**: Verified Java 21.0.6 is installed and working
 
-## 📊 Final Version Compatibility Matrix
+## 📊 Current Feature Status
 
-| Component | Version | Status |
-|-----------|---------|--------|
-| Minecraft | 1.21.4 | ✅ Working |
-| Java | 21.0.6 | ✅ Compatible |
-| Gradle | 8.8 | ✅ Compatible |
-| Fabric Loader | 0.16.9 | ✅ Latest Stable |
-| Fabric API | 0.119.3+1.21.4 | ✅ Correct for MC 1.21.4 |
-| Fabric Loom | 1.7.4 | ✅ Working with legacy syntax |
+| Feature | Status | Description |
+|---------|--------|-------------|
+| 🎮 **O Key Toggle** | ✅ Working | Press O to toggle mod on/off |
+| 💬 **In-Game Messages** | ✅ Working | Beautiful chat messages with colors |
+| ⏰ **Welcome Message** | ✅ Working | Shows 10 seconds after joining game |
+| 🎨 **Chat Formatting** | ✅ Working | Colors, bold, italic text |
+| 📊 **Session Stats** | ✅ Working | Toggle count and session time |
+| 🎣 **Fishing Mechanics** | 🚧 Coming Soon | Auto-fishing functionality |
 
-## 🎯 Next Steps
+## 🔧 Development Environment
 
-1. **Mod Development**: The basic mod structure is now working. You can add the fishing logic by importing the correct Minecraft classes for 1.21.4.
+| Component | Version | Status | Notes |
+|-----------|---------|--------|-------|
+| 🎮 **Minecraft** | 1.21.4 | ✅ Working | Latest stable release |
+| ☕ **Java** | 21.0.6 | ✅ Compatible | LTS version, perfect performance |
+| 🔨 **Gradle** | 8.8 | ✅ Compatible | Required for Loom 1.7.4 |
+| 🧵 **Fabric Loader** | 0.16.9 | ✅ Latest Stable | Rock-solid foundation |
+| 🎨 **Fabric API** | 0.119.3+1.21.4 | ✅ Perfect Match | Exact version for MC 1.21.4 |
+| 🔧 **Fabric Loom** | 1.7.4 | ✅ Working | Using legacy syntax |
+| 🗺️ **Mappings** | Yarn 1.21.4+build.1 | ✅ WORKING | **CRITICAL FIX!** |
 
-2. **Testing**: Test the mod in a Minecraft 1.21.4 development environment.
+## 🎯 Key Lesson Learned
 
-3. **Distribution**: The built JAR can be placed in the `mods` folder of a Fabric-enabled Minecraft 1.21.4 installation.
+**The root cause of all import issues was using Official Mojang mappings instead of Yarn mappings for Minecraft 1.21.4.**
 
-## 🔧 Development Notes
+- **Official Mojang mappings**: Use obfuscated/different class names
+- **Yarn mappings**: Use community-friendly, descriptive class names that match tutorials and documentation
 
-- The current implementation is minimal but compiles successfully
-- Minecraft 1.21.4 has significant package structure changes from earlier versions
-- Use `./gradlew.bat genSources` to explore available classes and packages
-- The mod is client-side only as specified in fabric.mod.json
+**Always use Yarn mappings for Fabric mod development!** 🎯
 
----
+## 💡 Troubleshooting Tips
 
-**Build Status**: ✅ **SUCCESSFUL** - Ready for development and testing! 
+If you encounter import issues:
+
+1. **Check your mappings** - Make sure you're using Yarn, not Official Mojang
+2. **Clean and rebuild** - `./gradlew clean build`
+3. **Regenerate sources** - `./gradlew genSources`
+4. **Check Fabric version compatibility** - Ensure all versions match
+5. **Verify Java 21** - Required for MC 1.21.4
+
+## 🚀 What's Next
+
+The mod is now fully functional with:
+- Working keybinds (O key)
+- Beautiful in-game chat messages
+- Session tracking
+- Ready foundation for fishing mechanics
+
+Next development phase: Implement actual auto-fishing functionality! 🎣 

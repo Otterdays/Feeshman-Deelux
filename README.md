@@ -20,11 +20,12 @@
 ### 🎯 The Core Concept
 
 Imagine you're by a peaceful lake, fishing rod in hand, but instead of staring at your bobber for hours, you can:
-- 🎮 **Press O** to toggle auto-fishing
-- 🍃 **Go AFK** and let the mod work its magic
-- 🎣 **Return to chests full of fish** and treasures!
+- 🎮 **Press O** to toggle auto-fishing ✅ **WORKING**
+- 💬 **See beautiful in-game messages** ✅ **WORKING** 
+- 📊 **Track your session stats** ✅ **WORKING**
+- 🎣 **Full fishing automation coming soon!** 🚧 **IN DEVELOPMENT**
 
-The mod intelligently detects fish bites, reels them in with human-like timing, and automatically recasts your line. It's like having a fishing buddy who never gets tired!
+The mod will intelligently detect fish bites, reel them in with human-like timing, and automatically recast your line. It's like having a fishing buddy who never gets tired!
 
 ---
 
@@ -35,19 +36,19 @@ The mod intelligently detects fish bites, reels them in with human-like timing, 
 <td width="50%">
 
 ### 🤖 **Smart Automation**
-- 🎯 **Intelligent Bite Detection** - Uses velocity analysis to detect fish
-- ⚡ **Lightning-Fast Response** - 100-400ms human-like reaction times
-- 🔄 **Auto-Recast** - Seamlessly casts again after catching fish
-- 🎲 **Randomized Timing** - Avoids detection with natural variations
+- 🎯 **Intelligent Bite Detection** - 🚧 Coming Soon
+- ⚡ **Lightning-Fast Response** - 🚧 Coming Soon
+- 🔄 **Auto-Recast** - 🚧 Coming Soon
+- 🎲 **Randomized Timing** - 🚧 Coming Soon
 
 </td>
 <td width="50%">
 
 ### 🎮 **User Experience**
-- 🔥 **O-Key Toggle** - Simple on/off control
-- 💬 **Chat Notifications** - Clear status messages
-- 🎨 **Client-Side Only** - No server installation needed
-- ⚙️ **Zero Configuration** - Works out of the box
+- 🔥 **O-Key Toggle** - ✅ Simple on/off control
+- 💬 **Chat Notifications** - ✅ Beautiful colored messages
+- 🎨 **Client-Side Only** - ✅ No server installation needed
+- ⚙️ **Zero Configuration** - ✅ Works out of the box
 
 </td>
 </tr>
@@ -132,6 +133,11 @@ boolean detectFishBite(FishingBobberEntity bobber) {
 <td>Correct Fabric API 0.119.3+1.21.4 for MC 1.21.4</td>
 </tr>
 <tr>
+<td>🗺️ <strong>Yarn Mappings Fix</strong></td>
+<td>✅ <strong>COMPLETE</strong></td>
+<td>Fixed all import issues with Yarn mappings</td>
+</tr>
+<tr>
 <td>☕ <strong>Java 21 Compatibility</strong></td>
 <td>✅ <strong>COMPLETE</strong></td>
 <td>Verified Java 21.0.6 working perfectly</td>
@@ -139,30 +145,46 @@ boolean detectFishBite(FishingBobberEntity bobber) {
 <tr>
 <td>🏗️ <strong>Mod Compilation</strong></td>
 <td>✅ <strong>COMPLETE</strong></td>
-<td>Clean build producing 4.4KB mod JAR</td>
+<td>Clean build producing 6.7KB mod JAR</td>
+</tr>
+<tr>
+<td>🎮 <strong>O Key Toggle</strong></td>
+<td>✅ <strong>COMPLETE</strong></td>
+<td>Working keybind with in-game feedback</td>
+</tr>
+<tr>
+<td>💬 <strong>Chat Messages</strong></td>
+<td>✅ <strong>COMPLETE</strong></td>
+<td>Beautiful welcome message and toggle feedback</td>
 </tr>
 <tr>
 <td>📚 <strong>Documentation</strong></td>
 <td>✅ <strong>COMPLETE</strong></td>
-<td>Comprehensive BUILD_GUIDE.md with solutions</td>
+<td>Comprehensive guides with Yarn mappings fix</td>
 </tr>
 </table>
 
 ### 🔧 **Technical Challenges Overcome**
 
-#### 🎯 **Challenge #1: Plugin Resolution**
+#### 🎯 **Challenge #1: Import Resolution (MAJOR)**
+```diff
+- ❌ All Minecraft class imports failing with Official Mojang mappings
++ ✅ Fixed with Yarn mappings - all imports now working!
+```
+
+#### 🎯 **Challenge #2: Plugin Resolution**
 ```diff
 - ❌ Plugin [id: 'fabric-loom', version: '1.9'] was not found
 + ✅ Used legacy buildscript syntax for reliable plugin loading
 ```
 
-#### 🎯 **Challenge #2: Template Expansion**
+#### 🎯 **Challenge #3: Template Expansion**
 ```diff
 - ❌ Missing property (mod_id) for Groovy template expansion
 + ✅ Added mod_id to processResources inputs and expand map
 ```
 
-#### 🎯 **Challenge #3: Version Compatibility**
+#### 🎯 **Challenge #4: Version Compatibility**
 ```diff
 - ❌ Gradle 8.6 incompatible with Fabric Loom 1.7.4
 + ✅ Upgraded to Gradle 8.8 for perfect compatibility
@@ -252,8 +274,8 @@ Meet **Feeshman** - not your ordinary fisherman! 🎣
 
 ```
 📦 build/libs/
-├── 🎯 feeshmandeelux-1.0.0.jar         (4.4KB) - Main mod
-└── 📚 feeshmandeelux-1.0.0-sources.jar (4.0KB) - Source code
+├── 🎯 feeshmandeelux-1.0.0.jar         (6.7KB) - Main mod with full features!
+└── 📚 feeshmandeelux-1.0.0-sources.jar (5.3KB) - Source code
 ```
 
 ### 🔬 **Development Environment**
