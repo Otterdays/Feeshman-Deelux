@@ -31,8 +31,18 @@
 - 🔍 **Intelligent Bite Detection**: Multi-method bobber monitoring system with 5 detection methods
 - 🎯 **Auto-Reel & Recast**: Seamless fishing automation with proper right-click simulation
 - ⚡ **Human-Like Timing**: Fast, responsive timing (0.15-0.6s reaction time) for smooth gameplay
-- 🔔 **Bite Alert Sounds**: Audio notifications for multitasking
+- 🔔 **Bite Alert Sounds**: Audio notifications for multitasking with configurable volume
 - 📊 **Enhanced Statistics**: Detailed catch tracking and milestone notifications
+
+### 🎮 **Quality of Life Features** ✅ **COMPLETE**
+- 📊 **HUD Counter**: Live fish count display in top-left corner during fishing
+- 🎣 **Item Announcements**: Beautiful messages for every item caught with special rare item alerts
+- 🌟 **Lucky Catch Compliments**: Random encouraging messages (5% chance) after catches
+- 🪓 **Rod Durability Warning**: Alert when fishing rod has ≤10 uses remaining
+- 🗺️ **Biome Catch Tracker**: Tracks fish caught per biome with `/feeshstats biome` command
+- 📝 **Statistics Command**: `/feeshstats` shows session and lifetime fishing data
+- 🏆 **Achievement Toasts**: Milestone notifications (1st, 10th, 25th, 50th, 100th fish, etc.)
+- 🎭 **Fishing Quotes**: Inspirational fishing wisdom on world join and mod enable
 
 ## 🎯 Planned Features (45+ Amazing Ideas!)
 
@@ -40,9 +50,8 @@ Our [**Ultimate Feature Roadmap**](suggestions.md) includes incredible features 
 
 ### 🔥 **Quick Wins** (Coming Soon!)
 - 💦 **Splash Particles** - Beautiful water effects on catches
-- 🌟 **Lucky Catch Celebrations** - Random compliments and effects
-- 📊 **HUD Counter** - Live fish count display
-- 🪓 **Rod Durability Warnings** - Never break a rod again!
+- ⏰ **AFK Safety Timer** - Auto-disable after X minutes to prevent endless botting
+- 🔁 **Auto-Reequip Spare Rod** - Automatically equip another rod when current breaks
 
 ### 🎪 **Fun & Immersion**
 - 🎵 **Fishing Rhythm Mode** - Ambient ocean sounds
@@ -132,6 +141,16 @@ $env:JAVA_HOME = "C:\Program Files\Java\jdk-21"
 - ✅ Watch chat for **beautiful status messages**
 - ✅ Perfect for **AFK fishing** (when server rules allow)
 
+### 📊 **New Commands & Features**
+- 📝 **`/feeshstats`** - View your fishing statistics (session and lifetime)
+- 🗺️ **`/feeshstats biome`** - See your top 3 fishing biomes
+- 📊 **HUD Counter** - Live fish count appears in top-left when fishing
+- 🎣 **Item Announcements** - Get notified of every catch with special rare item messages
+- 🌟 **Lucky Compliments** - Random encouraging messages (5% chance after catches)
+- 🪓 **Durability Warnings** - Get alerted when your rod is almost broken
+- 🏆 **Achievement Toasts** - Milestone notifications for 1st, 10th, 25th, 50th, 100th+ fish
+- 🎭 **Fishing Quotes** - Inspirational fishing wisdom appears randomly
+
 ## ⚙️ Configuration
 
 | Setting | Default | Description |
@@ -155,7 +174,15 @@ $env:JAVA_HOME = "C:\Program Files\Java\jdk-21"
 | 🎣 **Fishing Detection** | ✅ **Complete** | 5-method bobber monitoring with enhanced sensitivity |
 | 🤖 **Auto-Reeling** | ✅ **Complete** | Proper right-click simulation |
 | ⚡ **Smart Timing** | ✅ **Complete** | Fast, responsive timing (0.15-0.6s reaction) |
-| 🔔 **Bite Alert Sound** | ✅ **Complete** | Audio notifications system |
+| 🔔 **Bite Alert Sound** | ✅ **Complete** | Audio notifications with configurable volume |
+| 📊 **HUD Counter** | ✅ **Complete** | Live fish count display during fishing |
+| 🎣 **Item Announcements** | ✅ **Complete** | Messages for all caught items with special rare alerts |
+| 🌟 **Lucky Compliments** | ✅ **Complete** | Random encouraging messages (5% chance) |
+| 🪓 **Rod Durability Warning** | ✅ **Complete** | Alert when rod has ≤10 uses remaining |
+| 🗺️ **Biome Tracking** | ✅ **Complete** | Tracks catches per biome with stats command |
+| 📝 **Stats Command** | ✅ **Complete** | `/feeshstats` and `/feeshstats biome` commands |
+| 🏆 **Achievement Toasts** | ✅ **Complete** | Milestone notifications for fishing achievements |
+| 🎭 **Fishing Quotes** | ✅ **Complete** | Inspirational wisdom on world join and enable |
 
 ### Project Architecture
 ```
