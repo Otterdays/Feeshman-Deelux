@@ -74,12 +74,16 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
     private final int MIN_REACTION_TIME = 3; // 0.15 seconds (was 0.5s)
     private final int MAX_REACTION_TIME = 12; // 0.6 seconds (was 1.5s)
 
+    // Add delay for catch announcement to ensure inventory updates
+    private int catchAnnouncementDelay = 0;
+    private final int CATCH_ANNOUNCEMENT_DELAY = 5; // 0.25 seconds delay (2x faster)
+
     // Welcome message system
     private boolean hasShownWelcomeMessage = false;
     private int welcomeMessageDelay = 100; // 5 seconds at 20 TPS
     private int welcomeMessageTimer = 0;
 
-    // New feature variables
+    // Session tracking
     private boolean hasWarnedDurability = false;
     private Map<String, Integer> biomeCatchTracker = new HashMap<>();
     private List<ItemStack> previousInventorySnapshot = new ArrayList<>();
@@ -208,6 +212,15 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
                     biteDetectionCooldown--;
                 }
                 
+                // Handle catch announcement delay
+                if (catchAnnouncementDelay > 0) {
+                    catchAnnouncementDelay--;
+                    if (catchAnnouncementDelay == 0) {
+                        // Now check for new items after delay
+                        checkForNewItems(client.player);
+                    }
+                }
+                
                 if (humanReactionDelay > 0) {
                     humanReactionDelay--;
                     if (humanReactionDelay == 0 && client.player.fishHook != null) {
@@ -224,8 +237,8 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
                         // Track biome catch
                         trackBiomeCatch(client);
                         
-                        // Check for new items and announce them
-                        checkForNewItems(client.player);
+                        // Start delayed catch announcement to ensure inventory updates
+                        catchAnnouncementDelay = CATCH_ANNOUNCEMENT_DELAY;
                         
                         // Lucky catch compliment (5% chance)
                         if (random.nextFloat() < 0.05f) {
@@ -587,7 +600,7 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
         player.sendMessage(Text.literal("§7▸ §b§lBobber Dip Detection§7: Instant response to Y-axis drops"), false);
         player.sendMessage(Text.literal(""), false);
         
-        player.sendMessage(Text.literal("§e§l🛡️ SMART SAFETY FEATURES:"), false);
+        player.sendMessage(Text.literal("§e§l🛡 SMART SAFETY FEATURES:"), false);
         player.sendMessage(Text.literal("§7▸ §c§lMob Collision Detection§7: Auto-avoids squids, drowned, etc."), false);
         player.sendMessage(Text.literal("§7▸ §c§lIntelligent Stuck Detection§7: 30s threshold with water validation"), false);
         player.sendMessage(Text.literal("§7▸ §c§lHuman-like Timing§7: 0.15-0.6s reaction delays"), false);
@@ -602,7 +615,7 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
         player.sendMessage(Text.literal(""), false);
         
         player.sendMessage(Text.literal("§a🎵 §7Bite alert sounds §8• §a🏆 §7Achievement toasts §8• §a📈 §7Statistics tracking"), false);
-        player.sendMessage(Text.literal("§a🎭 §7Fishing quotes §8• §a🌟 §7Lucky compliments §8• §a🎛️ §7ModMenu integration"), false);
+        player.sendMessage(Text.literal("§a🎭 §7Fishing quotes §8• §a🌟 §7Lucky compliments §8• §a🎛 §7ModMenu integration"), false);
         player.sendMessage(Text.literal(""), false);
         
         player.sendMessage(Text.literal("§6§l═══════════════════════════════════════════════════════════════"), false);
@@ -610,8 +623,6 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
         player.sendMessage(Text.literal("§6§l═══════════════════════════════════════════════════════════════"), false);
         player.sendMessage(Text.literal(""), false);
     }
-    
-
     
     private void showFeeshmanHelp(ClientPlayerEntity player) {
         player.sendMessage(Text.literal("§6§l=== 🎣 Feeshman Deelux Help ==="), false);
@@ -660,48 +671,54 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
         previousInventorySnapshot.clear();
         for (int i = 0; i < player.getInventory().size(); i++) {
             ItemStack stack = player.getInventory().getStack(i);
-            if (!stack.isEmpty()) {
+            if (!stack.isEmpty() && isFishingLoot(stack)) {
                 previousInventorySnapshot.add(stack.copy());
             }
         }
     }
     
     private void checkForNewItems(ClientPlayerEntity player) {
-        // Get current inventory
+        // Only check if we have a previous snapshot to compare against
+        if (previousInventorySnapshot.isEmpty()) {
+            takeInventorySnapshot(player);
+            return;
+        }
+        
+        // Get current inventory efficiently
         List<ItemStack> currentInventory = new ArrayList<>();
         for (int i = 0; i < player.getInventory().size(); i++) {
             ItemStack stack = player.getInventory().getStack(i);
-            if (!stack.isEmpty()) {
+            if (!stack.isEmpty() && isFishingLoot(stack)) {
                 currentInventory.add(stack.copy());
             }
         }
         
         // Find new items by comparing with previous snapshot
         for (ItemStack currentStack : currentInventory) {
-            if (isFishingLoot(currentStack)) {
-                boolean foundInPrevious = false;
-                int currentCount = currentStack.getCount();
-                
-                // Check if this item existed before and in what quantity
-                for (ItemStack previousStack : previousInventorySnapshot) {
-                    if (ItemStack.areItemsEqual(currentStack, previousStack)) {
-                        if (currentStack.getCount() > previousStack.getCount()) {
-                            // Item count increased, announce the difference
-                            int newItems = currentStack.getCount() - previousStack.getCount();
-                            for (int i = 0; i < newItems; i++) {
-                                announceNewItem(player, currentStack);
-                            }
+            boolean foundInPrevious = false;
+            int currentCount = currentStack.getCount();
+            
+            // Check if this item existed before and in what quantity
+            for (ItemStack previousStack : previousInventorySnapshot) {
+                if (ItemStack.areItemsEqual(currentStack, previousStack) && 
+                    ItemStack.areEqual(currentStack, previousStack)) { // Check NBT too for enchanted items
+                    
+                    if (currentStack.getCount() > previousStack.getCount()) {
+                        // Item count increased, announce the difference
+                        int newItems = currentStack.getCount() - previousStack.getCount();
+                        for (int i = 0; i < newItems; i++) {
+                            announceNewItem(player, currentStack);
                         }
-                        foundInPrevious = true;
-                        break;
                     }
+                    foundInPrevious = true;
+                    break;
                 }
-                
-                // If item wasn't found in previous inventory, it's completely new
-                if (!foundInPrevious) {
-                    for (int i = 0; i < currentCount; i++) {
-                        announceNewItem(player, currentStack);
-                    }
+            }
+            
+            // If item wasn't found in previous inventory, it's completely new
+            if (!foundInPrevious) {
+                for (int i = 0; i < currentCount; i++) {
+                    announceNewItem(player, currentStack);
                 }
             }
         }
@@ -711,56 +728,116 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
     }
     
     private boolean isFishingLoot(ItemStack stack) {
-        return stack.getItem() == Items.COD || stack.getItem() == Items.SALMON || 
-               stack.getItem() == Items.TROPICAL_FISH || stack.getItem() == Items.PUFFERFISH ||
-               stack.getItem() == Items.ENCHANTED_BOOK || stack.getItem() == Items.NAME_TAG ||
-               stack.getItem() == Items.SADDLE || stack.getItem() == Items.NAUTILUS_SHELL ||
-               stack.getItem() == Items.LEATHER_BOOTS || stack.getItem() == Items.LEATHER ||
-               stack.getItem() == Items.BONE || stack.getItem() == Items.STRING ||
-               stack.getItem() == Items.STICK || stack.getItem() == Items.BOWL ||
-               stack.getItem() == Items.ROTTEN_FLESH;
+        // Fish items
+        if (stack.getItem() == Items.COD || stack.getItem() == Items.SALMON || 
+            stack.getItem() == Items.TROPICAL_FISH || stack.getItem() == Items.PUFFERFISH) {
+            return true;
+        }
+        
+        // Treasure items
+        if (stack.getItem() == Items.ENCHANTED_BOOK || stack.getItem() == Items.NAME_TAG ||
+            stack.getItem() == Items.SADDLE || stack.getItem() == Items.NAUTILUS_SHELL ||
+            stack.getItem() == Items.BOW || stack.getItem() == Items.FISHING_ROD) {
+            return true;
+        }
+        
+        // Junk items (expanded list based on Minecraft wiki)
+        if (stack.getItem() == Items.LEATHER_BOOTS || stack.getItem() == Items.LEATHER ||
+            stack.getItem() == Items.BONE || stack.getItem() == Items.STRING ||
+            stack.getItem() == Items.STICK || stack.getItem() == Items.BOWL ||
+            stack.getItem() == Items.ROTTEN_FLESH || stack.getItem() == Items.POTION ||
+            stack.getItem() == Items.TRIPWIRE_HOOK || stack.getItem() == Items.INK_SAC ||
+            stack.getItem() == Items.LILY_PAD) {
+            return true;
+        }
+        
+        // Jungle-specific items
+        if (stack.getItem() == Items.BAMBOO || stack.getItem() == Items.COCOA_BEANS) {
+            return true;
+        }
+        
+        return false;
     }
     
     private void announceNewItem(ClientPlayerEntity player, ItemStack stack) {
         String itemName = stack.getName().getString();
         String message = getItemMessage(stack, itemName);
+        
+        // Add sound effect for special catches
+        if (isSpecialCatch(stack)) {
+            player.playSound(net.minecraft.sound.SoundEvents.ENTITY_PLAYER_LEVELUP, 0.5f, 1.5f);
+        }
+        
         player.sendMessage(Text.literal(message), false);
     }
     
+    private boolean isSpecialCatch(ItemStack stack) {
+        // Treasure items are considered special
+        return stack.getItem() == Items.ENCHANTED_BOOK || stack.getItem() == Items.NAME_TAG ||
+               stack.getItem() == Items.SADDLE || stack.getItem() == Items.NAUTILUS_SHELL ||
+               stack.getItem() == Items.BOW;
+    }
+    
     private String getItemMessage(ItemStack stack, String itemName) {
-        // Use the actual item to determine the message, not just the name
-        if (stack.getItem() == Items.ENCHANTED_BOOK) {
-            return "📚✨ Ancient knowledge surfaces: " + itemName + "!";
-        } else if (stack.getItem() == Items.NAME_TAG) {
-            return "🏷️🌟 A mysterious tag emerges: " + itemName + "!";
-        } else if (stack.getItem() == Items.SADDLE) {
-            return "🐎⚡ Adventure gear acquired: " + itemName + "!";
-        } else if (stack.getItem() == Items.NAUTILUS_SHELL) {
-            return "🐚💎 Rare ocean treasure: " + itemName + "!";
-        } else if (stack.getItem() == Items.COD) {
-            return "🐟 Fresh cod caught: " + itemName + "!";
+        // Enhanced messages with better categorization and colors
+        
+        // Fish messages (Green theme)
+        if (stack.getItem() == Items.COD) {
+            return "§a🐟 §l§aFresh cod caught: §f" + itemName + "§a!";
         } else if (stack.getItem() == Items.SALMON) {
-            return "🍣 Salmon secured: " + itemName + "!";
+            return "§a🍣 §l§aSalmon secured: §f" + itemName + "§a!";
         } else if (stack.getItem() == Items.TROPICAL_FISH) {
-            return "🌺 Tropical beauty: " + itemName + "!";
+            return "§a🌺 §l§aTropical beauty: §f" + itemName + "§a!";
         } else if (stack.getItem() == Items.PUFFERFISH) {
-            return "🐡 Spiky surprise: " + itemName + "!";
-        } else if (stack.getItem() == Items.BONE) {
-            return "🦴 Skeletal remains: " + itemName + "!";
+            return "§a🐡 §l§aSpiky surprise: §f" + itemName + "§a!";
+        }
+        
+        // Treasure messages (Gold/Yellow theme with emphasis)
+        else if (stack.getItem() == Items.ENCHANTED_BOOK) {
+            return "§6📚✨ §l§6TREASURE! §e§lAncient knowledge surfaces: §f" + itemName + "§6!";
+        } else if (stack.getItem() == Items.NAME_TAG) {
+            return "§6🏷️🌟 §l§6TREASURE! §e§lA mysterious tag emerges: §f" + itemName + "§6!";
+        } else if (stack.getItem() == Items.SADDLE) {
+            return "§6🐎⚡ §l§6TREASURE! §e§lAdventure gear acquired: §f" + itemName + "§6!";
+        } else if (stack.getItem() == Items.NAUTILUS_SHELL) {
+            return "§6🐚💎 §l§6TREASURE! §e§lRare ocean treasure: §f" + itemName + "§6!";
+        } else if (stack.getItem() == Items.BOW) {
+            return "§6🏹✨ §l§6TREASURE! §e§lEnchanted bow discovered: §f" + itemName + "§6!";
+        } else if (stack.getItem() == Items.FISHING_ROD && stack.hasEnchantments()) {
+            return "§6🎣✨ §l§6TREASURE! §e§lEnchanted fishing rod found: §f" + itemName + "§6!";
+        }
+        
+        // Junk messages (Gray/Dark theme)
+        else if (stack.getItem() == Items.BONE) {
+            return "§8🦴 §7Skeletal remains: §f" + itemName + "§7!";
         } else if (stack.getItem() == Items.LEATHER_BOOTS) {
-            return "👢 Waterlogged boots: " + itemName + "!";
+            return "§8👢 §7Waterlogged boots: §f" + itemName + "§7!";
         } else if (stack.getItem() == Items.LEATHER) {
-            return "🧳 Leather scraps: " + itemName + "!";
+            return "§8🧳 §7Leather scraps: §f" + itemName + "§7!";
         } else if (stack.getItem() == Items.STRING) {
-            return "🧵 Tangled string: " + itemName + "!";
+            return "§8🧵 §7Tangled string: §f" + itemName + "§7!";
         } else if (stack.getItem() == Items.STICK) {
-            return "🪵 Driftwood stick: " + itemName + "!";
+            return "§8🪵 §7Driftwood stick: §f" + itemName + "§7!";
         } else if (stack.getItem() == Items.BOWL) {
-            return "🥣 Floating bowl: " + itemName + "!";
+            return "§8🥣 §7Floating bowl: §f" + itemName + "§7!";
         } else if (stack.getItem() == Items.ROTTEN_FLESH) {
-            return "🧟 Questionable meat: " + itemName + "!";
+            return "§8🧟 §7Questionable meat: §f" + itemName + "§7!";
+        } else if (stack.getItem() == Items.POTION) {
+            return "§8🍼 §7Waterlogged bottle: §f" + itemName + "§7!";
+        } else if (stack.getItem() == Items.TRIPWIRE_HOOK) {
+            return "§8🪝 §7Rusty hook: §f" + itemName + "§7!";
+        } else if (stack.getItem() == Items.INK_SAC) {
+            return "§8🖤 §7Squid ink: §f" + itemName + "§7!";
+        } else if (stack.getItem() == Items.LILY_PAD) {
+            return "§8🪷 §7Floating lily pad: §f" + itemName + "§7!";
+        } else if (stack.getItem() == Items.BAMBOO) {
+            return "§2🎋 §a§lJungle bamboo: §f" + itemName + "§a!";
+        } else if (stack.getItem() == Items.COCOA_BEANS) {
+            return "§6🍫 §e§lCocoa beans: §f" + itemName + "§e!";
+        } else if (stack.getItem() == Items.FISHING_ROD && !stack.hasEnchantments()) {
+            return "§8🎣 §7Old fishing rod: §f" + itemName + "§7!";
         } else {
-            return "🎣 Reeled in: " + itemName + "!";
+            return "§b🎣 §l§bReeled in: §f" + itemName + "§b!";
         }
     }
     

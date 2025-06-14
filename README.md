@@ -32,7 +32,14 @@
   - 📈 **Live catch rate** (fish per minute calculation)
   - 🎣 **Dynamic status** (Active, Bite!, Recasting...)
 - 💬 **Rich Chat Messages**: Colorful, informative status updates and notifications
-- 🎭 **Personalized Item Announcements**: Unique messages for every type of fishing loot (IMPROVED!)
+- 🎭 **Enhanced Item Announcements**: **COMPLETELY REDESIGNED** with beautiful colors and instant detection:
+  - 🐟 **Fish** (Green theme): "§a🐟 §l§aFresh cod caught: §fRaw Cod§a!"
+  - 🏆 **Treasure** (Gold theme): "§6📚✨ §l§6TREASURE! §e§lAncient knowledge surfaces: §fEnchanted Book§6!"
+  - 🗑️ **Junk** (Gray theme): "§8🦴 §7Skeletal remains: §fBone§7!"
+  - 🌿 **Jungle items** (Special colors): Bamboo, Cocoa Beans with unique styling
+  - ⚡ **2x Faster announcements**: 0.25-second delay (was 0.5s) for instant feedback
+  - 🔍 **Smart detection**: Only tracks fishing loot, prevents false announcements
+  - 🎵 **Special sound effects**: Level-up sound for treasure catches
 
 ### 🔊 **Audio & Alerts**
 - 🔔 **Bite Alert Sound**: Configurable audio notification when fish bite with volume slider
@@ -40,6 +47,7 @@
 - 🌟 **Lucky Catch Compliments**: Random encouraging messages (5% chance) after catches
 - 🪓 **Rod Durability Warning**: Alert when fishing rod has ≤10 uses remaining
 - 🎭 **Fishing Quotes**: Inspirational fishing wisdom on world join and mod enable
+- 🎵 **Treasure Sound Effects**: Special audio cues for valuable catches
 
 ### 📈 **Statistics & Tracking**
 - 🗺️ **Biome Catch Tracker**: Tracks fish caught per biome with `/feeshstats biome` command
@@ -219,7 +227,15 @@ If you see import errors like `"The import com.terraformersmc cannot be resolved
 - ✅ **Text Placeholder API 2.5.2+1.21.3**: Required by ModMenu 13.0.3
 
 ### **Recent Updates (Latest Version)**
-- 🚀 **Enhanced ModMenu Integration**: Beautiful config screen with detailed descriptions
+- 🚀 **Enhanced Catch Announcement System**: Completely redesigned with comprehensive item detection
+- ⚡ **2x Faster Announcements**: Reduced delay from 0.5s to 0.25s for instant feedback
+- 🎨 **Beautiful Colored Messages**: Fish (green), Treasure (gold), Junk (gray) with proper formatting
+- 🔍 **Smart Inventory Tracking**: Only monitors fishing loot, prevents false announcements
+- 🎵 **Treasure Sound Effects**: Special level-up sound for valuable catches (enchanted books, saddles, etc.)
+- 🐛 **Fixed Unicode Issues**: Removed problematic VS16 characters from welcome message
+- 📋 **Comprehensive Loot Detection**: All Minecraft fishing items including jungle-specific items
+- 🔧 **Enhanced NBT Comparison**: Properly detects enchanted items vs regular items
+- 🎛️ **Enhanced ModMenu Integration**: Beautiful config screen with detailed descriptions
 - ⚡ **Faster Recasting**: Reduced recast delay from 2 seconds to 1 second (50% faster)
 - 🔊 **Improved Sound System**: Doubled volume with fallback audio methods for better reliability
 - 🎨 **Enhanced HUD Styling**: Modern gradient borders, better transparency, and improved spacing
