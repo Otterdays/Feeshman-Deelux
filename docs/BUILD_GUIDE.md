@@ -21,13 +21,15 @@ minecraft "com.mojang:minecraft:1.21.4"
 mappings "net.fabricmc:yarn:1.21.4+build.1"
 modImplementation "net.fabricmc:fabric-loader:0.16.9"
 modImplementation "net.fabricmc.fabric-api:fabric-api:0.119.3+1.21.4"
+modImplementation "com.terraformersmc:modmenu:13.0.3"
+modImplementation "me.shedaniel.cloth:cloth-config-fabric:15.0.140"
 ```
 
 ## 🔧 Build System Setup
 
 ### Gradle Configuration
 - **Gradle Version**: 8.8 (required for Fabric Loom 1.7.4+)
-- **Fabric Loom**: 1.7.4 (using legacy plugin syntax)
+- **Fabric Loom**: 1.8.13 (latest stable)
 - **Java Compatibility Level**: 21 (required for MC 1.21.4)
 - **Mappings**: Yarn 1.21.4+build.1 (CRITICAL FIX!)
 
