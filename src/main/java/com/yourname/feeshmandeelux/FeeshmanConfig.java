@@ -3,6 +3,8 @@ package com.yourname.feeshmandeelux;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -22,6 +24,8 @@ public class FeeshmanConfig {
     private static float biteAlertVolume = DEFAULT_BITE_ALERT_VOLUME;
     private static boolean autoFishEnabled = DEFAULT_AUTO_FISH_ENABLED;
     
+    private static final Logger LOGGER = LogManager.getLogger("FeeshmanDeelux");
+    
     public static void load() {
         if (!Files.exists(CONFIG_PATH)) {
             save(); // Create default config
@@ -38,9 +42,9 @@ public class FeeshmanConfig {
             // Clamp volume to valid range
             biteAlertVolume = Math.max(0.0f, Math.min(1.0f, biteAlertVolume));
             
-            System.out.println("🎣 Feeshman Deelux: Config loaded successfully");
+            LOGGER.info("🎣 Feeshman Deelux: Config loaded successfully");
         } catch (Exception e) {
-            System.err.println("🎣 Feeshman Deelux: Failed to load config, using defaults: " + e.getMessage());
+            LOGGER.error("🎣 Feeshman Deelux: Failed to load config, using defaults: " + e.getMessage());
             biteAlertVolume = DEFAULT_BITE_ALERT_VOLUME;
             autoFishEnabled = DEFAULT_AUTO_FISH_ENABLED;
         }
@@ -55,10 +59,10 @@ public class FeeshmanConfig {
             Files.createDirectories(CONFIG_PATH.getParent());
             try (OutputStream output = Files.newOutputStream(CONFIG_PATH)) {
                 props.store(output, "Feeshman Deelux Configuration");
-                System.out.println("🎣 Feeshman Deelux: Config saved successfully");
+                LOGGER.info("🎣 Feeshman Deelux: Config saved successfully");
             }
         } catch (Exception e) {
-            System.err.println("🎣 Feeshman Deelux: Failed to save config: " + e.getMessage());
+            LOGGER.error("🎣 Feeshman Deelux: Failed to save config: " + e.getMessage());
         }
     }
     

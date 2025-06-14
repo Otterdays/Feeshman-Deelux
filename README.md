@@ -54,6 +54,7 @@
 - 📝 **Statistics Command**: `/feeshstats` shows session and lifetime fishing data
 - 🏆 **Achievement Toasts**: Milestone notifications (1st, 10th, 25th, 50th, 100th fish, etc.)
 - ⏰ **Session Tracking**: Real-time session time and catch rate monitoring
+- 🏆 **Leaderboard Command**: `/feeshleaderboard` shows top 5 anglers on the client (great for multiplayer bragging!)
 
 ### 🛡️ **Smart Safety Features**
 - 🎒 **Rod Detection**: Automatically pauses when no fishing rod is equipped
@@ -195,6 +196,7 @@ cd feeshman-deelux
 | 🎛️ **ModMenu Integration** | ✅ **Complete** | Professional config screen with sound volume controls |
 | 💾 **Configuration System** | ✅ **Complete** | Persistent settings with auto-save functionality |
 | 🎣 **Command System** | ✅ **Complete** | `/feeshman` help command with colorized interface |
+| 📰 **Pro Logging**: Switched to Log4j2, cleaner debug info | ✅ **Complete** | Improved logging for better debugging |
 
 ### Performance Optimizations
 - **Ultra-Fast Bite Detection**: 0.15-0.6 second response times

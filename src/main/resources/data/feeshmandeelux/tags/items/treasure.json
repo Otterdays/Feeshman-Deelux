@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:enchanted_book",
+    "minecraft:name_tag",
+    "minecraft:saddle",
+    "minecraft:nautilus_shell",
+    "minecraft:bow",
+    "minecraft:fishing_rod"
+  ]
+} 

@@ -38,8 +38,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import net.minecraft.registry.tag.ItemTags;
+import net.minecraft.registry.tag.TagKey;
 
 public class FeeshmanDeeluxClient implements ClientModInitializer {
+
+    private static final Logger LOGGER = LogManager.getLogger("FeeshmanDeelux");
 
     private static KeyBinding toggleKey;
     private boolean autoFishEnabled = false;
@@ -119,12 +125,17 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
         "🏆 \"Master anglers are made, not born.\""
     };
 
+    private static final TagKey<net.minecraft.item.Item> TREASURE_TAG = TagKey.of(net.minecraft.registry.RegistryKeys.ITEM, Identifier.of("feeshmandeelux", "treasure"));
+    private static final TagKey<net.minecraft.item.Item> JUNK_TAG = TagKey.of(net.minecraft.registry.RegistryKeys.ITEM, Identifier.of("feeshmandeelux", "junk"));
+
     @Override
     public void onInitializeClient() {
-        System.out.println("🎣 Feeshman Deelux Initializing!");
+        LOGGER.info("🎣 Feeshman Deelux Initializing!");
 
         // Load configuration
         FeeshmanConfig.load();
+        // Load leaderboard
+        FeeshLeaderboard.load();
 
         // Register sound event
         Registry.register(Registries.SOUND_EVENT, BITE_ALERT_ID, BITE_ALERT_SOUND);
@@ -225,7 +236,7 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
                     humanReactionDelay--;
                     if (humanReactionDelay == 0 && client.player.fishHook != null) {
                         // Time to reel in the fish! Use proper right-click simulation
-                        System.out.println("🎣 Feeshman Deelux: Reeling in fish!");
+                        LOGGER.info("🎣 Feeshman Deelux: Reeling in fish!");
                         
                         // Proper right-click simulation for fishing - reel in the fish
                         client.interactionManager.interactItem(client.player, Hand.MAIN_HAND);
@@ -236,6 +247,9 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
                         
                         // Track biome catch
                         trackBiomeCatch(client);
+                        
+                        // Update leaderboard
+                        FeeshLeaderboard.addCatch(client.player);
                         
                         // Start delayed catch announcement to ensure inventory updates
                         catchAnnouncementDelay = CATCH_ANNOUNCEMENT_DELAY;
@@ -263,7 +277,7 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
                 if (player.getMainHandStack().getItem().toString().contains("fishing_rod")) {
                     if (player.fishHook == null) {
                         // Auto-recast with randomized delay
-                        System.out.println("🎣 Feeshman Deelux: Recasting rod...");
+                        LOGGER.info("🎣 Feeshman Deelux: Recasting rod...");
                         
                         // Proper right-click simulation for casting
                         client.interactionManager.interactItem(player, Hand.MAIN_HAND);
@@ -302,7 +316,7 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
                         
                         // Check if bobber is stuck (less aggressive)
                         if (checkBobberStuck(currentPos)) {
-                            System.out.println("🎣 Feeshman Deelux: Bobber appears stuck, recasting...");
+                            LOGGER.info("🎣 Feeshman Deelux: Bobber appears stuck, recasting...");
                             client.player.sendMessage(Text.literal("§e⚠️ Bobber stuck detected, recasting..."), false);
                             
                             // Force recast
@@ -317,7 +331,7 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
                         
                         if (detectFishBite(bobber, currentPos, currentVelocity)) {
                             // Fish bite detected!
-                            System.out.println("🐟 Feeshman Deelux: Fish bite detected!");
+                            LOGGER.info("🐟 Feeshman Deelux: Fish bite detected!");
                             
                             // Play bite alert sound with enhanced volume
                             if (client.world != null && client.player != null) {
@@ -376,11 +390,20 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
                     })
                 )
             );
+            
+            // /feeshleaderboard command
+            dispatcher.register(ClientCommandManager.literal("feeshleaderboard")
+                .executes(context -> {
+                    showLeaderboard(context.getSource().getPlayer());
+                    return 1;
+                })
+            );
         });
     }
     
     private void renderPolishedHUD(DrawContext context) {
         var client = net.minecraft.client.MinecraftClient.getInstance();
+        if (client == null || client.player == null) return;
         var textRenderer = client.textRenderer;
         
         // Enhanced HUD dimensions and positioning
@@ -631,6 +654,7 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
         player.sendMessage(Text.literal("§a/feeshman §7- §fShow this help message"), false);
         player.sendMessage(Text.literal("§a/feeshstats §7- §fView fishing statistics"), false);
         player.sendMessage(Text.literal("§a/feeshstats biome §7- §fView biome catch breakdown"), false);
+        player.sendMessage(Text.literal("§a/feeshleaderboard §7- §fView leaderboard"), false);
         player.sendMessage(Text.literal(""), false);
         player.sendMessage(Text.literal("§e§lControls:"), false);
         player.sendMessage(Text.literal("§a[O] §7- §fToggle auto-fishing on/off"), false);
@@ -719,35 +743,8 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
     }
     
     private boolean isFishingLoot(ItemStack stack) {
-        // Fish items
-        if (stack.getItem() == Items.COD || stack.getItem() == Items.SALMON || 
-            stack.getItem() == Items.TROPICAL_FISH || stack.getItem() == Items.PUFFERFISH) {
-            return true;
-        }
-        
-        // Treasure items
-        if (stack.getItem() == Items.ENCHANTED_BOOK || stack.getItem() == Items.NAME_TAG ||
-            stack.getItem() == Items.SADDLE || stack.getItem() == Items.NAUTILUS_SHELL ||
-            stack.getItem() == Items.BOW || stack.getItem() == Items.FISHING_ROD) {
-            return true;
-        }
-        
-        // Junk items (expanded list based on Minecraft wiki)
-        if (stack.getItem() == Items.LEATHER_BOOTS || stack.getItem() == Items.LEATHER ||
-            stack.getItem() == Items.BONE || stack.getItem() == Items.STRING ||
-            stack.getItem() == Items.STICK || stack.getItem() == Items.BOWL ||
-            stack.getItem() == Items.ROTTEN_FLESH || stack.getItem() == Items.POTION ||
-            stack.getItem() == Items.TRIPWIRE_HOOK || stack.getItem() == Items.INK_SAC ||
-            stack.getItem() == Items.LILY_PAD) {
-            return true;
-        }
-        
-        // Jungle-specific items
-        if (stack.getItem() == Items.BAMBOO || stack.getItem() == Items.COCOA_BEANS) {
-            return true;
-        }
-        
-        return false;
+        // Use vanilla fish tag and our custom tags
+        return stack.isIn(ItemTags.FISHES) || stack.isIn(TREASURE_TAG) || stack.isIn(JUNK_TAG);
     }
     
     private void announceNewItem(ClientPlayerEntity player, ItemStack stack) {
@@ -766,7 +763,7 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
         // Treasure items are considered special
         return stack.getItem() == Items.ENCHANTED_BOOK || stack.getItem() == Items.NAME_TAG ||
                stack.getItem() == Items.SADDLE || stack.getItem() == Items.NAUTILUS_SHELL ||
-               stack.getItem() == Items.BOW;
+               stack.getItem() == Items.BOW || stack.getItem() == Items.FISHING_ROD;
     }
     
     private String getItemMessage(ItemStack stack, String itemName) {
@@ -942,5 +939,20 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
                 int catches = entry.getValue();
                 player.sendMessage(Text.literal("§7" + biomeName + ": §a" + catches + " fish"), false);
             });
+    }
+
+    private void showLeaderboard(ClientPlayerEntity player) {
+        player.sendMessage(Text.literal("§6§l=== 🏆 Feeshman Leaderboard ==="), false);
+        var top = FeeshLeaderboard.getTop(5);
+        if (top.isEmpty()) {
+            player.sendMessage(Text.literal("§7No data yet. Start fishing to populate the leaderboard!"), false);
+            return;
+        }
+        int rank = 1;
+        for (var entry : top) {
+            String line = String.format("§e#%d §7%s: §a%d fish", rank, entry.getKey(), entry.getValue());
+            player.sendMessage(Text.literal(line), false);
+            rank++;
+        }
     }
 }
