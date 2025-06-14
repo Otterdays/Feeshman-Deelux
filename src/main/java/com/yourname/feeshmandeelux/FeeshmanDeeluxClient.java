@@ -76,7 +76,7 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
 
     // Add delay for catch announcement to ensure inventory updates
     private int catchAnnouncementDelay = 0;
-    private final int CATCH_ANNOUNCEMENT_DELAY = 5; // 0.25 seconds delay (2x faster)
+    private final int CATCH_ANNOUNCEMENT_DELAY = 2; // 0.1 seconds delay (5x faster than before!)
 
     // Welcome message system
     private boolean hasShownWelcomeMessage = false;
@@ -86,7 +86,7 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
     // Session tracking
     private boolean hasWarnedDurability = false;
     private Map<String, Integer> biomeCatchTracker = new HashMap<>();
-    private List<ItemStack> previousInventorySnapshot = new ArrayList<>();
+    private Map<String, Integer> previousInventoryCount = new HashMap<>(); // Track item counts instead of stacks
     private long sessionStartTime = 0;
 
     // Sound volume control removed - using FeeshmanConfig.getBiteAlertVolume() directly
@@ -668,57 +668,48 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
     }
     
     private void takeInventorySnapshot(ClientPlayerEntity player) {
-        previousInventorySnapshot.clear();
+        previousInventoryCount.clear();
         for (int i = 0; i < player.getInventory().size(); i++) {
             ItemStack stack = player.getInventory().getStack(i);
             if (!stack.isEmpty() && isFishingLoot(stack)) {
-                previousInventorySnapshot.add(stack.copy());
+                previousInventoryCount.put(stack.getItem().toString(), previousInventoryCount.getOrDefault(stack.getItem().toString(), 0) + stack.getCount());
             }
         }
     }
     
     private void checkForNewItems(ClientPlayerEntity player) {
         // Only check if we have a previous snapshot to compare against
-        if (previousInventorySnapshot.isEmpty()) {
+        if (previousInventoryCount.isEmpty()) {
             takeInventorySnapshot(player);
             return;
         }
         
-        // Get current inventory efficiently
-        List<ItemStack> currentInventory = new ArrayList<>();
+        // Get current inventory counts efficiently
+        Map<String, Integer> currentInventoryCount = new HashMap<>();
+        Map<String, ItemStack> itemStackMap = new HashMap<>(); // Keep reference to ItemStack for announcements
+        
         for (int i = 0; i < player.getInventory().size(); i++) {
             ItemStack stack = player.getInventory().getStack(i);
             if (!stack.isEmpty() && isFishingLoot(stack)) {
-                currentInventory.add(stack.copy());
+                String itemKey = stack.getItem().toString();
+                currentInventoryCount.put(itemKey, currentInventoryCount.getOrDefault(itemKey, 0) + stack.getCount());
+                itemStackMap.put(itemKey, stack); // Keep one reference for announcements
             }
         }
         
-        // Find new items by comparing with previous snapshot
-        for (ItemStack currentStack : currentInventory) {
-            boolean foundInPrevious = false;
-            int currentCount = currentStack.getCount();
+        // Find new items by comparing counts
+        for (Map.Entry<String, Integer> entry : currentInventoryCount.entrySet()) {
+            String itemKey = entry.getKey();
+            int currentCount = entry.getValue();
+            int previousCount = previousInventoryCount.getOrDefault(itemKey, 0);
             
-            // Check if this item existed before and in what quantity
-            for (ItemStack previousStack : previousInventorySnapshot) {
-                if (ItemStack.areItemsEqual(currentStack, previousStack) && 
-                    ItemStack.areEqual(currentStack, previousStack)) { // Check NBT too for enchanted items
-                    
-                    if (currentStack.getCount() > previousStack.getCount()) {
-                        // Item count increased, announce the difference
-                        int newItems = currentStack.getCount() - previousStack.getCount();
-                        for (int i = 0; i < newItems; i++) {
-                            announceNewItem(player, currentStack);
-                        }
-                    }
-                    foundInPrevious = true;
-                    break;
-                }
-            }
-            
-            // If item wasn't found in previous inventory, it's completely new
-            if (!foundInPrevious) {
-                for (int i = 0; i < currentCount; i++) {
-                    announceNewItem(player, currentStack);
+            if (currentCount > previousCount) {
+                // Item count increased, announce only the new items
+                int newItems = currentCount - previousCount;
+                ItemStack stackToAnnounce = itemStackMap.get(itemKey);
+                
+                for (int i = 0; i < newItems; i++) {
+                    announceNewItem(player, stackToAnnounce);
                 }
             }
         }

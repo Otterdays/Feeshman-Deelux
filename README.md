@@ -37,7 +37,7 @@
   - 🏆 **Treasure** (Gold theme): "§6📚✨ §l§6TREASURE! §e§lAncient knowledge surfaces: §fEnchanted Book§6!"
   - 🗑️ **Junk** (Gray theme): "§8🦴 §7Skeletal remains: §fBone§7!"
   - 🌿 **Jungle items** (Special colors): Bamboo, Cocoa Beans with unique styling
-  - ⚡ **2x Faster announcements**: 0.25-second delay (was 0.5s) for instant feedback
+  - ⚡ **5x Faster announcements**: 0.1-second delay (was 0.5s) for lightning-fast feedback
   - 🔍 **Smart detection**: Only tracks fishing loot, prevents false announcements
   - 🎵 **Special sound effects**: Level-up sound for treasure catches
 
@@ -227,8 +227,11 @@ If you see import errors like `"The import com.terraformersmc cannot be resolved
 - ✅ **Text Placeholder API 2.5.2+1.21.3**: Required by ModMenu 13.0.3
 
 ### **Recent Updates (Latest Version)**
-- 🚀 **Enhanced Catch Announcement System**: Completely redesigned with comprehensive item detection
-- ⚡ **2x Faster Announcements**: Reduced delay from 0.5s to 0.25s for instant feedback
+- 🚨 **CRITICAL BUG FIX**: Fixed catch announcement spam bug that was announcing every item in stack instead of just new catches
+- ⚡ **5x Faster Announcements**: Reduced delay from 0.25s to 0.1s for lightning-fast feedback
+- 🎯 **Perfect Catch Detection**: Now correctly announces only newly caught items (1 fish = 1 announcement, not 16!)
+- 🔧 **Rewritten Inventory System**: Completely redesigned item tracking using count-based comparison instead of ItemStack comparison
+- 🚀 **Enhanced Catch Announcement System**: Comprehensive item detection with beautiful colored messages
 - 🎨 **Beautiful Colored Messages**: Fish (green), Treasure (gold), Junk (gray) with proper formatting
 - 🔍 **Smart Inventory Tracking**: Only monitors fishing loot, prevents false announcements
 - 🎵 **Treasure Sound Effects**: Special level-up sound for valuable catches (enchanted books, saddles, etc.)
