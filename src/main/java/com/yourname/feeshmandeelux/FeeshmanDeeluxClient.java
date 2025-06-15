@@ -37,7 +37,7 @@ import java.util.Random;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
-import java.util.ArrayList;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import net.minecraft.registry.tag.ItemTags;
@@ -148,7 +148,9 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
         ));
 
         // Register enhanced HUD renderer
-        HudRenderCallback.EVENT.register((context, tickCounter) -> {
+        @SuppressWarnings("deprecation")
+        var hudCallback = HudRenderCallback.EVENT;
+        hudCallback.register((context, tickCounter) -> {
             if (autoFishEnabled) {
                 renderPolishedHUD(context);
             }
@@ -409,50 +411,66 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
         // Enhanced HUD dimensions and positioning
         int hudX = 4;
         int hudY = 4;
-        int hudWidth = 170; // Increased width
-        int hudHeight = 120; // Increased height for more info
+        int hudWidth = 190; // Increased width for more content
+        int hudHeight = 140; // Increased height for more info
         
-        // Modern gradient colors with better transparency
-        int outerBorderColor = 0xDD000000; // Darker outer border
-        int innerBorderColor = 0xBB333333; // Lighter inner border
-        int titleBgColor = 0xEE0066AA; // Stronger blue gradient
-        int contentBgColor = 0xAA111111; // Darker content background
-        int accentColor = 0xFF00CCFF; // Bright cyan accent
+        // Smooth color transitions for subtle effects
+        long time = System.currentTimeMillis();
+        float colorCycle = (float) (Math.sin(time * 0.001) * 0.5 + 0.5); // Very slow, smooth transition
+        float pulse = (float) (Math.sin(time * 0.002) * 0.05 + 0.95); // Very subtle pulsing effect
         
-        // Draw layered border effect
+        // Modern gradient colors with smooth transitions
+        int outerBorderColor = 0xEE000000; // Darker outer border
+        int innerBorderColor = 0xCC444444; // Lighter inner border
+        
+        // Smooth color transitions between blue, cyan, and purple
+        int red = (int) (102 + colorCycle * 50); // 102-152
+        int green = (int) (170 + colorCycle * 85); // 170-255
+        int blue = 255; // Keep blue at max
+        int titleBgColor = (0xEE << 24) | (red << 16) | (green << 8) | blue;
+        
+        int contentBgColor = 0xBB0F0F0F; // Darker content background
+        int accentColor = 0xFF00DDFF; // Brighter cyan accent
+        int glowColor = (int) (0x2200DDFF * pulse); // Very subtle glow effect
+        
+        // Draw enhanced layered border effect with glow
+        context.fill(hudX - 4, hudY - 4, hudX + hudWidth + 4, hudY + hudHeight + 4, glowColor);
         context.fill(hudX - 3, hudY - 3, hudX + hudWidth + 3, hudY + hudHeight + 3, outerBorderColor);
         context.fill(hudX - 2, hudY - 2, hudX + hudWidth + 2, hudY + hudHeight + 2, innerBorderColor);
         context.fill(hudX - 1, hudY - 1, hudX + hudWidth + 1, hudY + hudHeight + 1, accentColor);
         context.fill(hudX, hudY, hudX + hudWidth, hudY + hudHeight, contentBgColor);
         
-        // Draw title background with gradient effect
-        context.fill(hudX, hudY, hudX + hudWidth, hudY + 16, titleBgColor);
-        context.fill(hudX, hudY + 14, hudX + hudWidth, hudY + 16, accentColor); // Accent line
+        // Draw title background with enhanced gradient effect
+        context.fill(hudX, hudY, hudX + hudWidth, hudY + 18, titleBgColor);
+        context.fill(hudX, hudY + 16, hudX + hudWidth, hudY + 18, accentColor); // Accent line
         
-        // Title header with enhanced styling
+        // Enhanced title header with glow effect
         String title = "§l§f🎣 Feeshman Deelux 🎣";
         int titleWidth = textRenderer.getWidth("🎣 Feeshman Deelux 🎣");
         int titleX = hudX + (hudWidth - titleWidth) / 2;
-        context.drawText(textRenderer, title, titleX, hudY + 4, 0xFFFFFF, true);
+        // Draw title with subtle glow
+        context.drawText(textRenderer, title, titleX + 1, hudY + 5, 0x4400DDFF, false); // Glow
+        context.drawText(textRenderer, title, titleX, hudY + 4, 0xFFFFFF, true); // Main text
         
         // Content area starts below title
-        int contentY = hudY + 20;
-        int lineHeight = 12; // Increased line height for better spacing
+        int contentY = hudY + 22;
+        int lineHeight = 13; // Optimized line height
         int currentLine = 0;
         
-        // Main fish counter with enhanced display
+        // Enhanced fish counter with animation
         String fishText = "🐟 " + totalFishCaught + " fish";
-        context.drawText(textRenderer, fishText, hudX + 4, contentY + (currentLine * lineHeight), 0x55FF55, true);
+        int fishColor = totalFishCaught > 0 ? (int) (0x55FF55 + (pulse * 0x002200)) : 0x55FF55;
+        context.drawText(textRenderer, fishText, hudX + 6, contentY + (currentLine * lineHeight), fishColor, true);
         currentLine++;
         
-        // Session time
+        // Enhanced session time with better formatting
         int sessionMinutes = fishingSessionTicks / 1200;
         int sessionSeconds = (fishingSessionTicks % 1200) / 20;
-        String timeText = String.format("⏰ %02d:%02d", sessionMinutes, sessionSeconds);
-        context.drawText(textRenderer, timeText, hudX + 4, contentY + (currentLine * lineHeight), 0xFFFF55, true);
+        String timeText = String.format("⏰ %02d:%02d session", sessionMinutes, sessionSeconds);
+        context.drawText(textRenderer, timeText, hudX + 6, contentY + (currentLine * lineHeight), 0xFFFF55, true);
         currentLine++;
         
-        // Rod durability
+        // Enhanced rod durability with visual bar
         if (client.player != null) {
             ItemStack rod = client.player.getMainHandStack();
             if (rod.getItem() == Items.FISHING_ROD) {
@@ -461,23 +479,36 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
                 int remainingUses = maxDurability - currentDamage;
                 int durabilityPercent = (remainingUses * 100) / maxDurability;
                 
-                String durabilityText = "🔧 " + remainingUses + " (" + durabilityPercent + "%)";
+                String durabilityText = "🔧 " + remainingUses + " uses (" + durabilityPercent + "%)";
                 int color = durabilityPercent > 50 ? 0x55FF55 : durabilityPercent > 20 ? 0xFFFF55 : 0xFF5555;
-                context.drawText(textRenderer, durabilityText, hudX + 4, contentY + (currentLine * lineHeight), color, true);
+                context.drawText(textRenderer, durabilityText, hudX + 6, contentY + (currentLine * lineHeight), color, true);
+                
+                // Draw durability bar
+                int barWidth = 80;
+                int barHeight = 3;
+                int barX = hudX + hudWidth - barWidth - 6;
+                int barY = contentY + (currentLine * lineHeight) + 2;
+                
+                // Background bar
+                context.fill(barX, barY, barX + barWidth, barY + barHeight, 0x88333333);
+                // Durability bar
+                int fillWidth = (barWidth * durabilityPercent) / 100;
+                context.fill(barX, barY, barX + fillWidth, barY + barHeight, color);
+                
                 currentLine++;
             }
         }
         
-        // Weather and time indicators
+        // Enhanced weather and time indicators
         if (client.player != null && client.world != null) {
-            // Weather indicator
+            // Weather indicator with enhanced styling
             String weatherIcon = client.world.isRaining() ? (client.world.isThundering() ? "⛈️" : "🌧️") : "☀️";
             String weatherText = weatherIcon + " " + (client.world.isRaining() ? "Rainy" : "Clear");
             int weatherColor = client.world.isRaining() ? 0x5599FF : 0xFFDD55;
-            context.drawText(textRenderer, weatherText, hudX + 4, contentY + (currentLine * lineHeight), weatherColor, true);
+            context.drawText(textRenderer, weatherText, hudX + 6, contentY + (currentLine * lineHeight), weatherColor, true);
             currentLine++;
             
-            // Day/Night and moon phase indicator
+            // Enhanced day/night and moon phase indicator
             long timeOfDay = client.world.getTimeOfDay() % 24000;
             boolean isDay = timeOfDay < 12000;
             String timeIcon = isDay ? "☀️" : "🌙";
@@ -490,36 +521,59 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
             }
             
             int timeColor = isDay ? 0xFFDD55 : 0xCCCCFF;
-            context.drawText(textRenderer, dayNightText, hudX + 4, contentY + (currentLine * lineHeight), timeColor, true);
+            context.drawText(textRenderer, dayNightText, hudX + 6, contentY + (currentLine * lineHeight), timeColor, true);
             currentLine++;
         }
         
-        // Current biome
+        // Enhanced current biome with color coding
         if (client.player != null && client.world != null) {
             RegistryEntry<Biome> biome = client.world.getBiome(client.player.getBlockPos());
             String biomeName = biome.getKey().map(key -> key.getValue().toString()).orElse("unknown");
             biomeName = biomeName.replace("minecraft:", "").replace("_", " ");
             String biomeText = "🗺️ " + capitalizeWords(biomeName);
-            context.drawText(textRenderer, biomeText, hudX + 4, contentY + (currentLine * lineHeight), 0x55FFFF, true);
+            
+            // Color code biomes
+            int biomeColor = 0x55FFFF; // Default cyan
+            if (biomeName.contains("ocean")) biomeColor = 0x4488FF;
+            else if (biomeName.contains("river")) biomeColor = 0x66AAFF;
+            else if (biomeName.contains("swamp")) biomeColor = 0x669966;
+            else if (biomeName.contains("jungle")) biomeColor = 0x44AA44;
+            
+            context.drawText(textRenderer, biomeText, hudX + 6, contentY + (currentLine * lineHeight), biomeColor, true);
             currentLine++;
         }
         
-        // Catch rate indicator
+        // Enhanced catch rate indicator with efficiency rating
         if (fishingSessionTicks > 0) {
             float catchRate = (float) totalFishCaught / (fishingSessionTicks / 1200.0f); // fish per minute
-            String rateText = String.format("📈 %.1f/min", Math.max(0, catchRate));
-            context.drawText(textRenderer, rateText, hudX + 4, contentY + (currentLine * lineHeight), 0xAAFF55, true);
+            String efficiency = catchRate > 2.0f ? "Excellent" : catchRate > 1.0f ? "Good" : catchRate > 0.5f ? "Fair" : "Slow";
+            String rateText = String.format("📈 %.1f/min (%s)", Math.max(0, catchRate), efficiency);
+            int rateColor = catchRate > 2.0f ? 0x55FF55 : catchRate > 1.0f ? 0xAAFF55 : catchRate > 0.5f ? 0xFFFF55 : 0xFF8855;
+            context.drawText(textRenderer, rateText, hudX + 6, contentY + (currentLine * lineHeight), rateColor, true);
             currentLine++;
         }
         
-        // Status indicator with enhanced info
+        // Enhanced status indicator with animated colors
         String statusText = "🎣 Active";
+        int statusColor = 0x55FF55;
         if (humanReactionDelay > 0) {
-            statusText = "🐟 Bite!";
+            statusText = "🐟 Bite Detected!";
+            statusColor = (int) (0xFF5555 + (pulse * 0x004400)); // Animated red
         } else if (recastDelayTicks > 0) {
             statusText = "🔄 Recasting...";
+            statusColor = 0xFFAA55;
+        } else if (biteDetectionCooldown > 0) {
+            statusText = "⏳ Waiting...";
+            statusColor = 0xAAAA55;
         }
-        context.drawText(textRenderer, statusText, hudX + 4, contentY + (currentLine * lineHeight), 0x55FF55, true);
+        context.drawText(textRenderer, statusText, hudX + 6, contentY + (currentLine * lineHeight), statusColor, true);
+        currentLine++;
+        
+        // Add lifetime stats if available
+        if (lifetimeFishCaught > 0) {
+            String lifetimeText = "🏆 " + lifetimeFishCaught + " lifetime";
+            context.drawText(textRenderer, lifetimeText, hudX + 6, contentY + (currentLine * lineHeight), 0xFFD700, true);
+        }
     }
     
     private String capitalizeWords(String str) {
@@ -743,8 +797,42 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
     }
     
     private boolean isFishingLoot(ItemStack stack) {
-        // Use vanilla fish tag and our custom tags
-        return stack.isIn(ItemTags.FISHES) || stack.isIn(TREASURE_TAG) || stack.isIn(JUNK_TAG);
+        // Comprehensive fishing loot detection
+        // First check vanilla fish tag
+        if (stack.isIn(ItemTags.FISHES)) {
+            return true;
+        }
+        
+        // Check our custom tags
+        if (stack.isIn(TREASURE_TAG) || stack.isIn(JUNK_TAG)) {
+            return true;
+        }
+        
+        // Fallback: Manual check for all known fishing loot items
+        // This ensures compatibility even if tags aren't working
+        return stack.getItem() == Items.COD ||
+               stack.getItem() == Items.SALMON ||
+               stack.getItem() == Items.TROPICAL_FISH ||
+               stack.getItem() == Items.PUFFERFISH ||
+               stack.getItem() == Items.ENCHANTED_BOOK ||
+               stack.getItem() == Items.NAME_TAG ||
+               stack.getItem() == Items.SADDLE ||
+               stack.getItem() == Items.NAUTILUS_SHELL ||
+               stack.getItem() == Items.BOW ||
+               stack.getItem() == Items.FISHING_ROD ||
+               stack.getItem() == Items.LEATHER_BOOTS ||
+               stack.getItem() == Items.LEATHER ||
+               stack.getItem() == Items.BONE ||
+               stack.getItem() == Items.STRING ||
+               stack.getItem() == Items.STICK ||
+               stack.getItem() == Items.BOWL ||
+               stack.getItem() == Items.ROTTEN_FLESH ||
+               stack.getItem() == Items.POTION ||
+               stack.getItem() == Items.TRIPWIRE_HOOK ||
+               stack.getItem() == Items.INK_SAC ||
+               stack.getItem() == Items.LILY_PAD ||
+               stack.getItem() == Items.BAMBOO ||
+               stack.getItem() == Items.COCOA_BEANS;
     }
     
     private void announceNewItem(ClientPlayerEntity player, ItemStack stack) {

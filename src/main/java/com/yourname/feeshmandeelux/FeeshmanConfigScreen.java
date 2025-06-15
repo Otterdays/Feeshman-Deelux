@@ -8,12 +8,14 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.SliderWidget;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import com.yourname.feeshmandeelux.FeeshmanAchievementsScreen;
 
 @Environment(EnvType.CLIENT)
 public class FeeshmanConfigScreen extends Screen {
     private final Screen parent;
     private SliderWidget volumeSlider;
     private ButtonWidget enabledButton;
+    private ButtonWidget achievementsButton;
     private ButtonWidget doneButton;
     
     // Config values
@@ -62,15 +64,27 @@ public class FeeshmanConfigScreen extends Screen {
             .dimensions(centerX - 100, startY + 40, 200, 20)
             .build();
         
+        // Achievements viewer button
+        this.achievementsButton = ButtonWidget.builder(
+            Text.literal("🏆 View Achievements & Milestones"),
+            button -> {
+                if (this.client != null) {
+                    this.client.setScreen(new FeeshmanAchievementsScreen(this));
+                }
+            })
+            .dimensions(centerX - 100, startY + 70, 200, 20)
+            .build();
+        
         // Done button
         this.doneButton = ButtonWidget.builder(Text.literal("Done"), button -> {
             this.close();
         })
-        .dimensions(centerX - 50, startY + 80, 100, 20)
+        .dimensions(centerX - 50, startY + 100, 100, 20)
         .build();
         
         addDrawableChild(volumeSlider);
         addDrawableChild(enabledButton);
+        addDrawableChild(achievementsButton);
         addDrawableChild(doneButton);
     }
     

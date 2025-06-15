@@ -21,7 +21,7 @@
 - 🔧 **Smart Bobber Management**: Detects stuck bobbers AND mob collisions (squids, drowned, zombies, skeletons)
 
 ### 🎨 **Enhanced Visual Experience**
-- 📊 **Ultra-Enhanced HUD Interface**: Professional bordered panel with animated "🎣 Feeshman! 🎣" title
+- 📊 **Ultra-Enhanced HUD Interface**: Professional bordered panel with smooth color-transitioning "🎣 Feeshman Deelux 🎣" title
 - 🌈 **Comprehensive Information Display**: Live multi-element panel with advanced styling:
   - 🐟 Fish count with "fish" label (green)
   - ⏰ Session timer in MM:SS format (yellow)
@@ -31,6 +31,11 @@
   - 🗺️ Current biome with proper capitalization (cyan)
   - 📈 **Live catch rate** (fish per minute calculation)
   - 🎣 **Dynamic status** (Active, Bite!, Recasting...)
+  - 🎨 **Smooth Color Transitions**: Header smoothly cycles between blue, cyan, and purple
+- 🏆 **Achievement Viewer**: Beautiful in-game achievements screen accessible via ModMenu
+  - ✅ **Enhanced Visual Design**: Clear red/green completion status with progress counters
+  - 📊 **Progress Tracking**: Shows (current/required) for all achievements
+  - 🎯 **10 Different Achievements**: Session milestones, lifetime goals, and exploration targets
 - 💬 **Rich Chat Messages**: Colorful, informative status updates and notifications
 - 🎭 **Enhanced Item Announcements**: **COMPLETELY REDESIGNED** with beautiful colors and instant detection:
   - 🐟 **Fish** (Green theme): "§a🐟 §l§aFresh cod caught: §fRaw Cod§a!"
@@ -52,7 +57,11 @@
 ### 📈 **Statistics & Tracking**
 - 🗺️ **Biome Catch Tracker**: Tracks fish caught per biome with `/feeshstats biome` command
 - 📝 **Statistics Command**: `/feeshstats` shows session and lifetime fishing data
-- 🏆 **Achievement Toasts**: Milestone notifications (1st, 10th, 25th, 50th, 100th fish, etc.)
+- 🏆 **Achievement System**: Complete milestone tracking with beautiful in-game viewer
+  - 🎯 **10 Unique Achievements**: From "First Cast" to "Angling Royalty" (10,000 fish!)
+  - 📊 **Progress Tracking**: Visual progress bars and (current/required) counters
+  - 🎨 **Enhanced UI**: Red/green completion status with clear visual feedback
+  - 🏆 **Achievement Toasts**: Milestone notifications (1st, 10th, 25th, 50th, 100th fish, etc.)
 - ⏰ **Session Tracking**: Real-time session time and catch rate monitoring
 - 🏆 **Leaderboard Command**: `/feeshleaderboard` shows top 5 anglers on the client (great for multiplayer bragging!)
 
@@ -94,6 +103,20 @@ Our [**Ultimate Feature Roadmap**](suggestions.md) includes incredible features 
 - 🗃️ **Fish Museum Builder** - Virtual aquarium showcase
 
 *See [suggestions.md](suggestions.md) for the complete list of 45+ planned features!*
+
+## 📋 **Recent Updates & Improvements**
+
+### 🎨 **Visual & UI Enhancements**
+- ✅ **Smooth HUD Animations**: Fixed crazy fast flashing header, now smoothly transitions between colors
+- 🏆 **Enhanced Achievement Viewer**: Improved visual clarity with better contrast and red/green completion status
+- 📊 **Progress Counter Display**: All achievements now show (current/required) progress tracking
+- 🎨 **Anti-Blur Technology**: Fixed blurry achievement menu with solid backgrounds and enhanced contrast
+
+### 🔧 **Code Quality & Performance**
+- ✅ **Linter Cleanup**: Resolved all Java linter warnings for cleaner, more maintainable code
+- 🚀 **Performance Optimizations**: Enhanced fishing loot detection with 3-layer bulletproof system
+- 🎯 **Enhanced Catch Announcements**: Fixed timing issues and improved detection accuracy
+- 📝 **Clean Production Code**: Removed debug logging for optimal performance
 
 ## 📋 **Prerequisites**
 
@@ -244,7 +267,7 @@ If you see import errors like `"The import com.terraformersmc cannot be resolved
 - ⚡ **Faster Recasting**: Reduced recast delay from 2 seconds to 1 second (50% faster)
 - 🔊 **Improved Sound System**: Doubled volume with fallback audio methods for better reliability
 - 🎨 **Enhanced HUD Styling**: Modern gradient borders, better transparency, and improved spacing
-- 🧹 **Code Cleanup**: Removed unused fields and improved structure
+- 🧹 **Code Cleanup**: Removed unused imports and suppressed deprecation warnings for better code quality
 - 📝 **Better Documentation**: Enhanced mod description and feature highlights
 
 ### **Build Verification**
