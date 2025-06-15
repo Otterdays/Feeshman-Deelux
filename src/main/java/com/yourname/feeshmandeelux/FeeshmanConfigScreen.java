@@ -90,8 +90,8 @@ public class FeeshmanConfigScreen extends Screen {
     
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        // Draw background
-        this.renderBackground(context, mouseX, mouseY, delta);
+        // Draw solid background to prevent blur - NO renderBackground call
+        context.fill(0, 0, this.width, this.height, 0xE0101010);
         
         // Draw enhanced title with emoji
         context.drawCenteredTextWithShadow(this.textRenderer, 
@@ -123,8 +123,11 @@ public class FeeshmanConfigScreen extends Screen {
     
     @Override
     public void close() {
+        // Safely close the screen with null checks
         if (this.client != null) {
             this.client.setScreen(this.parent);
+        } else {
+            super.close();
         }
     }
     

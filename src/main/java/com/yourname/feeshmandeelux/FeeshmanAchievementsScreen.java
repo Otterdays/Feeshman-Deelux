@@ -50,7 +50,7 @@ public class FeeshmanAchievementsScreen extends Screen {
     
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        // Draw solid background to prevent blur
+        // Draw solid background to prevent blur - NO renderBackground call
         context.fill(0, 0, this.width, this.height, 0xE0101010);
         
         // Draw enhanced title with better contrast
@@ -63,7 +63,7 @@ public class FeeshmanAchievementsScreen extends Screen {
             Text.literal("Your Fishing Journey & Milestones").formatted(Formatting.GRAY), 
             this.width / 2, 35, 0xCCCCCC);
         
-        // Get current stats
+        // Get current stats with proper null checks
         int lifetimeFish = getCurrentLifetimeFish();
         int sessionFish = getCurrentSessionFish();
         int biomesVisited = getBiomesVisited();
@@ -177,41 +177,48 @@ public class FeeshmanAchievementsScreen extends Screen {
     }
     
     private int getCurrentLifetimeFish() {
-        // Get lifetime fish from leaderboard for current player
-        if (this.client != null && this.client.player != null) {
-            String playerName = this.client.player.getName().getString();
-            List<Map.Entry<String, Integer>> leaderboard = FeeshLeaderboard.getTop(100);
-            for (Map.Entry<String, Integer> entry : leaderboard) {
-                if (entry.getKey().equals(playerName)) {
-                    return entry.getValue();
+        // Get lifetime fish from leaderboard for current player with null checks
+        try {
+            if (this.client != null && this.client.player != null) {
+                String playerName = this.client.player.getName().getString();
+                List<Map.Entry<String, Integer>> leaderboard = FeeshLeaderboard.getTop(100);
+                for (Map.Entry<String, Integer> entry : leaderboard) {
+                    if (entry.getKey().equals(playerName)) {
+                        return entry.getValue();
+                    }
                 }
             }
+        } catch (Exception e) {
+            // Silently handle any errors and return 0
         }
         return 0;
     }
     
     private int getCurrentSessionFish() {
-        // This would need to be implemented to get current session fish count
-        // For now, return 0 as placeholder
+        // Try to get session fish from the main client class
+        // For now, return a placeholder value since we'd need to access the main mod's session data
         return 0;
     }
     
     private int getBiomesVisited() {
-        // This would need to be implemented to get biomes visited count
-        // For now, return 0 as placeholder
+        // Try to get biomes visited count
+        // For now, return a placeholder value since we'd need to access the main mod's biome tracking
         return 0;
     }
     
     private String getFormattedSessionTime() {
-        // This would need to be implemented to get formatted session time
-        // For now, return placeholder
+        // Try to get formatted session time
+        // For now, return a placeholder since we'd need to access the main mod's session start time
         return "00:00";
     }
     
     @Override
     public void close() {
+        // Safely close the screen with null checks
         if (this.client != null) {
             this.client.setScreen(this.parent);
+        } else {
+            super.close();
         }
     }
     

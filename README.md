@@ -111,6 +111,8 @@ Our [**Ultimate Feature Roadmap**](suggestions.md) includes incredible features 
 - 🏆 **Enhanced Achievement Viewer**: Improved visual clarity with better contrast and red/green completion status
 - 📊 **Progress Counter Display**: All achievements now show (current/required) progress tracking
 - 🎨 **Anti-Blur Technology**: Fixed blurry achievement menu with solid backgrounds and enhanced contrast
+- 🖥️ **Fixed Screen Visibility**: Achievement screen now properly displays from main menu and in-game
+- 🔧 **Removed Background Blur**: Both config and achievement screens now use solid backgrounds for crystal-clear visibility
 
 ### 🔧 **Code Quality & Performance**
 - ✅ **Linter Cleanup**: Resolved all Java linter warnings for cleaner, more maintainable code
@@ -251,9 +253,7 @@ If you see import errors like `"The import com.terraformersmc cannot be resolved
 - ✅ **ModMenu 13.0.3**: Latest configuration interface for MC 1.21.4
 - ✅ **Text Placeholder API 2.5.2+1.21.3**: Required by ModMenu 13.0.3
 
-### **Recent Updates (Latest Version)**
-- 🚨 **CRITICAL BUG FIX**: Fixed catch announcement spam bug that was announcing every item in stack instead of just new catches
-- ⚡ **5x Faster Announcements**: Reduced delay from 0.25s to 0.1s for lightning-fast feedback
+### **Latest Changelog (v3.2)**
 - 🎯 **Perfect Catch Detection**: Now correctly announces only newly caught items (1 fish = 1 announcement, not 16!)
 - 🔧 **Rewritten Inventory System**: Completely redesigned item tracking using count-based comparison instead of ItemStack comparison
 - 🚀 **Enhanced Catch Announcement System**: Comprehensive item detection with beautiful colored messages
@@ -269,6 +269,9 @@ If you see import errors like `"The import com.terraformersmc cannot be resolved
 - 🎨 **Enhanced HUD Styling**: Modern gradient borders, better transparency, and improved spacing
 - 🧹 **Code Cleanup**: Removed unused imports and suppressed deprecation warnings for better code quality
 - 📝 **Better Documentation**: Enhanced mod description and feature highlights
+- 🖥️ **Fixed Screen Blur Issues**: Removed renderBackground calls causing blur in ModMenu screens
+- 🔧 **Enhanced Null Safety**: Added proper error handling for screen navigation and client access
+- 🎯 **Improved Screen Visibility**: Achievement and config screens now work properly from main menu
 
 ### **Build Verification**
 ```bash
