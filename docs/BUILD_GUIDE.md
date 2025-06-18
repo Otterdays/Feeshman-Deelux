@@ -8,21 +8,21 @@
 ## 📋 Project Requirements
 
 ### Java & Minecraft Versions
-- **Minecraft Version**: 1.21.4
-- **Required Java Version**: Java 21 (Minecraft 1.21.4 requirement)
+- **Minecraft Version**: 1.21.6
+- **Required Java Version**: Java 21 (Minecraft 1.21.6 requirement)
 - **Current System Java**: Java 21.0.6 ✅ (Compatible)
-- **Fabric Loader**: 0.16.9
-- **Fabric API**: 0.119.3+1.21.4
-- **Gradle Version**: 8.8+ (Fabric Loom 1.7.4+ requirement)
+- **Fabric Loader**: 0.16.14
+- **Fabric API**: 0.127.0+1.21.6
+- **Gradle Version**: 8.12+ (Fabric Loom 1.10.5+ requirement)
 
 ### Key Dependencies
 ```gradle
-minecraft "com.mojang:minecraft:1.21.4"
-mappings "net.fabricmc:yarn:1.21.4+build.1"
-modImplementation "net.fabricmc:fabric-loader:0.16.9"
-modImplementation "net.fabricmc.fabric-api:fabric-api:0.119.3+1.21.4"
-modImplementation "com.terraformersmc:modmenu:13.0.3"
-modImplementation "me.shedaniel.cloth:cloth-config-fabric:15.0.140"
+minecraft "com.mojang:minecraft:1.21.6"
+mappings "net.fabricmc:yarn:1.21.6+build.3"
+modImplementation "net.fabricmc:fabric-loader:0.16.14"
+modImplementation "net.fabricmc.fabric-api:fabric-api:0.127.0+1.21.6"
+modImplementation "com.terraformersmc:modmenu:13.0.4"
+modImplementation "me.shedaniel.cloth:cloth-config-fabric:15.0.145"
 ```
 
 ## 🔧 Build System Setup
