@@ -99,30 +99,30 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
 
     // Lucky catch compliments
     private final String[] LUCKY_COMPLIMENTS = {
-        "🌟 The fishing gods smile upon you!",
-        "🔥 Legendary angling skills on display!",
-        "⚡ Lightning reflexes secure the prize!",
-        "🎯 Precision fishing mastery achieved!",
-        "🌊 The ocean yields its secrets!",
-        "💫 Cosmic fishing luck activated!",
-        "🏆 Hall of Fame worthy catch!",
-        "🎪 Spectacular fishing performance!",
-        "🌈 Rainbow luck shines down!",
-        "⭐ Stellar fishing technique!"
+        "The fishing gods smile upon you!",
+        "Legendary angling skills on display!",
+        "Lightning reflexes secure the prize!",
+        "Precision fishing mastery achieved!",
+        "The ocean yields its secrets!",
+        "Cosmic fishing luck activated!",
+        "Hall of Fame worthy catch!",
+        "Spectacular fishing performance!",
+        "Rainbow luck shines down!",
+        "Stellar fishing technique!"
     };
 
     // Fishing quotes
     private final String[] FISHING_QUOTES = {
-        "🎣 \"Patience is the angler's virtue.\"",
-        "🌊 \"The sea rewards those who wait.\"",
-        "🐟 \"Every cast is a new adventure.\"",
-        "⭐ \"Fortune favors the persistent fisher.\"",
-        "🌅 \"Dawn brings the best catches.\"",
-        "🎯 \"Skill and luck dance together on the water.\"",
-        "💎 \"Treasures hide beneath calm waters.\"",
-        "🌙 \"Night fishing reveals hidden wonders.\"",
-        "🔮 \"The depths hold ancient secrets.\"",
-        "🏆 \"Master anglers are made, not born.\""
+        "\"Patience is the angler's virtue.\"",
+        "\"The sea rewards those who wait.\"",
+        "\"Every cast is a new adventure.\"",
+        "\"Fortune favors the persistent fisher.\"",
+        "\"Dawn brings the best catches.\"",
+        "\"Skill and luck dance together on the water.\"",
+        "\"Treasures hide beneath calm waters.\"",
+        "\"Night fishing reveals hidden wonders.\"",
+        "\"The depths hold ancient secrets.\"",
+        "\"Master anglers are made, not born.\""
     };
 
     private static final TagKey<net.minecraft.item.Item> TREASURE_TAG = TagKey.of(net.minecraft.registry.RegistryKeys.ITEM, Identifier.of("feeshmandeelux", "treasure"));
@@ -130,7 +130,7 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        LOGGER.info("🎣 Feeshman Deelux Initializing!");
+        LOGGER.info("Feeshman Deelux Initializing!");
 
         // Load configuration
         FeeshmanConfig.load();
@@ -185,7 +185,7 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
                 autoFishEnabled = !autoFishEnabled;
                 if (client.player != null) {
                     String status = autoFishEnabled ? "§a§lEnabled" : "§c§lDisabled";
-                    client.player.sendMessage(Text.literal("🎣 §6§lFeeshman Deelux " + status), false);
+                    client.player.sendMessage(Text.literal("§6§lFeeshman Deelux " + status), false);
                     
                     if (autoFishEnabled) {
                         fishingSessionTicks = 0;
@@ -193,7 +193,7 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
                         hasWarnedDurability = false;
                         hasWarnedAboutMob = false;
                         takeInventorySnapshot(client.player);
-                        client.player.sendMessage(Text.literal("§7Press O again to disable. Happy fishing! 🐟"), false);
+                        client.player.sendMessage(Text.literal("§7Press O again to disable. Happy fishing!"), false);
                         
                         // Show random fishing quote on enable
                         if (random.nextFloat() < 0.2f) { // 20% chance
@@ -429,7 +429,7 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
         context.fill(hudX, hudY + 18, hudX + hudWidth, hudY + 20, accentColor); // Accent line
         
         // Enhanced title header with better unicode and styling
-        String title = "⚡ Feeshman Deelux ⚡";
+        String title = "Feeshman Deelux";
         int titleWidth = textRenderer.getWidth(title);
         int titleX = hudX + (hudWidth - titleWidth) / 2;
         // Draw title with elegant styling
@@ -441,7 +441,7 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
         int currentLine = 0;
         
         // Enhanced fish counter with elegant styling
-        String fishText = String.format("🐟 %d fish caught", totalFishCaught);
+        String fishText = String.format("Fish: %d caught", totalFishCaught);
         int fishColor = 0xFF4AE54A; // Elegant bright green
         context.drawText(textRenderer, fishText, hudX + 8, contentY + (currentLine * lineHeight), fishColor, true);
         currentLine++;
@@ -449,7 +449,7 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
         // Enhanced session time with better formatting and unicode
         int sessionMinutes = fishingSessionTicks / 1200;
         int sessionSeconds = (fishingSessionTicks % 1200) / 20;
-        String timeText = String.format("⏰ %02d:%02d session", sessionMinutes, sessionSeconds);
+        String timeText = String.format("Time: %02d:%02d session", sessionMinutes, sessionSeconds);
         context.drawText(textRenderer, timeText, hudX + 8, contentY + (currentLine * lineHeight), 0xFFFFA500, true); // Orange
         currentLine++;
         
@@ -462,7 +462,7 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
                 int remainingUses = maxDurability - currentDamage;
                 int durabilityPercent = (remainingUses * 100) / maxDurability;
                 
-                String durabilityText = String.format("🔧 %d uses (%d%%)", remainingUses, durabilityPercent);
+                String durabilityText = String.format("Rod: %d uses (%d%%)", remainingUses, durabilityPercent);
                 int color = durabilityPercent > 50 ? 0xFF4AE54A : durabilityPercent > 20 ? 0xFFFFB347 : 0xFFFF6B6B;
                 context.drawText(textRenderer, durabilityText, hudX + 8, contentY + (currentLine * lineHeight), color, true);
                 
@@ -485,8 +485,7 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
         // Enhanced weather and time indicators
         if (client.player != null && client.world != null) {
             // Weather indicator with enhanced styling and better unicode
-            String weatherIcon = client.world.isRaining() ? (client.world.isThundering() ? "⛈️" : "🌧️") : "☀️";
-            String weatherText = String.format("%s %s", weatherIcon, (client.world.isRaining() ? "Rainy" : "Clear"));
+            String weatherText = client.world.isRaining() ? (client.world.isThundering() ? "Weather: Thunder" : "Weather: Rainy") : "Weather: Clear";
             int weatherColor = client.world.isRaining() ? 0xFF4A9AFF : 0xFFFFD700;
             context.drawText(textRenderer, weatherText, hudX + 8, contentY + (currentLine * lineHeight), weatherColor, true);
             currentLine++;
@@ -494,13 +493,12 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
             // Enhanced day/night and moon phase indicator with better spacing
             long timeOfDay = client.world.getTimeOfDay() % 24000;
             boolean isDay = timeOfDay < 12000;
-            String timeIcon = isDay ? "☀️" : "🌙";
-            String dayNightText = String.format("%s %s", timeIcon, (isDay ? "Day" : "Night"));
+            String dayNightText = isDay ? "Time: Day" : "Time: Night";
             
             if (!isDay) {
                 int moonPhase = client.world.getMoonPhase();
-                String[] moonPhases = {"🌑", "🌒", "🌓", "🌔", "🌕", "🌖", "🌗", "🌘"};
-                dayNightText = String.format("%s %s", moonPhases[moonPhase], "Night");
+                String[] moonPhases = {"New Moon", "Waxing Crescent", "First Quarter", "Waxing Gibbous", "Full Moon", "Waning Gibbous", "Last Quarter", "Waning Crescent"};
+                dayNightText = String.format("Time: Night (%s)", moonPhases[moonPhase]);
             }
             
             int timeColor = isDay ? 0xFFFFD700 : 0xFFADD8E6;
@@ -513,7 +511,7 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
             RegistryEntry<Biome> biome = client.world.getBiome(client.player.getBlockPos());
             String biomeName = biome.getKey().map(key -> key.getValue().toString()).orElse("unknown");
             biomeName = biomeName.replace("minecraft:", "").replace("_", " ");
-            String biomeText = String.format("🗺️ %s", capitalizeWords(biomeName));
+            String biomeText = String.format("Biome: %s", capitalizeWords(biomeName));
             
             // Color code biomes with elegant colors
             int biomeColor = 0xFF40E0D0; // Default turquoise
@@ -532,7 +530,7 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
         if (fishingSessionTicks > 0) {
             float catchRate = (float) totalFishCaught / (fishingSessionTicks / 1200.0f); // fish per minute
             String efficiency = catchRate > 2.0f ? "Excellent" : catchRate > 1.0f ? "Good" : catchRate > 0.5f ? "Fair" : "Slow";
-            String rateText = String.format("📈 %.1f/min (%s)", Math.max(0, catchRate), efficiency);
+            String rateText = String.format("Rate: %.1f/min (%s)", Math.max(0, catchRate), efficiency);
             int rateColor = catchRate > 2.0f ? 0xFF4AE54A : catchRate > 1.0f ? 0xFF9ACD32 : catchRate > 0.5f ? 0xFFFFB347 : 0xFFFF7F50;
             context.drawText(textRenderer, rateText, hudX + 8, contentY + (currentLine * lineHeight), rateColor, true);
             currentLine++;
@@ -543,19 +541,19 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
         int statusColor;
         
                 if (!autoFishEnabled) {
-            statusText = "🎣 Manual Mode (Press O for auto)";
+            statusText = "Status: Manual Mode (Press O for auto)";
             statusColor = 0xFFDDA0DD;
         } else if (humanReactionDelay > 0) {
-            statusText = "🎯 Bite Detected!";
+            statusText = "Status: Bite Detected!";
             statusColor = 0xFFFF4500; // Bright orange-red
         } else if (recastDelayTicks > 0) {
-            statusText = "🔄 Auto Recasting...";
+            statusText = "Status: Auto Recasting...";
             statusColor = 0xFF1E90FF;
         } else if (biteDetectionCooldown > 0) {
-            statusText = "⏳ Auto Waiting...";
+            statusText = "Status: Auto Waiting...";
             statusColor = 0xFFFFB347;
         } else {
-            statusText = "⚡ Auto Active";
+            statusText = "Status: Auto Active";
             statusColor = 0xFF4AE54A;
         }
         context.drawText(textRenderer, statusText, hudX + 8, contentY + (currentLine * lineHeight), statusColor, true);
@@ -563,7 +561,7 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
         
         // Add lifetime stats with better styling if available
         if (lifetimeFishCaught > 0) {
-            String lifetimeText = String.format("🏆 %d lifetime catches", lifetimeFishCaught);
+            String lifetimeText = String.format("Lifetime: %d total catches", lifetimeFishCaught);
             context.drawText(textRenderer, lifetimeText, hudX + 8, contentY + (currentLine * lineHeight), 0xFFFFD700, true);
         }
         

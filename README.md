@@ -103,9 +103,16 @@ cd feeshman-deelux/Feeshman-Deelux
 
 ## 📈 Recent Updates
 
+### **v1.2.9 - VS16 Emoji Fix (December 2024)**
+- 🚫 **Removed all emoji characters** to fix VS16 rendering issues in chat and HUD
+- ✅ **Fixed display compatibility** - eliminated emoji-related text rendering problems
+- 🎯 **Clean text-only interface** - consistent rendering across all systems and fonts
+- 🔧 **Improved chat messages** - no more broken emoji characters in game chat
+- 📱 **Enhanced readability** - clear text labels replace problematic unicode symbols
+
 ### **v1.2.8 - Unicode Character Optimization (December 2024)**
 - 🔧 **Optimized unicode characters** for better in-game display compatibility
-- 🎯 **Standardized icons**: 🐟 fish, ⏰ clock, 🔧 tools, ☀️ sun, 🗺️ map, 📈 chart
+- 🎯 **Standardized icons**: fish, clock, tools, sun, map, chart symbols
 - ✅ **Improved text rendering** - consistent character display across all systems
 - 🎮 **Enhanced game compatibility** - tested and verified unicode support
 - 📱 **Better readability** - simplified icons for clearer visual communication
