@@ -406,60 +406,43 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
         if (client == null || client.player == null) return;
         var textRenderer = client.textRenderer;
         
-        // Fix for 1.21.6 HUD layering issues - ensure proper Z-level
-        // Disable depth testing to fix overlay rendering
-        
         // Enhanced HUD dimensions and positioning
         int hudX = 4;
         int hudY = 4;
-        int hudWidth = 190; // Increased width for more content
-        int hudHeight = 140; // Increased height for more info
+        int hudWidth = 200; // Increased width for better visibility
+        int hudHeight = 150; // Increased height for more content
         
-        // Smooth color transitions for subtle effects
-        long time = System.currentTimeMillis();
-        float colorCycle = (float) (Math.sin(time * 0.001) * 0.5 + 0.5); // Very slow, smooth transition
-        float pulse = (float) (Math.sin(time * 0.002) * 0.05 + 0.95); // Very subtle pulsing effect
+        // High contrast colors for better visibility
+        int outerBorderColor = 0xFF000000; // Solid black outer border
+        int innerBorderColor = 0xFF333333; // Dark gray inner border
+        int backgroundColorMain = 0xD0000000; // Semi-transparent black background
+        int titleBackgroundColor = 0xFF004466; // Dark blue title background
+        int accentColor = 0xFF00FFFF; // Bright cyan accent
         
-        // Modern gradient colors with smooth transitions
-        int outerBorderColor = 0xEE000000; // Darker outer border
-        int innerBorderColor = 0xCC444444; // Lighter inner border
+        // Draw simple, high-contrast layered border
+        context.fill(hudX - 2, hudY - 2, hudX + hudWidth + 2, hudY + hudHeight + 2, outerBorderColor);
+        context.fill(hudX - 1, hudY - 1, hudX + hudWidth + 1, hudY + hudHeight + 1, innerBorderColor);
+        context.fill(hudX, hudY, hudX + hudWidth, hudY + hudHeight, backgroundColorMain);
         
-        // Smooth color transitions between blue, cyan, and purple
-        int red = (int) (102 + colorCycle * 50); // 102-152
-        int green = (int) (170 + colorCycle * 85); // 170-255
-        int blue = 255; // Keep blue at max
-        int titleBgColor = (0xEE << 24) | (red << 16) | (green << 8) | blue;
+        // Draw title background
+        context.fill(hudX, hudY, hudX + hudWidth, hudY + 18, titleBackgroundColor);
+        context.fill(hudX, hudY + 16, hudX + hudWidth, hudY + 18, accentColor); // Accent line
         
-        int contentBgColor = 0xBB0F0F0F; // Darker content background
-        int accentColor = 0xFF00DDFF; // Brighter cyan accent
-        int glowColor = (int) (0x2200DDFF * pulse); // Very subtle glow effect
-        
-        // Draw enhanced layered border effect with glow (1.21.6 fixed)
-        // Use simpler rendering to fix layering issues
-        context.fill(hudX - 2, hudY - 2, hudX + hudWidth + 2, hudY + hudHeight + 2, 0xFF444444);
-        context.fill(hudX - 1, hudY - 1, hudX + hudWidth + 1, hudY + hudHeight + 1, 0xFF00DDFF);
-        context.fill(hudX, hudY, hudX + hudWidth, hudY + hudHeight, 0xE0101010);
-        
-        // Draw title background with enhanced gradient effect (1.21.6 fixed)
-        context.fill(hudX, hudY, hudX + hudWidth, hudY + 18, 0xE000AADD);
-        context.fill(hudX, hudY + 16, hudX + hudWidth, hudY + 18, 0xFF00DDFF); // Accent line
-        
-        // Enhanced title header with glow effect
-        String title = "§l§f🎣 Feeshman Deelux 🎣";
-        int titleWidth = textRenderer.getWidth("🎣 Feeshman Deelux 🎣");
+        // Enhanced title header - simple and clear
+        String title = "🎣 Feeshman Deelux 🎣";
+        int titleWidth = textRenderer.getWidth(title);
         int titleX = hudX + (hudWidth - titleWidth) / 2;
-        // Draw title with subtle glow
-        context.drawText(textRenderer, title, titleX + 1, hudY + 5, 0x4400DDFF, false); // Glow
-        context.drawText(textRenderer, title, titleX, hudY + 4, 0xFFFFFF, true); // Main text
+        // Draw title with high contrast
+        context.drawText(textRenderer, title, titleX, hudY + 4, 0xFFFFFFFF, true); // Bright white text
         
         // Content area starts below title
         int contentY = hudY + 22;
         int lineHeight = 13; // Optimized line height
         int currentLine = 0;
         
-        // Enhanced fish counter with animation
+        // Enhanced fish counter with high contrast
         String fishText = "🐟 " + totalFishCaught + " fish";
-        int fishColor = totalFishCaught > 0 ? (int) (0x55FF55 + (pulse * 0x002200)) : 0x55FF55;
+        int fishColor = 0xFF55FF55; // Bright green
         context.drawText(textRenderer, fishText, hudX + 6, contentY + (currentLine * lineHeight), fishColor, true);
         currentLine++;
         
@@ -467,7 +450,7 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
         int sessionMinutes = fishingSessionTicks / 1200;
         int sessionSeconds = (fishingSessionTicks % 1200) / 20;
         String timeText = String.format("⏰ %02d:%02d session", sessionMinutes, sessionSeconds);
-        context.drawText(textRenderer, timeText, hudX + 6, contentY + (currentLine * lineHeight), 0xFFFF55, true);
+        context.drawText(textRenderer, timeText, hudX + 6, contentY + (currentLine * lineHeight), 0xFFFFFF55, true);
         currentLine++;
         
         // Enhanced rod durability with visual bar
@@ -480,7 +463,7 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
                 int durabilityPercent = (remainingUses * 100) / maxDurability;
                 
                 String durabilityText = "🔧 " + remainingUses + " uses (" + durabilityPercent + "%)";
-                int color = durabilityPercent > 50 ? 0x55FF55 : durabilityPercent > 20 ? 0xFFFF55 : 0xFF5555;
+                int color = durabilityPercent > 50 ? 0xFF55FF55 : durabilityPercent > 20 ? 0xFFFFFF55 : 0xFFFF5555;
                 context.drawText(textRenderer, durabilityText, hudX + 6, contentY + (currentLine * lineHeight), color, true);
                 
                 // Draw durability bar
@@ -504,7 +487,7 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
             // Weather indicator with enhanced styling
             String weatherIcon = client.world.isRaining() ? (client.world.isThundering() ? "⛈️" : "🌧️") : "☀️";
             String weatherText = weatherIcon + " " + (client.world.isRaining() ? "Rainy" : "Clear");
-            int weatherColor = client.world.isRaining() ? 0x5599FF : 0xFFDD55;
+            int weatherColor = client.world.isRaining() ? 0xFF5599FF : 0xFFFFDD55;
             context.drawText(textRenderer, weatherText, hudX + 6, contentY + (currentLine * lineHeight), weatherColor, true);
             currentLine++;
             
@@ -520,7 +503,7 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
                 dayNightText = moonPhases[moonPhase] + " " + (isDay ? "Day" : "Night");
             }
             
-            int timeColor = isDay ? 0xFFDD55 : 0xCCCCFF;
+            int timeColor = isDay ? 0xFFFFDD55 : 0xFFCCCCFF;
             context.drawText(textRenderer, dayNightText, hudX + 6, contentY + (currentLine * lineHeight), timeColor, true);
             currentLine++;
         }
@@ -532,12 +515,12 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
             biomeName = biomeName.replace("minecraft:", "").replace("_", " ");
             String biomeText = "🗺️ " + capitalizeWords(biomeName);
             
-            // Color code biomes
-            int biomeColor = 0x55FFFF; // Default cyan
-            if (biomeName.contains("ocean")) biomeColor = 0x4488FF;
-            else if (biomeName.contains("river")) biomeColor = 0x66AAFF;
-            else if (biomeName.contains("swamp")) biomeColor = 0x669966;
-            else if (biomeName.contains("jungle")) biomeColor = 0x44AA44;
+            // Color code biomes with high contrast
+            int biomeColor = 0xFF55FFFF; // Default bright cyan
+            if (biomeName.contains("ocean")) biomeColor = 0xFF4488FF;
+            else if (biomeName.contains("river")) biomeColor = 0xFF66AAFF;
+            else if (biomeName.contains("swamp")) biomeColor = 0xFF66FF66;
+            else if (biomeName.contains("jungle")) biomeColor = 0xFF44FF44;
             
             context.drawText(textRenderer, biomeText, hudX + 6, contentY + (currentLine * lineHeight), biomeColor, true);
             currentLine++;
@@ -548,23 +531,30 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
             float catchRate = (float) totalFishCaught / (fishingSessionTicks / 1200.0f); // fish per minute
             String efficiency = catchRate > 2.0f ? "Excellent" : catchRate > 1.0f ? "Good" : catchRate > 0.5f ? "Fair" : "Slow";
             String rateText = String.format("📈 %.1f/min (%s)", Math.max(0, catchRate), efficiency);
-            int rateColor = catchRate > 2.0f ? 0x55FF55 : catchRate > 1.0f ? 0xAAFF55 : catchRate > 0.5f ? 0xFFFF55 : 0xFF8855;
+            int rateColor = catchRate > 2.0f ? 0xFF55FF55 : catchRate > 1.0f ? 0xFFAAFF55 : catchRate > 0.5f ? 0xFFFFFF55 : 0xFFFF8855;
             context.drawText(textRenderer, rateText, hudX + 6, contentY + (currentLine * lineHeight), rateColor, true);
             currentLine++;
         }
         
         // Enhanced status indicator with animated colors
-        String statusText = "🎣 Active";
-        int statusColor = 0x55FF55;
-        if (humanReactionDelay > 0) {
+        String statusText;
+        int statusColor;
+        
+                if (!autoFishEnabled) {
+            statusText = "🎣 Manual Fishing (Press O to enable auto)";
+            statusColor = 0xFFAAAA55;
+        } else if (humanReactionDelay > 0) {
             statusText = "🐟 Bite Detected!";
-            statusColor = (int) (0xFF5555 + (pulse * 0x004400)); // Animated red
+            statusColor = 0xFFFF5555; // Bright red
         } else if (recastDelayTicks > 0) {
-            statusText = "🔄 Recasting...";
-            statusColor = 0xFFAA55;
+            statusText = "🔄 Auto Recasting...";
+            statusColor = 0xFFFFAA55;
         } else if (biteDetectionCooldown > 0) {
-            statusText = "⏳ Waiting...";
-            statusColor = 0xAAAA55;
+            statusText = "⏳ Auto Waiting...";
+            statusColor = 0xFFAAAA55;
+        } else {
+            statusText = "🎣 Auto Active";
+            statusColor = 0xFF55FF55;
         }
         context.drawText(textRenderer, statusText, hudX + 6, contentY + (currentLine * lineHeight), statusColor, true);
         currentLine++;
@@ -572,7 +562,7 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
         // Add lifetime stats if available
         if (lifetimeFishCaught > 0) {
             String lifetimeText = "🏆 " + lifetimeFishCaught + " lifetime";
-            context.drawText(textRenderer, lifetimeText, hudX + 6, contentY + (currentLine * lineHeight), 0xFFD700, true);
+            context.drawText(textRenderer, lifetimeText, hudX + 6, contentY + (currentLine * lineHeight), 0xFFFFD700, true);
         }
         
         // HUD rendering complete
