@@ -103,6 +103,13 @@ cd feeshman-deelux/Feeshman-Deelux
 
 ## 📈 Recent Updates
 
+### **v1.2.8 - Unicode Character Optimization (December 2024)**
+- 🔧 **Optimized unicode characters** for better in-game display compatibility
+- 🎯 **Standardized icons**: 🐟 fish, ⏰ clock, 🔧 tools, ☀️ sun, 🗺️ map, 📈 chart
+- ✅ **Improved text rendering** - consistent character display across all systems
+- 🎮 **Enhanced game compatibility** - tested and verified unicode support
+- 📱 **Better readability** - simplified icons for clearer visual communication
+
 ### **v1.2.7 - Enhanced HUD Visual Polish (December 2024)**
 - ✨ **Complete HUD visual overhaul** with modern transparent design
 - 🎨 **Enhanced transparency** - semi-transparent backgrounds for better immersion

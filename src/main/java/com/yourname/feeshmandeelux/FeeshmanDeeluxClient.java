@@ -441,7 +441,7 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
         int currentLine = 0;
         
         // Enhanced fish counter with elegant styling
-        String fishText = String.format("🐠 %d fish caught", totalFishCaught);
+        String fishText = String.format("🐟 %d fish caught", totalFishCaught);
         int fishColor = 0xFF4AE54A; // Elegant bright green
         context.drawText(textRenderer, fishText, hudX + 8, contentY + (currentLine * lineHeight), fishColor, true);
         currentLine++;
@@ -449,7 +449,7 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
         // Enhanced session time with better formatting and unicode
         int sessionMinutes = fishingSessionTicks / 1200;
         int sessionSeconds = (fishingSessionTicks % 1200) / 20;
-        String timeText = String.format("⏱️  %02d:%02d session", sessionMinutes, sessionSeconds);
+        String timeText = String.format("⏰ %02d:%02d session", sessionMinutes, sessionSeconds);
         context.drawText(textRenderer, timeText, hudX + 8, contentY + (currentLine * lineHeight), 0xFFFFA500, true); // Orange
         currentLine++;
         
@@ -462,7 +462,7 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
                 int remainingUses = maxDurability - currentDamage;
                 int durabilityPercent = (remainingUses * 100) / maxDurability;
                 
-                String durabilityText = String.format("🛠️  %d uses (%d%%)", remainingUses, durabilityPercent);
+                String durabilityText = String.format("🔧 %d uses (%d%%)", remainingUses, durabilityPercent);
                 int color = durabilityPercent > 50 ? 0xFF4AE54A : durabilityPercent > 20 ? 0xFFFFB347 : 0xFFFF6B6B;
                 context.drawText(textRenderer, durabilityText, hudX + 8, contentY + (currentLine * lineHeight), color, true);
                 
@@ -494,7 +494,7 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
             // Enhanced day/night and moon phase indicator with better spacing
             long timeOfDay = client.world.getTimeOfDay() % 24000;
             boolean isDay = timeOfDay < 12000;
-            String timeIcon = isDay ? "🌅" : "🌙";
+            String timeIcon = isDay ? "☀️" : "🌙";
             String dayNightText = String.format("%s %s", timeIcon, (isDay ? "Day" : "Night"));
             
             if (!isDay) {
@@ -513,7 +513,7 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
             RegistryEntry<Biome> biome = client.world.getBiome(client.player.getBlockPos());
             String biomeName = biome.getKey().map(key -> key.getValue().toString()).orElse("unknown");
             biomeName = biomeName.replace("minecraft:", "").replace("_", " ");
-            String biomeText = String.format("🌍 %s", capitalizeWords(biomeName));
+            String biomeText = String.format("🗺️ %s", capitalizeWords(biomeName));
             
             // Color code biomes with elegant colors
             int biomeColor = 0xFF40E0D0; // Default turquoise
@@ -532,7 +532,7 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
         if (fishingSessionTicks > 0) {
             float catchRate = (float) totalFishCaught / (fishingSessionTicks / 1200.0f); // fish per minute
             String efficiency = catchRate > 2.0f ? "Excellent" : catchRate > 1.0f ? "Good" : catchRate > 0.5f ? "Fair" : "Slow";
-            String rateText = String.format("📊 %.1f/min (%s)", Math.max(0, catchRate), efficiency);
+            String rateText = String.format("📈 %.1f/min (%s)", Math.max(0, catchRate), efficiency);
             int rateColor = catchRate > 2.0f ? 0xFF4AE54A : catchRate > 1.0f ? 0xFF9ACD32 : catchRate > 0.5f ? 0xFFFFB347 : 0xFFFF7F50;
             context.drawText(textRenderer, rateText, hudX + 8, contentY + (currentLine * lineHeight), rateColor, true);
             currentLine++;
