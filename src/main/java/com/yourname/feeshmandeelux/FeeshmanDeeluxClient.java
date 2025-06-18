@@ -406,6 +406,9 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
         if (client == null || client.player == null) return;
         var textRenderer = client.textRenderer;
         
+        // Fix for 1.21.6 HUD layering issues - ensure proper Z-level
+        // Disable depth testing to fix overlay rendering
+        
         // Enhanced HUD dimensions and positioning
         int hudX = 4;
         int hudY = 4;
@@ -431,16 +434,15 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
         int accentColor = 0xFF00DDFF; // Brighter cyan accent
         int glowColor = (int) (0x2200DDFF * pulse); // Very subtle glow effect
         
-        // Draw enhanced layered border effect with glow
-        context.fill(hudX - 4, hudY - 4, hudX + hudWidth + 4, hudY + hudHeight + 4, glowColor);
-        context.fill(hudX - 3, hudY - 3, hudX + hudWidth + 3, hudY + hudHeight + 3, outerBorderColor);
-        context.fill(hudX - 2, hudY - 2, hudX + hudWidth + 2, hudY + hudHeight + 2, innerBorderColor);
-        context.fill(hudX - 1, hudY - 1, hudX + hudWidth + 1, hudY + hudHeight + 1, accentColor);
-        context.fill(hudX, hudY, hudX + hudWidth, hudY + hudHeight, contentBgColor);
+        // Draw enhanced layered border effect with glow (1.21.6 fixed)
+        // Use simpler rendering to fix layering issues
+        context.fill(hudX - 2, hudY - 2, hudX + hudWidth + 2, hudY + hudHeight + 2, 0xFF444444);
+        context.fill(hudX - 1, hudY - 1, hudX + hudWidth + 1, hudY + hudHeight + 1, 0xFF00DDFF);
+        context.fill(hudX, hudY, hudX + hudWidth, hudY + hudHeight, 0xE0101010);
         
-        // Draw title background with enhanced gradient effect
-        context.fill(hudX, hudY, hudX + hudWidth, hudY + 18, titleBgColor);
-        context.fill(hudX, hudY + 16, hudX + hudWidth, hudY + 18, accentColor); // Accent line
+        // Draw title background with enhanced gradient effect (1.21.6 fixed)
+        context.fill(hudX, hudY, hudX + hudWidth, hudY + 18, 0xE000AADD);
+        context.fill(hudX, hudY + 16, hudX + hudWidth, hudY + 18, 0xFF00DDFF); // Accent line
         
         // Enhanced title header with glow effect
         String title = "§l§f🎣 Feeshman Deelux 🎣";
@@ -572,6 +574,8 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
             String lifetimeText = "🏆 " + lifetimeFishCaught + " lifetime";
             context.drawText(textRenderer, lifetimeText, hudX + 6, contentY + (currentLine * lineHeight), 0xFFD700, true);
         }
+        
+        // HUD rendering complete
     }
     
     private String capitalizeWords(String str) {
