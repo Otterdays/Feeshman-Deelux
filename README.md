@@ -103,6 +103,15 @@ cd feeshman-deelux/Feeshman-Deelux
 
 ## 📈 Recent Updates
 
+### **v1.2.7 - Enhanced HUD Visual Polish (December 2024)**
+- ✨ **Complete HUD visual overhaul** with modern transparent design
+- 🎨 **Enhanced transparency** - semi-transparent backgrounds for better immersion
+- 🌟 **Improved unicode characters** - better icons and symbols throughout
+- 📐 **Better spacing and layout** - increased padding and line height for readability
+- 🎯 **Refined color palette** - elegant, harmonious colors with better contrast
+- 💎 **Enhanced durability bar** - semi-transparent background with improved styling
+- 🔥 **Polished status indicators** - clearer, more intuitive visual feedback
+
 ### **v1.2.6 - HUD Visibility Fixes (December 2024)**
 - 🎨 **Fixed HUD visibility issues** with high-contrast color rendering
 - ✅ **Improved text readability** using bright, fully opaque colors (0xFFRRGGBB format)

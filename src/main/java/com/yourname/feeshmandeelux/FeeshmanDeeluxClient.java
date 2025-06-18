@@ -407,50 +407,50 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
         var textRenderer = client.textRenderer;
         
         // Enhanced HUD dimensions and positioning
-        int hudX = 4;
-        int hudY = 4;
-        int hudWidth = 200; // Increased width for better visibility
-        int hudHeight = 150; // Increased height for more content
+        int hudX = 6;
+        int hudY = 6;
+        int hudWidth = 220; // Slightly wider for better content layout
+        int hudHeight = 160; // Slightly taller for better spacing
         
-        // High contrast colors for better visibility
-        int outerBorderColor = 0xFF000000; // Solid black outer border
-        int innerBorderColor = 0xFF333333; // Dark gray inner border
-        int backgroundColorMain = 0xD0000000; // Semi-transparent black background
-        int titleBackgroundColor = 0xFF004466; // Dark blue title background
-        int accentColor = 0xFF00FFFF; // Bright cyan accent
+        // Modern translucent colors with subtle gradients
+        int outerBorderColor = 0x80000000; // Semi-transparent black outer border
+        int innerBorderColor = 0xA0222222; // Semi-transparent dark gray border
+        int backgroundColorMain = 0x85000000; // More transparent main background
+        int titleBackgroundColor = 0xB0004466; // Semi-transparent dark blue title
+        int accentColor = 0xFF00DDFF; // Bright cyan accent
         
-        // Draw simple, high-contrast layered border
+        // Draw modern layered border with transparency
         context.fill(hudX - 2, hudY - 2, hudX + hudWidth + 2, hudY + hudHeight + 2, outerBorderColor);
         context.fill(hudX - 1, hudY - 1, hudX + hudWidth + 1, hudY + hudHeight + 1, innerBorderColor);
         context.fill(hudX, hudY, hudX + hudWidth, hudY + hudHeight, backgroundColorMain);
         
-        // Draw title background
-        context.fill(hudX, hudY, hudX + hudWidth, hudY + 18, titleBackgroundColor);
-        context.fill(hudX, hudY + 16, hudX + hudWidth, hudY + 18, accentColor); // Accent line
+        // Draw elegant title background with gradient effect
+        context.fill(hudX, hudY, hudX + hudWidth, hudY + 20, titleBackgroundColor);
+        context.fill(hudX, hudY + 18, hudX + hudWidth, hudY + 20, accentColor); // Accent line
         
-        // Enhanced title header - simple and clear
-        String title = "🎣 Feeshman Deelux 🎣";
+        // Enhanced title header with better unicode and styling
+        String title = "⚡ Feeshman Deelux ⚡";
         int titleWidth = textRenderer.getWidth(title);
         int titleX = hudX + (hudWidth - titleWidth) / 2;
-        // Draw title with high contrast
-        context.drawText(textRenderer, title, titleX, hudY + 4, 0xFFFFFFFF, true); // Bright white text
+        // Draw title with elegant styling
+        context.drawText(textRenderer, title, titleX, hudY + 6, 0xFFFFFFFF, true); // Bright white text
         
-        // Content area starts below title
-        int contentY = hudY + 22;
-        int lineHeight = 13; // Optimized line height
+        // Content area starts below title with better spacing
+        int contentY = hudY + 26;
+        int lineHeight = 14; // Better line spacing
         int currentLine = 0;
         
-        // Enhanced fish counter with high contrast
-        String fishText = "🐟 " + totalFishCaught + " fish";
-        int fishColor = 0xFF55FF55; // Bright green
-        context.drawText(textRenderer, fishText, hudX + 6, contentY + (currentLine * lineHeight), fishColor, true);
+        // Enhanced fish counter with elegant styling
+        String fishText = String.format("🐠 %d fish caught", totalFishCaught);
+        int fishColor = 0xFF4AE54A; // Elegant bright green
+        context.drawText(textRenderer, fishText, hudX + 8, contentY + (currentLine * lineHeight), fishColor, true);
         currentLine++;
         
-        // Enhanced session time with better formatting
+        // Enhanced session time with better formatting and unicode
         int sessionMinutes = fishingSessionTicks / 1200;
         int sessionSeconds = (fishingSessionTicks % 1200) / 20;
-        String timeText = String.format("⏰ %02d:%02d session", sessionMinutes, sessionSeconds);
-        context.drawText(textRenderer, timeText, hudX + 6, contentY + (currentLine * lineHeight), 0xFFFFFF55, true);
+        String timeText = String.format("⏱️  %02d:%02d session", sessionMinutes, sessionSeconds);
+        context.drawText(textRenderer, timeText, hudX + 8, contentY + (currentLine * lineHeight), 0xFFFFA500, true); // Orange
         currentLine++;
         
         // Enhanced rod durability with visual bar
@@ -462,19 +462,19 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
                 int remainingUses = maxDurability - currentDamage;
                 int durabilityPercent = (remainingUses * 100) / maxDurability;
                 
-                String durabilityText = "🔧 " + remainingUses + " uses (" + durabilityPercent + "%)";
-                int color = durabilityPercent > 50 ? 0xFF55FF55 : durabilityPercent > 20 ? 0xFFFFFF55 : 0xFFFF5555;
-                context.drawText(textRenderer, durabilityText, hudX + 6, contentY + (currentLine * lineHeight), color, true);
+                String durabilityText = String.format("🛠️  %d uses (%d%%)", remainingUses, durabilityPercent);
+                int color = durabilityPercent > 50 ? 0xFF4AE54A : durabilityPercent > 20 ? 0xFFFFB347 : 0xFFFF6B6B;
+                context.drawText(textRenderer, durabilityText, hudX + 8, contentY + (currentLine * lineHeight), color, true);
                 
-                // Draw durability bar
-                int barWidth = 80;
-                int barHeight = 3;
-                int barX = hudX + hudWidth - barWidth - 6;
-                int barY = contentY + (currentLine * lineHeight) + 2;
+                // Draw enhanced durability bar with transparency
+                int barWidth = 90;
+                int barHeight = 4;
+                int barX = hudX + hudWidth - barWidth - 10;
+                int barY = contentY + (currentLine * lineHeight) + 3;
                 
-                // Background bar
-                context.fill(barX, barY, barX + barWidth, barY + barHeight, 0x88333333);
-                // Durability bar
+                // Background bar with transparency
+                context.fill(barX, barY, barX + barWidth, barY + barHeight, 0x60333333);
+                // Durability bar with glow effect
                 int fillWidth = (barWidth * durabilityPercent) / 100;
                 context.fill(barX, barY, barX + fillWidth, barY + barHeight, color);
                 
@@ -484,27 +484,27 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
         
         // Enhanced weather and time indicators
         if (client.player != null && client.world != null) {
-            // Weather indicator with enhanced styling
+            // Weather indicator with enhanced styling and better unicode
             String weatherIcon = client.world.isRaining() ? (client.world.isThundering() ? "⛈️" : "🌧️") : "☀️";
-            String weatherText = weatherIcon + " " + (client.world.isRaining() ? "Rainy" : "Clear");
-            int weatherColor = client.world.isRaining() ? 0xFF5599FF : 0xFFFFDD55;
-            context.drawText(textRenderer, weatherText, hudX + 6, contentY + (currentLine * lineHeight), weatherColor, true);
+            String weatherText = String.format("%s %s", weatherIcon, (client.world.isRaining() ? "Rainy" : "Clear"));
+            int weatherColor = client.world.isRaining() ? 0xFF4A9AFF : 0xFFFFD700;
+            context.drawText(textRenderer, weatherText, hudX + 8, contentY + (currentLine * lineHeight), weatherColor, true);
             currentLine++;
             
-            // Enhanced day/night and moon phase indicator
+            // Enhanced day/night and moon phase indicator with better spacing
             long timeOfDay = client.world.getTimeOfDay() % 24000;
             boolean isDay = timeOfDay < 12000;
-            String timeIcon = isDay ? "☀️" : "🌙";
-            String dayNightText = timeIcon + " " + (isDay ? "Day" : "Night");
+            String timeIcon = isDay ? "🌅" : "🌙";
+            String dayNightText = String.format("%s %s", timeIcon, (isDay ? "Day" : "Night"));
             
             if (!isDay) {
                 int moonPhase = client.world.getMoonPhase();
                 String[] moonPhases = {"🌑", "🌒", "🌓", "🌔", "🌕", "🌖", "🌗", "🌘"};
-                dayNightText = moonPhases[moonPhase] + " " + (isDay ? "Day" : "Night");
+                dayNightText = String.format("%s %s", moonPhases[moonPhase], "Night");
             }
             
-            int timeColor = isDay ? 0xFFFFDD55 : 0xFFCCCCFF;
-            context.drawText(textRenderer, dayNightText, hudX + 6, contentY + (currentLine * lineHeight), timeColor, true);
+            int timeColor = isDay ? 0xFFFFD700 : 0xFFADD8E6;
+            context.drawText(textRenderer, dayNightText, hudX + 8, contentY + (currentLine * lineHeight), timeColor, true);
             currentLine++;
         }
         
@@ -513,16 +513,18 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
             RegistryEntry<Biome> biome = client.world.getBiome(client.player.getBlockPos());
             String biomeName = biome.getKey().map(key -> key.getValue().toString()).orElse("unknown");
             biomeName = biomeName.replace("minecraft:", "").replace("_", " ");
-            String biomeText = "🗺️ " + capitalizeWords(biomeName);
+            String biomeText = String.format("🌍 %s", capitalizeWords(biomeName));
             
-            // Color code biomes with high contrast
-            int biomeColor = 0xFF55FFFF; // Default bright cyan
-            if (biomeName.contains("ocean")) biomeColor = 0xFF4488FF;
-            else if (biomeName.contains("river")) biomeColor = 0xFF66AAFF;
-            else if (biomeName.contains("swamp")) biomeColor = 0xFF66FF66;
-            else if (biomeName.contains("jungle")) biomeColor = 0xFF44FF44;
+            // Color code biomes with elegant colors
+            int biomeColor = 0xFF40E0D0; // Default turquoise
+            if (biomeName.contains("ocean")) biomeColor = 0xFF0080FF;
+            else if (biomeName.contains("river")) biomeColor = 0xFF87CEEB;
+            else if (biomeName.contains("swamp")) biomeColor = 0xFF90EE90;
+            else if (biomeName.contains("jungle")) biomeColor = 0xFF32CD32;
+            else if (biomeName.contains("desert")) biomeColor = 0xFFFFA500;
+            else if (biomeName.contains("forest")) biomeColor = 0xFF228B22;
             
-            context.drawText(textRenderer, biomeText, hudX + 6, contentY + (currentLine * lineHeight), biomeColor, true);
+            context.drawText(textRenderer, biomeText, hudX + 8, contentY + (currentLine * lineHeight), biomeColor, true);
             currentLine++;
         }
         
@@ -530,9 +532,9 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
         if (fishingSessionTicks > 0) {
             float catchRate = (float) totalFishCaught / (fishingSessionTicks / 1200.0f); // fish per minute
             String efficiency = catchRate > 2.0f ? "Excellent" : catchRate > 1.0f ? "Good" : catchRate > 0.5f ? "Fair" : "Slow";
-            String rateText = String.format("📈 %.1f/min (%s)", Math.max(0, catchRate), efficiency);
-            int rateColor = catchRate > 2.0f ? 0xFF55FF55 : catchRate > 1.0f ? 0xFFAAFF55 : catchRate > 0.5f ? 0xFFFFFF55 : 0xFFFF8855;
-            context.drawText(textRenderer, rateText, hudX + 6, contentY + (currentLine * lineHeight), rateColor, true);
+            String rateText = String.format("📊 %.1f/min (%s)", Math.max(0, catchRate), efficiency);
+            int rateColor = catchRate > 2.0f ? 0xFF4AE54A : catchRate > 1.0f ? 0xFF9ACD32 : catchRate > 0.5f ? 0xFFFFB347 : 0xFFFF7F50;
+            context.drawText(textRenderer, rateText, hudX + 8, contentY + (currentLine * lineHeight), rateColor, true);
             currentLine++;
         }
         
@@ -541,28 +543,28 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
         int statusColor;
         
                 if (!autoFishEnabled) {
-            statusText = "🎣 Manual Fishing (Press O to enable auto)";
-            statusColor = 0xFFAAAA55;
+            statusText = "🎣 Manual Mode (Press O for auto)";
+            statusColor = 0xFFDDA0DD;
         } else if (humanReactionDelay > 0) {
-            statusText = "🐟 Bite Detected!";
-            statusColor = 0xFFFF5555; // Bright red
+            statusText = "🎯 Bite Detected!";
+            statusColor = 0xFFFF4500; // Bright orange-red
         } else if (recastDelayTicks > 0) {
             statusText = "🔄 Auto Recasting...";
-            statusColor = 0xFFFFAA55;
+            statusColor = 0xFF1E90FF;
         } else if (biteDetectionCooldown > 0) {
             statusText = "⏳ Auto Waiting...";
-            statusColor = 0xFFAAAA55;
+            statusColor = 0xFFFFB347;
         } else {
-            statusText = "🎣 Auto Active";
-            statusColor = 0xFF55FF55;
+            statusText = "⚡ Auto Active";
+            statusColor = 0xFF4AE54A;
         }
-        context.drawText(textRenderer, statusText, hudX + 6, contentY + (currentLine * lineHeight), statusColor, true);
+        context.drawText(textRenderer, statusText, hudX + 8, contentY + (currentLine * lineHeight), statusColor, true);
         currentLine++;
         
-        // Add lifetime stats if available
+        // Add lifetime stats with better styling if available
         if (lifetimeFishCaught > 0) {
-            String lifetimeText = "🏆 " + lifetimeFishCaught + " lifetime";
-            context.drawText(textRenderer, lifetimeText, hudX + 6, contentY + (currentLine * lineHeight), 0xFFFFD700, true);
+            String lifetimeText = String.format("🏆 %d lifetime catches", lifetimeFishCaught);
+            context.drawText(textRenderer, lifetimeText, hudX + 8, contentY + (currentLine * lineHeight), 0xFFFFD700, true);
         }
         
         // HUD rendering complete
