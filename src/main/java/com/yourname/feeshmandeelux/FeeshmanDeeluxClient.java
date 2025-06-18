@@ -147,10 +147,8 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
                 "category.feeshmandeelux.general"
         ));
 
-        // Register enhanced HUD renderer
-        @SuppressWarnings("deprecation")
-        var hudCallback = HudRenderCallback.EVENT;
-        hudCallback.register((context, tickCounter) -> {
+        // Register enhanced HUD renderer (will migrate to new HudElementRegistry when available)
+        HudRenderCallback.EVENT.register((context, tickCounter) -> {
             if (autoFishEnabled) {
                 renderPolishedHUD(context);
             }

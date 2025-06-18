@@ -1,15 +1,7 @@
-buildscript {
-    repositories {
-        maven { url 'https://maven.fabricmc.net/' }
-        gradlePluginPortal()
-    }
-    dependencies {
-        classpath "net.fabricmc:fabric-loom:1.8.13"
-    }
+plugins {
+    id 'fabric-loom' version '1.10.5'
+    id 'maven-publish'
 }
-
-apply plugin: 'fabric-loom'
-apply plugin: 'maven-publish'
 
 version = project.mod_version
 group = project.maven_group
@@ -27,10 +19,10 @@ repositories {
 }
 
 dependencies {
-    minecraft "com.mojang:minecraft:1.21.4"
-    mappings "net.fabricmc:yarn:1.21.4+build.1"
-    modImplementation "net.fabricmc:fabric-loader:0.16.9"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:0.119.3+1.21.4"
+    minecraft "com.mojang:minecraft:1.21.6"
+    mappings "net.fabricmc:yarn:1.21.6+build.1"
+    modImplementation "net.fabricmc:fabric-loader:0.16.14"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:0.127.0+1.21.6"
     
     // ModMenu integration (requires Text Placeholder API)
     modImplementation "com.terraformersmc:modmenu:13.0.3"
