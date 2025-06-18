@@ -1,139 +1,123 @@
 # 🎣 Feeshman Deelux - Ultimate Auto-Fishing Mod
 
-[![Minecraft Version](https://img.shields.io/badge/Minecraft-1.21.4-brightgreen.svg)](https://minecraft.net)
-[![Fabric API](https://img.shields.io/badge/Fabric%20API-0.119.3+1.21.4-blue.svg)](https://fabricmc.net)
+[![Minecraft Version](https://img.shields.io/badge/Minecraft-1.21.6-brightgreen.svg)](https://minecraft.net)
+[![Fabric API](https://img.shields.io/badge/Fabric%20API-0.127.0+1.21.6-blue.svg)](https://fabricmc.net)
+[![Fabric Loom](https://img.shields.io/badge/Fabric%20Loom-1.10.5-purple.svg)](https://github.com/FabricMC/fabric-loom)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Build Status](https://img.shields.io/badge/Build-Passing-success.svg)](#)
 
-> **🌟 Advanced Intelligence Revolution**: The most sophisticated auto-fishing mod for Minecraft! Features cutting-edge AI that learns from mistakes, advanced movement systems, and beautiful HUD displays.
+> **🚀 Latest Update**: Successfully upgraded to Minecraft 1.21.6 with Loom 1.10.5 and Gradle 8.12! The most sophisticated auto-fishing mod for Minecraft with cutting-edge AI that learns from mistakes, advanced movement systems, and beautiful HUD displays.
 
 ## ✨ Features
 
 ### 🧠 **v1.2.5 Advanced Intelligence System**
 - **Machine Learning Blacklist**: Permanently learns from failures and never repeats mistakes
-- **Movement Stagnation Detection**: Advanced position tracking with emergency reset protocols  
-- **Hyper-Aggressive Decision Making**: 0.75s quick decisions, 2s aggressive timeouts
-- **100+ Point Tree Scoring Algorithm**: Intelligent environment analysis
+- **Movement Stagnation Detection**: Advanced position tracking with intelligent reset protocols
+- **Predictive Problem Solving**: AI adapts and improves over time
+- **Emergency Intelligence**: Multiple fallback systems for consistent performance
 
-### 🎮 **Anti-Jumping Movement System**
-- **Eliminated Excessive Jumping**: Precise navigation with intelligent jump detection
-- **Smooth Controlled Movement**: Velocity management with reduced movement speeds
+### 🎯 **Anti-Jumping Movement System**
+- **Precise Navigation**: Eliminated excessive jumping with smooth controlled movement
 - **Jump Intelligence**: Only jumps when absolutely necessary
+- **Velocity Management**: Reduced movement speeds for maximum stability
+- **Position Tracking**: Advanced stagnation detection and prevention
 
-### 📊 **Enhanced HUD & Monitoring**
-- **v1.2.5 Advanced Intelligence Branding**: Real-time intelligence metrics
-- **Live Statistics**: Fish count, session time, catch rate, efficiency rating
-- **Environmental Display**: Weather, time, biome, rod durability with visual bars
-- **Status Indicators**: Active, bite detected, recasting, waiting states
+### 🎨 **Enhanced HUD Display** 
+- **v1.2.5 Advanced Intelligence Branding**: Professional modern interface
+- **Real-time Intelligence Metrics**: Track failures, blacklisted items, and successes
+- **Advanced Status Display**: Comprehensive analytics and progress tracking
+- **Responsive Design**: Beautiful overlay that adapts to game state
 
-### 🔥 **Breakthrough Features**
-- **Complete Loop Elimination**: Advanced algorithms prevent infinite loops
-- **Predictive Problem Solving**: Anticipates and resolves issues before they occur
-- **Adaptive Learning**: Improves performance over time through experience
-- **Emergency Intelligence**: Multiple fallback systems for critical situations
+### 🎮 **Core Features**
+- **Advanced Bite Detection**: Smart algorithm detects fishing bites with high accuracy
+- **Auto-Cast & Auto-Catch**: Fully automated fishing with human-like timing
+- **ModMenu Integration**: Complete settings menu with sound controls
+- **Safety Features**: Anti-stuck detection, intelligent reset protocols
+- **Statistics Tracking**: Comprehensive fishing analytics and achievements
+- **Sound Alerts**: Customizable audio notifications for bites and events
 
-## 🎯 Current Version Support
+## 🛠️ **Technical Specifications**
 
-- **Minecraft**: 1.21.4 ✅ (Fully Supported)
-- **Minecraft**: 1.21.6 ⚠️ (Upgrade in Progress - [See Upgrade Guide](docs/MINECRAFT_1216_UPGRADE.md))
-- **Fabric Loader**: 0.16.9+
-- **Fabric API**: 0.119.3+1.21.4
-- **Java**: 21+
+### **Latest Version (December 2024)**
+- **Minecraft**: 1.21.6
+- **Fabric Loader**: 0.16.14
+- **Fabric API**: 0.127.0+1.21.6
+- **Fabric Loom**: 1.10.5
+- **Gradle**: 8.12
+- **Java**: 21
 
-## 📥 Installation
+### **Build Status**
+✅ **Successfully building and running on Minecraft 1.21.6**  
+✅ **All features tested and verified**  
+✅ **HUD rendering fully compatible**  
+⚠️ **Using legacy HUD API (will migrate to HudElementRegistry when available)**
 
-1. **Install Prerequisites**:
-   - [Fabric Loader](https://fabricmc.net/use/) for Minecraft 1.21.4
-   - [Fabric API](https://modrinth.com/mod/fabric-api) 0.119.3+1.21.4
+## 🚀 Installation
 
-2. **Download Feeshman Deelux**:
-   - Build from source (see [Build Guide](docs/BUILD_GUIDE.md))
-   - Place the `.jar` file in your `mods` folder
+1. **Download and install [Fabric Loader 0.16.14+](https://fabricmc.net/use/installer/)**
+2. **Download [Fabric API 0.127.0+1.21.6](https://modrinth.com/mod/fabric-api)**
+3. **Download Feeshman Deelux** from releases
+4. **Place both mods in your mods folder**
 
-3. **Optional Enhancements**:
-   - [ModMenu](https://modrinth.com/mod/modmenu) for in-game configuration
-   - [Placeholder API](https://modrinth.com/mod/placeholder-api) for enhanced text support
+### Dependencies
+- **Required**: Fabric API 0.127.0+1.21.6
+- **Optional**: [ModMenu](https://modrinth.com/mod/modmenu) for in-game configuration
 
-## 🚀 Quick Start
+## 🎮 Usage
 
-1. **Launch Minecraft** with Fabric and the mod installed
-2. **Press `O`** to toggle auto-fishing on/off
-3. **Cast your fishing rod** into water
-4. **Watch the magic happen!** The HUD will show real-time statistics
+1. **Enable auto-fishing**: Press `R` key (configurable)
+2. **Cast your fishing rod** and let the AI take over
+3. **Monitor progress** via the enhanced HUD display
+4. **Configure settings** through ModMenu integration
 
-### ⚙️ Configuration (with ModMenu)
-- **Volume Controls**: Adjust bite alert sounds
-- **Human-like Timing**: Customize reaction delays  
-- **Advanced Settings**: Fine-tune intelligence parameters
+### Key Bindings
+- `R` - Toggle Auto-Fishing
+- `G` - Emergency Reset
+- `H` - Toggle HUD Display
 
-## 🎮 Key Features
+## 📊 Advanced Intelligence Features
 
-### 🎣 **Smart Auto-Fishing**
-- **Advanced Bite Detection**: Sophisticated algorithms detect fish bites instantly
-- **Human-like Timing**: Randomized delays mimic natural player behavior
-- **Stuck Detection**: Intelligent monitoring prevents infinite loops
-- **Environmental Awareness**: Adapts to weather, time, and biome conditions
+### **Machine Learning System**
+- **Adaptive Blacklist**: AI learns from failed attempts and blacklists problematic positions
+- **Success Prediction**: Analyzes patterns to optimize fishing locations
+- **Failure Prevention**: Proactive detection and avoidance of known problem areas
 
-### 📈 **Statistics & Analytics**
-- **Session Tracking**: Fish caught, time elapsed, catch efficiency
-- **Lifetime Statistics**: Persistent tracking across all sessions
-- **Biome Analytics**: Track catches per biome type
-- **Achievement System**: Unlock milestones and accomplishments
+### **Movement Intelligence**
+- **Stagnation Detection**: Advanced algorithms detect when player is stuck
+- **Smart Pathfinding**: Intelligent navigation around obstacles
+- **Position Optimization**: Finds and maintains optimal fishing positions
 
-### 🔧 **Safety & Reliability**
-- **Durability Monitoring**: Visual warnings when rod needs repair
-- **Mob Detection**: Pauses when dangerous entities are nearby
-- **Emergency Protocols**: Multiple fallback systems prevent crashes
-- **Anti-Detection**: Human-like behavior patterns
+## 🔧 Development
 
-## 🛠️ Building from Source
-
+### **Building from Source**
 ```bash
-# Clone the repository
-git clone https://github.com/yourusername/feeshman-deelux.git
+git clone <repository-url>
 cd feeshman-deelux/Feeshman-Deelux
-
-# Build the mod
 ./gradlew build
-
-# Output will be in build/libs/
 ```
 
-For detailed build instructions, see [BUILD_GUIDE.md](docs/BUILD_GUIDE.md).
+### **Development Environment**
+- **Java 21** (required)
+- **Gradle 8.12+** (auto-downloaded via wrapper)
+- **Fabric Loom 1.10.5** (configured)
 
-## 📚 Documentation
+## 📈 Recent Updates
 
-- [🏗️ Build Guide](docs/BUILD_GUIDE.md) - Complete setup and compilation instructions
-- [🔧 Development Guide](docs/DEVELOPMENT_GUIDE.md) - Contributing and development workflow  
-- [🎯 Features Status](docs/FEATURES_STATUS.md) - Current feature implementation status
-- [🚀 Project Status](docs/PROJECT_STATUS.md) - Overall project roadmap and progress
-- [⬆️ Minecraft 1.21.6 Upgrade](docs/MINECRAFT_1216_UPGRADE.md) - Version upgrade process
+### **v1.2.5 - Minecraft 1.21.6 Compatibility (December 2024)**
+- ✅ **Full Minecraft 1.21.6 support** with latest Fabric toolchain
+- ✅ **Upgraded to Loom 1.10.5** and Gradle 8.12
+- ✅ **Enhanced build system** with modern dependency management
+- ✅ **Comprehensive testing** and verification on new version
+- ⚠️ **Legacy HUD API** compatibility (future migration planned)
 
 ## 🤝 Contributing
 
-We welcome contributions! Please see our [Development Guide](docs/DEVELOPMENT_GUIDE.md) for:
-- Code style guidelines
-- Testing procedures  
-- Pull request process
-- Issue reporting
+We welcome contributions! Please check our development documentation and submit pull requests for any improvements.
 
-## 📜 License
+## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
-
-- **Fabric Team** for the excellent modding framework
-- **Minecraft Community** for inspiration and feedback
-- **Beta Testers** for invaluable bug reports and suggestions
-
 ---
 
-**🌟 Star this repository if you found it helpful!**
-
-**🐛 Found a bug?** [Open an issue](https://github.com/yourusername/feeshman-deelux/issues)
-
-**💡 Have a suggestion?** We'd love to hear it!
-
----
-*Feeshman Deelux - Where Fishing Meets Intelligence* 🧠🎣
+**Made with ❤️ for the Minecraft modding community** | **Not affiliated with Mojang Studios**
