@@ -1,4 +1,4 @@
-# 🎣 Feeshman Deelux - Ultimate Auto-Fishing Mod
+# 🎣 Feeshman Deelux - Advanced Auto-Fishing Mod
 
 [![Minecraft Version](https://img.shields.io/badge/Minecraft-1.21.6-brightgreen.svg)](https://minecraft.net)
 [![Fabric API](https://img.shields.io/badge/Fabric%20API-0.127.0+1.21.6-blue.svg)](https://fabricmc.net)
@@ -6,149 +6,141 @@
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Build Status](https://img.shields.io/badge/Build-Passing-success.svg)](#)
 
-> **🚀 Latest Update**: Successfully upgraded to Minecraft 1.21.6 with Loom 1.10.5 and Gradle 8.12! The most sophisticated auto-fishing mod for Minecraft with cutting-edge AI that learns from mistakes, advanced movement systems, and beautiful HUD displays.
+> **The most sophisticated auto-fishing mod for Minecraft Fabric with advanced bite detection, clean HUD display, and intelligent safety features.**
 
-## ✨ Features
+## ✨ Key Features
 
-### 🧠 **v1.2.5 Advanced Intelligence System**
-- **Machine Learning Blacklist**: Permanently learns from failures and never repeats mistakes
-- **Movement Stagnation Detection**: Advanced position tracking with intelligent reset protocols
-- **Predictive Problem Solving**: AI adapts and improves over time
-- **Emergency Intelligence**: Multiple fallback systems for consistent performance
+### 🎯 **Advanced Bite Detection**
+- **5-Method Detection System**: Velocity analysis, downward motion, position tracking, water validation, and bobber dip detection
+- **High Accuracy**: Detects fish bites with 0.15-0.6 second human-like reaction time
+- **False Positive Prevention**: Smart cooldowns and multi-layered validation
 
-### 🎯 **Anti-Jumping Movement System**
-- **Precise Navigation**: Eliminated excessive jumping with smooth controlled movement
-- **Jump Intelligence**: Only jumps when absolutely necessary
-- **Velocity Management**: Reduced movement speeds for maximum stability
-- **Position Tracking**: Advanced stagnation detection and prevention
+### 🎮 **Smart Automation**
+- **Auto-Cast & Auto-Reel**: Fully automated fishing with randomized timing (2-4 second delays)
+- **Stuck Detection**: 30-second threshold with intelligent water state analysis
+- **Mob Avoidance**: Automatically detects and avoids squids, drowned, and other interfering mobs
 
-### 🎨 **Enhanced HUD Display** 
-- **v1.2.5 Advanced Intelligence Branding**: Professional modern interface
-- **Real-time Intelligence Metrics**: Track failures, blacklisted items, and successes
-- **Advanced Status Display**: Comprehensive analytics and progress tracking
-- **Responsive Design**: Beautiful overlay that adapts to game state
+### 🎨 **Live HUD Display**
+- **Real-time Statistics**: Fish count, session time, catch rate, and rod durability
+- **Environmental Info**: Weather conditions, day/night cycle, moon phases, and current biome  
+- **Clean Text Interface**: Removed all emoji characters for maximum compatibility across systems
 
-### 🎮 **Core Features**
-- **Advanced Bite Detection**: Smart algorithm detects fishing bites with high accuracy
-- **Auto-Cast & Auto-Catch**: Fully automated fishing with human-like timing
-- **ModMenu Integration**: Complete settings menu with sound controls
-- **Safety Features**: Anti-stuck detection, intelligent reset protocols
-- **Statistics Tracking**: Comprehensive fishing analytics and achievements
-- **Sound Alerts**: Customizable audio notifications for bites and events
+### 🛡️ **Safety Features**
+- **Rod Durability Warnings**: Alerts when fishing rod has low durability (≤10 uses)
+- **Smart Inventory Tracking**: Announces new catches with color-coded messages
+- **Emergency Safeguards**: Multiple failsafes prevent getting stuck or losing equipment
 
-## 🛠️ **Technical Specifications**
+### 🔊 **Audio & Visual**
+- **Bite Alert Sounds**: Customizable volume bite detection alerts
+- **Achievement Toasts**: Milestone notifications for fishing progress
+- **Colorful Chat Messages**: Enhanced fishing announcements and compliments
 
-### **Latest Version (December 2024)**
+## 🛠️ Technical Specifications
+
+### **Current Version (December 2024)**
 - **Minecraft**: 1.21.6
 - **Fabric Loader**: 0.16.14
 - **Fabric API**: 0.127.0+1.21.6
-- **Fabric Loom**: 1.10.5
+- **Fabric Loom**: 1.10.5  
 - **Gradle**: 8.12
 - **Java**: 21
 
-### **Build Status**
-✅ **Successfully building and running on Minecraft 1.21.6**  
-✅ **All features tested and verified**  
-✅ **HUD rendering fully compatible**  
-⚠️ **Using legacy HUD API (will migrate to HudElementRegistry when available)**
-
 ## 🚀 Installation
 
-1. **Download and install [Fabric Loader 0.16.14+](https://fabricmc.net/use/installer/)**
-2. **Download [Fabric API 0.127.0+1.21.6](https://modrinth.com/mod/fabric-api)**
-3. **Download Feeshman Deelux** from releases
-4. **Place both mods in your mods folder**
+1. Install **[Fabric Loader 0.16.14+](https://fabricmc.net/use/installer/)**
+2. Download **[Fabric API 0.127.0+1.21.6](https://modrinth.com/mod/fabric-api)**
+3. Download **Feeshman Deelux** from releases
+4. Place both mods in your mods folder
 
 ### Dependencies
 - **Required**: Fabric API 0.127.0+1.21.6
-- **Optional**: [ModMenu](https://modrinth.com/mod/modmenu) for in-game configuration
+- **Optional**: [ModMenu](https://modrinth.com/mod/modmenu) for configuration screen
 
 ## 🎮 Usage
 
-1. **Enable auto-fishing**: Press `R` key (configurable)
-2. **Cast your fishing rod** and let the AI take over
-3. **Monitor progress** via the enhanced HUD display
-4. **Configure settings** through ModMenu integration
+### Controls
+- **[O] Key** - Toggle auto-fishing on/off
+- **ModMenu** - Access configuration screen for sound settings
 
-### Key Bindings
-- `R` - Toggle Auto-Fishing
-- `G` - Emergency Reset
-- `H` - Toggle HUD Display
+### Commands
+- `/feeshman` - Show help and command list
+- `/feeshstats` - View fishing statistics and session data
+- `/feeshstats biome` - View biome-specific catch breakdown  
+- `/feeshleaderboard` - View fishing leaderboard
 
-## 📊 Advanced Intelligence Features
+### Getting Started
+1. Equip a fishing rod in your main hand
+2. Press **[O]** to enable auto-fishing
+3. Cast your rod manually (or let the mod auto-cast)
+4. Watch the live HUD for real-time statistics
+5. Press **[O]** again to disable
 
-### **Machine Learning System**
-- **Adaptive Blacklist**: AI learns from failed attempts and blacklists problematic positions
-- **Success Prediction**: Analyzes patterns to optimize fishing locations
-- **Failure Prevention**: Proactive detection and avoidance of known problem areas
+## 📊 HUD Information Display
 
-### **Movement Intelligence**
-- **Stagnation Detection**: Advanced algorithms detect when player is stuck
-- **Smart Pathfinding**: Intelligent navigation around obstacles
-- **Position Optimization**: Finds and maintains optimal fishing positions
+When active, the mod shows:
+- **Fish Count**: Total catches in current session
+- **Session Time**: Duration of current fishing session
+- **Rod Durability**: Remaining uses and percentage with visual bar
+- **Weather**: Current weather conditions and time of day
+- **Biome**: Current fishing location
+- **Catch Rate**: Fish per minute with efficiency rating
+- **Status**: Current mod activity (Active, Bite Detected, Recasting, etc.)
+
+## 🔧 Advanced Features
+
+### **Bite Detection Methods**
+1. **Velocity Analysis** - Monitors bobber movement patterns
+2. **Downward Motion** - Detects fish pulling bobber underwater  
+3. **Position Tracking** - Analyzes sudden position changes
+4. **Water Validation** - Ensures bobber is properly submerged
+5. **Bobber Dip Detection** - Instant response to Y-axis drops
+
+### **Safety Systems**
+- **Mob Collision Detection** - Avoids squids, drowned, zombies, skeletons
+- **Intelligent Stuck Detection** - 30s threshold with multiple validation layers
+- **Human-like Timing** - 0.15-0.6s reaction delays with randomization
+- **Durability Monitoring** - Warns at 10 or fewer rod uses remaining
+
+## 🏆 Statistics & Achievements
+
+- **Session Tracking**: Fish caught, time elapsed, catch rate analysis
+- **Lifetime Statistics**: Total catches across all sessions  
+- **Biome Analytics**: Track catches by biome type
+- **Achievement System**: Milestone toasts for 1, 10, 25, 50, 100+ fish
+- **Leaderboard**: Persistent tracking of top fishing sessions
+
+## 📈 Recent Updates
+
+### **v1.21.6 - Text-Only Interface (December 2024)**
+- ✅ **Removed all emoji characters** - Fixed VS16 rendering issues and display problems
+- ✅ **Clean text labels** - Replaced unicode symbols with clear text (Fish:, Time:, Weather:, etc.)
+- ✅ **Maximum compatibility** - Consistent rendering across all systems and font configurations
+- ✅ **Enhanced readability** - Professional appearance with improved visual clarity
+
+### **v1.21.6 - Minecraft Compatibility (December 2024)**  
+- ✅ **Full Minecraft 1.21.6 support** with latest Fabric toolchain
+- ✅ **Upgraded build system** - Loom 1.10.5, Gradle 8.12, Java 21
+- ✅ **Enhanced HUD system** - Modern transparent design with better spacing
+- ⚠️ **Legacy HUD API** - Using HudRenderCallback (will migrate when new API available)
 
 ## 🔧 Development
 
-### **Building from Source**
+### Building from Source
 ```bash
 git clone <repository-url>
 cd feeshman-deelux/Feeshman-Deelux
 ./gradlew build
 ```
 
-### **Development Environment**
+### Development Environment
 - **Java 21** (required)
-- **Gradle 8.12+** (auto-downloaded via wrapper)
-- **Fabric Loom 1.10.5** (configured)
-
-## 📈 Recent Updates
-
-### **v1.2.9 - VS16 Emoji Fix (December 2024)**
-- 🚫 **Removed all emoji characters** to fix VS16 rendering issues in chat and HUD
-- ✅ **Fixed display compatibility** - eliminated emoji-related text rendering problems
-- 🎯 **Clean text-only interface** - consistent rendering across all systems and fonts
-- 🔧 **Improved chat messages** - no more broken emoji characters in game chat
-- 📱 **Enhanced readability** - clear text labels replace problematic unicode symbols
-
-### **v1.2.8 - Unicode Character Optimization (December 2024)**
-- 🔧 **Optimized unicode characters** for better in-game display compatibility
-- 🎯 **Standardized icons**: fish, clock, tools, sun, map, chart symbols
-- ✅ **Improved text rendering** - consistent character display across all systems
-- 🎮 **Enhanced game compatibility** - tested and verified unicode support
-- 📱 **Better readability** - simplified icons for clearer visual communication
-
-### **v1.2.7 - Enhanced HUD Visual Polish (December 2024)**
-- ✨ **Complete HUD visual overhaul** with modern transparent design
-- 🎨 **Enhanced transparency** - semi-transparent backgrounds for better immersion
-- 🌟 **Improved unicode characters** - better icons and symbols throughout
-- 📐 **Better spacing and layout** - increased padding and line height for readability
-- 🎯 **Refined color palette** - elegant, harmonious colors with better contrast
-- 💎 **Enhanced durability bar** - semi-transparent background with improved styling
-- 🔥 **Polished status indicators** - clearer, more intuitive visual feedback
-
-### **v1.2.6 - HUD Visibility Fixes (December 2024)**
-- 🎨 **Fixed HUD visibility issues** with high-contrast color rendering
-- ✅ **Improved text readability** using bright, fully opaque colors (0xFFRRGGBB format)
-- ✅ **Simplified background rendering** to eliminate z-fighting issues
-- ✅ **Enhanced border contrast** for better HUD outline visibility
-- ✅ **Removed complex animations** that caused rendering problems in 1.21.6
-- ✅ **All HUD elements now fully visible** when auto-fishing is enabled
-
-### **v1.2.5 - Minecraft 1.21.6 Compatibility (December 2024)**
-- ✅ **Full Minecraft 1.21.6 support** with latest Fabric toolchain
-- ✅ **Upgraded to Loom 1.10.5** and Gradle 8.12
-- ✅ **Enhanced build system** with modern dependency management
-- ✅ **Comprehensive testing** and verification on new version
-- ⚠️ **Legacy HUD API** compatibility (future migration planned)
-
-## 🤝 Contributing
-
-We welcome contributions! Please check our development documentation and submit pull requests for any improvements.
+- **Gradle 8.12+** (wrapper included)
+- **Fabric Loom 1.10.5**
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT License - see [LICENSE](LICENSE) file for details.
 
 ---
 
-**Made with ❤️ for the Minecraft modding community** | **Not affiliated with Mojang Studios**
+**Made with ❤️ for the Minecraft community** • **Not affiliated with Mojang Studios**
