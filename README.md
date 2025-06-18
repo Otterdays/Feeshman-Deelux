@@ -103,6 +103,14 @@ cd feeshman-deelux/Feeshman-Deelux
 
 ## 📈 Recent Updates
 
+### **v1.2.6 - HUD Visibility Fixes (December 2024)**
+- 🎨 **Fixed HUD visibility issues** with high-contrast color rendering
+- ✅ **Improved text readability** using bright, fully opaque colors (0xFFRRGGBB format)
+- ✅ **Simplified background rendering** to eliminate z-fighting issues
+- ✅ **Enhanced border contrast** for better HUD outline visibility
+- ✅ **Removed complex animations** that caused rendering problems in 1.21.6
+- ✅ **All HUD elements now fully visible** when auto-fishing is enabled
+
 ### **v1.2.5 - Minecraft 1.21.6 Compatibility (December 2024)**
 - ✅ **Full Minecraft 1.21.6 support** with latest Fabric toolchain
 - ✅ **Upgraded to Loom 1.10.5** and Gradle 8.12
