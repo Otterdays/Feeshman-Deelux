@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '1.10.5'
+    id 'fabric-loom' version '1.14.1'
     id 'maven-publish'
 }
 
@@ -19,14 +19,14 @@ repositories {
 }
 
 dependencies {
-    minecraft "com.mojang:minecraft:1.21.6"
-    mappings "net.fabricmc:yarn:1.21.6+build.1"
-    modImplementation "net.fabricmc:fabric-loader:0.16.14"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:0.127.0+1.21.6"
+    minecraft "com.mojang:minecraft:1.21.11"
+    mappings "net.fabricmc:yarn:1.21.11+build.4"
+    modImplementation "net.fabricmc:fabric-loader:0.18.1"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:0.141.3+1.21.11"
     
     // ModMenu integration (requires Text Placeholder API)
-    modImplementation "com.terraformersmc:modmenu:13.0.3"
-    modImplementation "eu.pb4:placeholder-api:2.5.2+1.21.3"
+    modImplementation "com.terraformersmc:modmenu:17.0.0-beta.2"
+    modImplementation "eu.pb4:placeholder-api:2.8.2+1.21.10"
     
     // For example:
     // modImplementation "com.example:example-mod:1.0.0"
@@ -70,7 +70,9 @@ java {
 
 jar {
     from("LICENSE") {
-        rename { "${it}_${project.archivesBaseName}"}
+        // Gradle 9 removed/changed some legacy archive naming properties.
+        // Use `project.name` to keep the license rename logic stable.
+        rename { "${it}_${project.name}"}
     }
 }
 

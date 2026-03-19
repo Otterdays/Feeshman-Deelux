@@ -1,9 +1,7 @@
 package com.yourname.feeshmandeelux;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -13,13 +11,13 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Environment(EnvType.CLIENT)
 public class FeeshLeaderboard {
     private static final Logger LOGGER = LogManager.getLogger("FeeshmanDeelux");
     private static final String FILE_NAME = "feeshman-leaderboard.properties";
     private static final Path FILE_PATH = FabricLoader.getInstance().getConfigDir().resolve(FILE_NAME);
 
     private static final Properties data = new Properties();
+    private static boolean dirty = false;
 
     public static void load() {
         if (!Files.exists(FILE_PATH)) {
@@ -44,12 +42,23 @@ public class FeeshLeaderboard {
         }
     }
 
-    public static void addCatch(ClientPlayerEntity player) {
+    public static void addCatch(PlayerEntity player) {
         if (player == null) return;
         String name = player.getName().getString();
         int current = Integer.parseInt(data.getProperty(name, "0"));
         data.setProperty(name, String.valueOf(current + 1));
-        save();
+        dirty = true;
+    }
+
+    public static int getPlayerTotal(String name) {
+        return Integer.parseInt(data.getProperty(name, "0"));
+    }
+
+    public static void flushIfDirty() {
+        if (dirty) {
+            save();
+            dirty = false;
+        }
     }
 
     public static List<Map.Entry<String, Integer>> getTop(int limit) {

@@ -1,8 +1,31 @@
 # 📊 Feeshman Deelux - Project Status
 
-**Last Updated**: December 18, 2024
+<!-- PRESERVATION RULE: Never delete or replace content. Append or annotate only. -->
 
-## 🎯 Current Status: **READY FOR 1.21.6 UPGRADE**
+**Last Updated**: March 18, 2025
+
+## [AMENDED 2026-03-19]: Minecraft 1.21.11 Upgrade
+## 🎯 Current Status: **1.21.11 ACTIVE — PRODUCTION READY**
+### ✅ Upgrade Result (Mar 19, 2026)
+- Gradle + Fabric toolchain upgraded (Loader 0.18.1, Fabric API 0.141.3+1.21.11, Loom 1.14.1)
+- Mod compiles and builds successfully on 1.21.11 (gradle `build` succeeds)
+- Port fixes applied for 1.21.11 mapping/API changes (bobber position access, GUI border drawing, keybind category, moon phase call removal)
+
+## 🎯 Current Status: **1.21.11 ACTIVE — PRODUCTION READY**
+
+### ✅ **Recent Improvements (March 18, 2025)**
+- **Leaderboard batch writes** — No longer saves to disk on every catch; flush every 30s + on disconnect
+- **Lifetime fish persistence** — Loaded from leaderboard on world join; HUD shows correct total across restarts
+- **Achievements screen fix** — Session fish, biomes visited, session time now display real data
+- **Rod detection** — Uses `Items.FISHING_ROD` instead of string match (mod-compatible)
+- **No-rod grace period** — 3-second delay before disabling when rod briefly out of hand
+- **Mixin config** — `required: false` for empty mixins
+
+---
+
+## [AMENDED 2025-03-18]: Previous Status (December 18, 2024)
+
+## 🎯 Previous Status: **READY FOR 1.21.6 UPGRADE**
 
 ### ✅ **Completed (December 18, 2024)**
 

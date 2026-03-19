@@ -71,7 +71,7 @@ public class FeeshmanAchievementsScreen extends Screen {
         // Draw current stats panel with better contrast
         int statsY = 60;
         context.fill(this.width / 2 - 150, statsY, this.width / 2 + 150, statsY + 60, 0xC0000000);
-        context.drawBorder(this.width / 2 - 150, statsY, 300, 60, 0xFF666666);
+        drawBorder(context, this.width / 2 - 150, statsY, 300, 60, 0xFF666666);
         
         context.drawCenteredTextWithShadow(this.textRenderer, 
             Text.literal("📊 Current Statistics").formatted(Formatting.YELLOW), 
@@ -102,7 +102,7 @@ public class FeeshmanAchievementsScreen extends Screen {
             int borderColor = unlocked ? 0xFF00CC00 : 0xFF880000; // Brighter borders
             
             context.fill(this.width / 2 - 200, y, this.width / 2 + 200, y + 20, bgColor);
-            context.drawBorder(this.width / 2 - 200, y, 400, 20, borderColor);
+            drawBorder(context, this.width / 2 - 200, y, 400, 20, borderColor);
             
             // Draw achievement icon and text with better contrast
             String status = unlocked ? achievement.icon : "❌";
@@ -134,6 +134,14 @@ public class FeeshmanAchievementsScreen extends Screen {
         }
         
         super.render(context, mouseX, mouseY, delta);
+    }
+
+    private void drawBorder(DrawContext context, int x, int y, int width, int height, int color) {
+        // 1px border using fills (DrawContext#drawBorder isn't available in this mapping set).
+        context.fill(x, y, x + width, y + 1, color); // top
+        context.fill(x, y + height - 1, x + width, y + height, color); // bottom
+        context.fill(x, y, x + 1, y + height, color); // left
+        context.fill(x + width - 1, y, x + width, y + height, color); // right
     }
     
     private boolean isAchievementUnlocked(Achievement achievement, int lifetimeFish, int sessionFish, int biomesVisited) {
@@ -195,21 +203,20 @@ public class FeeshmanAchievementsScreen extends Screen {
     }
     
     private int getCurrentSessionFish() {
-        // Try to get session fish from the main client class
-        // For now, return a placeholder value since we'd need to access the main mod's session data
-        return 0;
+        return FeeshmanDeeluxClient.getSessionFishCount();
     }
     
     private int getBiomesVisited() {
-        // Try to get biomes visited count
-        // For now, return a placeholder value since we'd need to access the main mod's biome tracking
-        return 0;
+        return FeeshmanDeeluxClient.getBiomesVisitedCount();
     }
     
     private String getFormattedSessionTime() {
-        // Try to get formatted session time
-        // For now, return a placeholder since we'd need to access the main mod's session start time
-        return "00:00";
+        long start = FeeshmanDeeluxClient.getSessionStartTime();
+        if (start == 0) return "00:00";
+        long elapsedSec = (System.currentTimeMillis() - start) / 1000;
+        long min = elapsedSec / 60;
+        long sec = elapsedSec % 60;
+        return String.format("%02d:%02d", min, sec);
     }
     
     @Override

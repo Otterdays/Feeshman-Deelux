@@ -1,7 +1,5 @@
 package com.yourname.feeshmandeelux;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -11,7 +9,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Properties;
 
-@Environment(EnvType.CLIENT)
 public class FeeshmanConfig {
     private static final String CONFIG_FILE_NAME = "feeshman-deelux.properties";
     private static final Path CONFIG_PATH = FabricLoader.getInstance().getConfigDir().resolve(CONFIG_FILE_NAME);

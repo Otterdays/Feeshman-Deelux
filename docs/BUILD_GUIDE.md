@@ -1,26 +1,57 @@
 # 🏗️ Feeshman Deelux - Complete Build Guide & Troubleshooting
 
+<!-- PRESERVATION RULE: Never delete or replace content. Append or annotate only. -->
+
 > **The definitive guide to building, developing, and troubleshooting Feeshman Deelux**  
 > *From zero to fishing hero in minutes!*
 
 ---
 
+## 🔧 Regenerate Gradle Wrapper (March 2025)
+
+If `gradlew build` fails with:
+```
+Could not find or load main class org.gradle.wrapper.GradleWrapperMain
+```
+the `gradle-wrapper.jar` is missing. Regenerate it:
+
+```powershell
+cd c:\Users\home\Desktop\Feeshman-Deelux
+gradle wrapper --gradle-version 8.12
+```
+
+Requires Gradle installed: `winget install Gradle.Gradle` or [gradle.org/install](https://gradle.org/install/).
+
+---
+
+## [AMENDED 2026-03-19]: Minecraft 1.21.11 Build Requirements
+
+- **Minecraft**: 1.21.11
+- **Required Java Version**: Java 21
+- **Fabric Loader**: 0.18.1
+- **Fabric API**: 0.141.3+1.21.11
+- **Fabric Loom**: 1.14.1
+- **Gradle**: 9.2.1 (wrapper regenerated)
+- **Yarn mappings**: 1.21.11+build.4
+- **ModMenu**: 17.0.0-beta.2
+- **Text Placeholder API**: 2.8.2+1.21.10 (closest available)
+
 ## 📋 Project Requirements
 
 ### Java & Minecraft Versions
-- **Minecraft Version**: 1.21.6
-- **Required Java Version**: Java 21 (Minecraft 1.21.6 requirement)
+- **Minecraft Version**: 1.21.11
+- **Required Java Version**: Java 21 (Minecraft 1.21.x requirement)
 - **Current System Java**: Java 21.0.6 ✅ (Compatible)
-- **Fabric Loader**: 0.16.14
-- **Fabric API**: 0.127.0+1.21.6
+- **Fabric Loader**: 0.18.1
+- **Fabric API**: 0.141.3+1.21.11
 - **Gradle Version**: 8.12+ (Fabric Loom 1.10.5+ requirement)
 
 ### Key Dependencies
 ```gradle
-minecraft "com.mojang:minecraft:1.21.6"
-mappings "net.fabricmc:yarn:1.21.6+build.3"
-modImplementation "net.fabricmc:fabric-loader:0.16.14"
-modImplementation "net.fabricmc.fabric-api:fabric-api:0.127.0+1.21.6"
+minecraft "com.mojang:minecraft:1.21.11"
+mappings "net.fabricmc:yarn:1.21.11+build.4"
+modImplementation "net.fabricmc:fabric-loader:0.18.1"
+modImplementation "net.fabricmc.fabric-api:fabric-api:0.141.3+1.21.11"
 modImplementation "com.terraformersmc:modmenu:13.0.4"
 modImplementation "me.shedaniel.cloth:cloth-config-fabric:15.0.145"
 ```

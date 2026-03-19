@@ -1,6 +1,29 @@
 # Project Summary: Feeshman Deelux - Latest Updates
 
-## Recent Major Updates ✅
+<!-- PRESERVATION RULE: Never delete or replace content. Append or annotate only. -->
+
+## Recent Major Updates (March 19, 2026) ✅
+
+### 🛠️ Minecraft 1.21.11 Upgrade
+- Updated build toolchain (Gradle wrapper 9.2.1, Loom 1.14.1) and Fabric Loader/API versions
+- Ported code for 1.21.11 mapping/API changes (bobber position access, DrawContext GUI border, keybind category, moon phase)
+- Build is successful on 1.21.11 (jar + remap tasks complete)
+
+---
+
+## Recent Major Updates (March 18, 2025) ✅
+
+### 🐛 **Bug Fixes & Improvements**
+- **Leaderboard batch writes** — Saves every 30s + on disconnect instead of every catch (performance)
+- **Lifetime fish persistence** — Loaded from leaderboard on join; survives restarts
+- **Achievements screen** — Session fish, biomes, session time now show real data
+- **Rod detection** — `Items.FISHING_ROD` instead of string match
+- **No-rod grace period** — 3 seconds before disabling when rod briefly out of hand
+- **Mixin config** — `required: false` for empty mixins
+
+---
+
+## [Previous] Recent Major Updates ✅
 
 ### 🏆 **Leaderboard System** - NEW!
 - **Implementation**: `FeeshLeaderboard.java` - Complete leaderboard tracking system

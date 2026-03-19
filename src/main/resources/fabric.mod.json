@@ -5,17 +5,20 @@
   "name": "Feeshman Deelux",
   "description": "🎣 Ultimate Auto-Fishing Experience! Advanced bite detection, beautiful HUD, statistics tracking, smart automation, ModMenu integration with sound controls, and comprehensive safety features. Perfect for AFK fishing with human-like timing and intelligent stuck detection.",
   "authors": [
-    "YourName"
+    "Otterdays"
   ],
   "contact": {
-    "homepage": "https://github.com/yourusername/feeshman-deelux",
-    "sources": "https://github.com/yourusername/feeshman-deelux",
-    "issues": "https://github.com/yourusername/feeshman-deelux/issues"
+    "homepage": "https://github.com/Otterdays/Feeshman-Deelux",
+    "sources": "https://github.com/Otterdays/Feeshman-Deelux",
+    "issues": "https://github.com/Otterdays/Feeshman-Deelux/issues"
   },
   "license": "MIT",
   "icon": "assets/feeshmandeelux/icon.png",
-  "environment": "client",
+  "environment": "*",
   "entrypoints": {
+    "main": [
+      "com.yourname.feeshmandeelux.FeeshmanMod"
+    ],
     "client": [
       "com.yourname.feeshmandeelux.FeeshmanDeeluxClient"
     ],
@@ -27,12 +30,11 @@
     "feeshmandeelux.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.16.14",
-    "fabric-api": ">=0.127.0+1.21.6",
-    "minecraft": "~1.21.6"
+    "fabricloader": ">=0.18.1",
+    "fabric-api": ">=0.141.3+1.21.11",
+    "minecraft": "~1.21.11"
   },
   "suggests": {
-    "modmenu": "*",
-    "another-mod": "*"
+    "modmenu": "*"
   }
 }

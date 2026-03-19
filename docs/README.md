@@ -1,5 +1,7 @@
 # 📚 Feeshman Deelux - Documentation Hub
 
+<!-- PRESERVATION RULE: Never delete or replace content. Append or annotate only. -->
+
 > **Your complete guide to the ultimate Minecraft fishing mod**  
 > *Everything you need to know, from installation to advanced development*
 
@@ -14,6 +16,7 @@
 - 💡 **[Community Tips](helpfromchat.md)** - Player wisdom and tricks
 
 ### 👨‍💻 **For Developers**
+- 📋 **[DOCS/](../DOCS/)** — SCRATCHPAD, SUMMARY, SBOM, CHANGELOG, ARCHITECTURE (status docs)
 - 🛠️ **[Development Guide](DEVELOPMENT_GUIDE.md)** - Complete contributor handbook
 - 🏗️ **[Build Guide](BUILD_GUIDE.md)** - Setup, build, and troubleshoot
 - 🔧 **[Technical Documentation](techdoc.md)** - Architecture and implementation
