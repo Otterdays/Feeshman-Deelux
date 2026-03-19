@@ -46,3 +46,8 @@
 2. Added Gradle, Loom, Release, Stars, Issues, Last commit, Mod Menu badges
 3. Added footer links: Source, Issues, Docs
 4. Replaced placeholder clone URL with actual repo URL
+
+## Last 5 Actions (2026-03-19) [Mixin fix]
+1. Fixed FishingBobberEntityAccessor mixin failure: "No candidates for state:Ljava/lang/Enum"
+2. Replaced mixin accessor with public API: bobber.getHookedEntity() != null for HOOKED_IN_ENTITY
+3. Removed FishingBobberEntityAccessor mixin, emptied mixins array in feeshmandeelux.mixins.json

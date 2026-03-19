@@ -1,6 +1,5 @@
 package com.yourname.feeshmandeelux;
 
-import com.yourname.feeshmandeelux.mixin.FishingBobberEntityAccessor;
 import com.yourname.feeshmandeelux.network.FeeshmanPayloads;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
@@ -134,8 +133,8 @@ public final class AutoFishService {
             return;
         }
 
-        Enum<?> bobberState = ((FishingBobberEntityAccessor) bobber).feeshman$getState();
-        if (bobberState != null && "HOOKED_IN_ENTITY".equals(bobberState.name())) {
+        // Avoid reeling when bobber is hooked in entity (squid, drowned, etc.) — use public API
+        if (bobber.getHookedEntity() != null) {
             state.humanReactionDelay = MIN_REACTION_TIME + ThreadLocalRandom.current().nextInt(MAX_REACTION_TIME - MIN_REACTION_TIME);
             return;
         }
