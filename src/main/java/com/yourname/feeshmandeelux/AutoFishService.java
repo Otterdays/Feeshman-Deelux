@@ -74,6 +74,8 @@ public final class AutoFishService {
                 ServerPlayNetworking.send(player, new FeeshmanPayloads.StatsSyncPayload(
                         state.totalFishCaught, lifetime, state.sessionStartTime, biomes));
             }
+            // Always show on join: Press [O] to toggle (client mod) or /feeshman (vanilla client)
+            player.sendMessage(net.minecraft.text.Text.literal("§a§l🎣 Feeshman Deelux §r§7 • Press §a§l[O]§r§7 to toggle auto-fishing • §7/feeshman for commands"), false);
             if (ThreadLocalRandom.current().nextFloat() < 0.3f) {
                 String[] quotes = {"\"Patience is the angler's virtue.\"", "\"The sea rewards those who wait.\"", "\"Every cast is a new adventure.\""};
                 String quote = quotes[ThreadLocalRandom.current().nextInt(quotes.length)];

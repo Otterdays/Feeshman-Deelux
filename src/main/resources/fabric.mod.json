@@ -22,6 +22,9 @@
     "client": [
       "com.yourname.feeshmandeelux.FeeshmanDeeluxClient"
     ],
+    "server": [
+      "com.yourname.feeshmandeelux.FeeshmanServerMod"
+    ],
     "modmenu": [
       "com.yourname.feeshmandeelux.ModMenuIntegration"
     ]

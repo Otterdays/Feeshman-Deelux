@@ -1,12 +1,15 @@
 package com.yourname.feeshmandeelux;
 
 import com.yourname.feeshmandeelux.network.FeeshmanNetworking;
+import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.loader.api.FabricLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Common entrypoint. Runs on both client and server (including integrated).
+ * Common entrypoint. Runs on both client and server.
+ * On dedicated server, FeeshmanServerMod handles server init to avoid double registration.
  */
 public class FeeshmanMod implements ModInitializer {
 
@@ -18,7 +21,10 @@ public class FeeshmanMod implements ModInitializer {
         FeeshmanConfig.load();
         FeeshLeaderboard.load();
         FeeshmanNetworking.registerPayloads();
-        AutoFishService.register();
-        FeeshmanServerCommands.register();
+        // Dedicated server uses FeeshmanServerMod; only register here for integrated (single-player)
+        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+            AutoFishService.register();
+            FeeshmanServerCommands.register();
+        }
     }
 }

@@ -51,3 +51,9 @@
 1. Fixed FishingBobberEntityAccessor mixin failure: "No candidates for state:Ljava/lang/Enum"
 2. Replaced mixin accessor with public API: bobber.getHookedEntity() != null for HOOKED_IN_ENTITY
 3. Removed FishingBobberEntityAccessor mixin, emptied mixins array in feeshmandeelux.mixins.json
+
+## Last 5 Actions (2026-03-19) [Multiplayer server]
+1. Added "server" entrypoint (FeeshmanServerMod) for dedicated servers
+2. Server-side join message: "Press [O] to toggle auto-fishing • /feeshman for commands"
+3. FeeshmanMod skips server registration when EnvType.SERVER (FeeshmanServerMod handles it)
+4. FeeshmanServerMod calls FeeshmanNetworking.registerPayloads()
