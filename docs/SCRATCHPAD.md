@@ -57,3 +57,8 @@
 2. Server-side join message: "Press [O] to toggle auto-fishing • /feeshman for commands"
 3. FeeshmanMod skips server registration when EnvType.SERVER (FeeshmanServerMod handles it)
 4. FeeshmanServerMod calls FeeshmanNetworking.registerPayloads()
+
+## Last 5 Actions (2026-03-19) [Version 1.3.01]
+1. Bumped mod_version to 1.3.01 in gradle.properties
+2. Build outputs feeshmandeelux-1.3.01.jar
+3. Updated SUMMARY, CHANGELOG, FEATURES_STATUS, SBOM graciously

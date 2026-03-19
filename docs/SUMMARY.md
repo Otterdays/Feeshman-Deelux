@@ -14,7 +14,7 @@
 - [CHANGELOG](CHANGELOG.md) — Version history
 
 ## Current Version
-- **Mod**: 1.3.0
+- **Mod**: 1.3.01
 - **Minecraft**: 1.21.11
 - **Fabric Loader**: 0.18.1
 - **Fabric API**: 0.141.3+1.21.11

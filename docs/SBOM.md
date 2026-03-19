@@ -23,6 +23,9 @@
 
 ## [AMENDED 2026-03-19]
 
+### Mod Version
+- **feeshmandeelux**: 1.3.01 (build output: feeshmandeelux-1.3.01.jar)
+
 ### Updated Dependencies
 | Package | Version | Purpose |
 |---------|---------|---------|

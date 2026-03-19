@@ -1,7 +1,7 @@
 # 🎣 Feeshman Deelux - Features Status & Implementation Guide
 
 > **Last Updated**: March 2026  
-> **Current Version**: 1.3.0  
+> **Current Version**: 1.3.01  
 > **Minecraft Version**: 1.21.11
 
 ## [AMENDED 2026-03-18]: Server-First Architecture

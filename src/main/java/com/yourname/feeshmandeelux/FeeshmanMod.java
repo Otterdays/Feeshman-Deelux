@@ -20,9 +20,9 @@ public class FeeshmanMod implements ModInitializer {
         LOGGER.info("Feeshman Deelux Initializing!");
         FeeshmanConfig.load();
         FeeshLeaderboard.load();
-        FeeshmanNetworking.registerPayloads();
         // Dedicated server uses FeeshmanServerMod; only register here for integrated (single-player)
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+            FeeshmanNetworking.registerPayloads();
             AutoFishService.register();
             FeeshmanServerCommands.register();
         }

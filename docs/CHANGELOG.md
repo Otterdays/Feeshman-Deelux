@@ -9,6 +9,18 @@ All notable changes to Feeshman Deelux. [Keep a Changelog](https://keepachangelo
 ### Added
 - (none)
 
+## [1.3.01] - 2026-03
+
+### Fixed
+- FishingBobberEntityAccessor mixin failure on 1.21.11 — replaced with `getHookedEntity()` public API
+
+### Added
+- Dedicated server entrypoint (FeeshmanServerMod) for multiplayer
+- Server-side join message: "Press [O] to toggle auto-fishing • /feeshman for commands"
+
+### Changed
+- FeeshmanMod skips server registration on dedicated server (FeeshmanServerMod handles it)
+
 ## [1.3.0] - 2026-03
 
 ### Added
