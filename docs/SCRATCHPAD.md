@@ -62,3 +62,8 @@
 1. Bumped mod_version to 1.3.01 in gradle.properties
 2. Build outputs feeshmandeelux-1.3.01.jar
 3. Updated SUMMARY, CHANGELOG, FEATURES_STATUS, SBOM graciously
+
+## Last 5 Actions (2026-03-29) [Docs + git]
+1. Verified SUMMARY, CHANGELOG, FEATURES_STATUS, SBOM align on mod **1.3.01** / MC **1.21.11**
+2. Added PROJECT_STATUS amend note for last doc/git verification (2026-03-29)
+3. Confirmed clean working tree; `main` already pushed and matches `origin/main`

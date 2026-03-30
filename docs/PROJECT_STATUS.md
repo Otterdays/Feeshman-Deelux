@@ -4,6 +4,11 @@
 
 **Last Updated**: March 18, 2025
 
+## [AMENDED 2026-03-29]: Documentation and remote sync
+- **Last verified**: 2026-03-29 — Working tree clean; `main` matches `origin/main`.
+- **Version alignment**: Mod **1.3.01**, Minecraft **1.21.11** (see `docs/SUMMARY.md`, `docs/CHANGELOG.md` [1.3.01]).
+- **Recent release notes**: Dedicated server entrypoint (FeeshmanServerMod), bobber mixin fix via `getHookedEntity()` API.
+
 ## [AMENDED 2026-03-19]: Minecraft 1.21.11 Upgrade
 ## 🎯 Current Status: **1.21.11 ACTIVE — PRODUCTION READY**
 ### ✅ Upgrade Result (Mar 19, 2026)
