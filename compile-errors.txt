@@ -1,0 +1,587 @@
+﻿To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/9.6.0-20260503004846+0000/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+
+> Configure project :
+Fabric Loom: 1.16.1
+
+> Task :compileJava
+.\gradlew.bat : 
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\AutoFishService.java:7: error: 
+package net.minecraft.entity.projectile does not exist
+At C:\Users\home\AppData\Local\Temp\ps-script-ee762cdb-0d03-4ee2-80c4-472954574149.ps1:90 char:58
++ ... \Feeshman-Deelux"; .\gradlew.bat compileJava --no-daemon 2>&1 | Out-F ...
++                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (C:\Users\home\D... does not exist:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+import net.minecraft.entity.projectile.FishingBobberEntity;
+                                      ^
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\AutoFishService.java:8: error: 
+package net.minecraft.item does not exist
+import net.minecraft.item.ItemStack;
+                         ^
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\AutoFishService.java:9: error: 
+package net.minecraft.item does not exist
+import net.minecraft.item.Items;
+                         ^
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\AutoFishService.java:10: error: 
+cannot find symbol
+import net.minecraft.server.network.ServerPlayerEntity;
+                                   ^
+  symbol:   class ServerPlayerEntity
+  location: package net.minecraft.server.network
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\AutoFishService.java:11: error: 
+cannot find symbol
+import net.minecraft.util.Hand;
+                         ^
+  symbol:   class Hand
+  location: package net.minecraft.util
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\AutoFishService.java:12: error: 
+cannot find symbol
+import net.minecraft.util.Identifier;
+                         ^
+  symbol:   class Identifier
+  location: package net.minecraft.util
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\AutoFishService.java:13: error: 
+package net.minecraft.util.math does not exist
+import net.minecraft.util.math.Vec3d;
+                              ^
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\AutoFishService.java:86: error: 
+cannot find symbol
+    private static void tickPlayer(ServerPlayerEntity player) {
+                                   ^
+  symbol:   class ServerPlayerEntity
+  location: class AutoFishService
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\AutoFishService.java:163: error: 
+cannot find symbol
+    private static boolean isAutoFishEnabled(ServerPlayerEntity player, PlayerFishingState state) {
+                                             ^
+  symbol:   class ServerPlayerEntity
+  location: class AutoFishService
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\AutoFishService.java:170: error: 
+cannot find symbol
+    public static void setAutoFishEnabled(ServerPlayerEntity player, boolean enabled) {
+                                          ^
+  symbol:   class ServerPlayerEntity
+  location: class AutoFishService
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\AutoFishService.java:175: error: 
+cannot find symbol
+    public static Boolean getAutoFishEnabled(ServerPlayerEntity player) {
+                                             ^
+  symbol:   class ServerPlayerEntity
+  location: class AutoFishService
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\AutoFishService.java:183: error: 
+cannot find symbol
+    private static void cast(ServerPlayerEntity player, PlayerFishingState state) {
+                             ^
+  symbol:   class ServerPlayerEntity
+  location: class AutoFishService
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\AutoFishService.java:191: error: 
+cannot find symbol
+    private static void reelIn(ServerPlayerEntity player, PlayerFishingState state) {
+                               ^
+  symbol:   class ServerPlayerEntity
+  location: class AutoFishService
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\AutoFishService.java:222: error: 
+cannot find symbol
+    private static Map<String, Integer> snapshotItemCounts(ServerPlayerEntity player) {
+                                                           ^
+  symbol:   class ServerPlayerEntity
+  location: class AutoFishService
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\AutoFishService.java:233: error: 
+cannot find symbol
+    private static void sendItemAnnouncementIfDetected(ServerPlayerEntity player, Map<String, Integer> before) {
+                                                       ^
+  symbol:   class ServerPlayerEntity
+  location: class AutoFishService
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\AutoFishService.java:249: error: 
+cannot find symbol
+    private static ItemStack findStackOf(ServerPlayerEntity player, String itemId) {
+                                         ^
+  symbol:   class ServerPlayerEntity
+  location: class AutoFishService
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\AutoFishService.java:249: error: 
+cannot find symbol
+    private static ItemStack findStackOf(ServerPlayerEntity player, String itemId) {
+                   ^
+  symbol:   class ItemStack
+  location: class AutoFishService
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\AutoFishService.java:260: error: 
+cannot find symbol
+    private static void recast(ServerPlayerEntity player, PlayerFishingState state) {
+                               ^
+  symbol:   class ServerPlayerEntity
+  location: class AutoFishService
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\AutoFishService.java:268: error: 
+cannot find symbol
+    private static boolean checkBobberStuck(PlayerFishingState state, Vec3d currentPos) {
+                                                                      ^
+  symbol:   class Vec3d
+  location: class AutoFishService
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\AutoFishService.java:294: error: 
+cannot find symbol
+    public static int getSessionFishCount(ServerPlayerEntity player) {
+                                          ^
+  symbol:   class ServerPlayerEntity
+  location: class AutoFishService
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\AutoFishService.java:299: error: 
+cannot find symbol
+    public static void resetSession(ServerPlayerEntity player) {
+                                    ^
+  symbol:   class ServerPlayerEntity
+  location: class AutoFishService
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\AutoFishService.java:307: error: 
+cannot find symbol
+    public static long getSessionStartTime(ServerPlayerEntity player) {
+                                           ^
+  symbol:   class ServerPlayerEntity
+  location: class AutoFishService
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\AutoFishService.java:319: error: 
+cannot find symbol
+        Vec3d bobberStuckCheckPos = null;
+        ^
+  symbol:   class Vec3d
+  location: class PlayerFishingState
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\AutoFishService.java:321: error: 
+cannot find symbol
+        Vec3d lastValidBobberPos = null;
+        ^
+  symbol:   class Vec3d
+  location: class PlayerFishingState
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshLeaderboard.java:4: error: 
+package net.minecraft.entity.player does not exist
+import net.minecraft.entity.player.PlayerEntity;
+                                  ^
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshLeaderboard.java:5: error: 
+cannot find symbol
+import net.minecraft.server.network.ServerPlayerEntity;
+                                   ^
+  symbol:   class ServerPlayerEntity
+  location: package net.minecraft.server.network
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshLeaderboard.java:18: error: 
+cannot find symbol
+    private static final Logger LOGGER = LogManager.getLogger("FeeshmanDeelux");
+                         ^
+  symbol:   class Logger
+  location: class FeeshLeaderboard
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshLeaderboard.java:30: error: 
+cannot find symbol
+    public static void syncPlayer(ServerPlayerEntity player) {
+                                  ^
+  symbol:   class ServerPlayerEntity
+  location: class FeeshLeaderboard
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshLeaderboard.java:40: error: 
+cannot find symbol
+    public static long beginSession(ServerPlayerEntity player) {
+                                    ^
+  symbol:   class ServerPlayerEntity
+  location: class FeeshLeaderboard
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshLeaderboard.java:59: error: 
+cannot find symbol
+    public static int recordCatch(ServerPlayerEntity player, String biomeKey, CatchDelta delta,
+                                  ^
+  symbol:   class ServerPlayerEntity
+  location: class FeeshLeaderboard
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshLeaderboard.java:80: error: 
+cannot find symbol
+    public static void addFishingSeconds(ServerPlayerEntity player, int seconds) {
+                                         ^
+  symbol:   class ServerPlayerEntity
+  location: class FeeshLeaderboard
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshLeaderboard.java:89: error: 
+cannot find symbol
+    public static void addCatch(PlayerEntity player) {
+                                ^
+  symbol:   class PlayerEntity
+  location: class FeeshLeaderboard
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshLeaderboard.java:99: error: 
+cannot find symbol
+    public static int getPlayerTotal(PlayerEntity player) {
+                                     ^
+  symbol:   class PlayerEntity
+  location: class FeeshLeaderboard
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshLeaderboard.java:111: error: 
+cannot find symbol
+    public static String exportAchievementCsv(ServerPlayerEntity player) {
+                                              ^
+  symbol:   class ServerPlayerEntity
+  location: class FeeshLeaderboard
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshLeaderboard.java:124: error: 
+cannot find symbol
+    public static Map<String, Integer> getBiomeBreakdown(ServerPlayerEntity player) {
+                                                         ^
+  symbol:   class ServerPlayerEntity
+  location: class FeeshLeaderboard
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshLeaderboard.java:132: error: 
+cannot find symbol
+    public static int getBiomeDistinctCount(ServerPlayerEntity player) {
+                                            ^
+  symbol:   class ServerPlayerEntity
+  location: class FeeshLeaderboard
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshLeaderboard.java:159: error: 
+cannot find symbol
+    public static List<String> recentCatchLines(ServerPlayerEntity player, int limit) {
+                                                ^
+  symbol:   class ServerPlayerEntity
+  location: class FeeshLeaderboard
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanAchievementsScreen.java:5: 
+error: cannot find symbol
+import net.minecraft.client.gui.DrawContext;
+                               ^
+  symbol:   class DrawContext
+  location: package net.minecraft.client.gui
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanAchievementsScreen.java:6: 
+error: package net.minecraft.client.gui.screen does not exist
+import net.minecraft.client.gui.screen.Screen;
+                                      ^
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanAchievementsScreen.java:7: 
+error: package net.minecraft.client.gui.widget does not exist
+import net.minecraft.client.gui.widget.ButtonWidget;
+                                      ^
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanAchievementsScreen.java:8: 
+error: package net.minecraft.text does not exist
+import net.minecraft.text.Text;
+                         ^
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanAchievementsScreen.java:9: 
+error: cannot find symbol
+import net.minecraft.util.Formatting;
+                         ^
+  symbol:   class Formatting
+  location: package net.minecraft.util
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanAchievementsScreen.java:14: 
+error: cannot find symbol
+public class FeeshmanAchievementsScreen extends Screen {
+                                                ^
+  symbol: class Screen
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanAchievementsScreen.java:15: 
+error: cannot find symbol
+    private final Screen parent;
+                  ^
+  symbol:   class Screen
+  location: class FeeshmanAchievementsScreen
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanAchievementsScreen.java:16: 
+error: cannot find symbol
+    private ButtonWidget backButton;
+            ^
+  symbol:   class ButtonWidget
+  location: class FeeshmanAchievementsScreen
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanAchievementsScreen.java:32: 
+error: cannot find symbol
+    public FeeshmanAchievementsScreen(Screen parent) {
+                                      ^
+  symbol:   class Screen
+  location: class FeeshmanAchievementsScreen
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanAchievementsScreen.java:52: 
+error: cannot find symbol
+    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+                       ^
+  symbol:   class DrawContext
+  location: class FeeshmanAchievementsScreen
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanAchievementsScreen.java:139:
+ error: cannot find symbol
+    private void drawBorder(DrawContext context, int x, int y, int width, int height, int color) {
+                            ^
+  symbol:   class DrawContext
+  location: class FeeshmanAchievementsScreen
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanConfigScreen.java:5: error: 
+cannot find symbol
+import net.minecraft.client.gui.DrawContext;
+                               ^
+  symbol:   class DrawContext
+  location: package net.minecraft.client.gui
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanConfigScreen.java:6: error: 
+package net.minecraft.client.gui.screen does not exist
+import net.minecraft.client.gui.screen.Screen;
+                                      ^
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanConfigScreen.java:7: error: 
+package net.minecraft.client.gui.widget does not exist
+import net.minecraft.client.gui.widget.ButtonWidget;
+                                      ^
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanConfigScreen.java:8: error: 
+package net.minecraft.client.gui.widget does not exist
+import net.minecraft.client.gui.widget.SliderWidget;
+                                      ^
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanConfigScreen.java:9: error: 
+package net.minecraft.text does not exist
+import net.minecraft.text.Text;
+                         ^
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanConfigScreen.java:10: 
+error: cannot find symbol
+import net.minecraft.util.Formatting;
+                         ^
+  symbol:   class Formatting
+  location: package net.minecraft.util
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanConfigScreen.java:14: 
+error: cannot find symbol
+public class FeeshmanConfigScreen extends Screen {
+                                          ^
+  symbol: class Screen
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanConfigScreen.java:15: 
+error: cannot find symbol
+    private final Screen parent;
+                  ^
+  symbol:   class Screen
+  location: class FeeshmanConfigScreen
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanConfigScreen.java:16: 
+error: cannot find symbol
+    private SliderWidget volumeSlider;
+            ^
+  symbol:   class SliderWidget
+  location: class FeeshmanConfigScreen
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanConfigScreen.java:17: 
+error: cannot find symbol
+    private ButtonWidget enabledButton;
+            ^
+  symbol:   class ButtonWidget
+  location: class FeeshmanConfigScreen
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanConfigScreen.java:18: 
+error: cannot find symbol
+    private ButtonWidget achievementsButton;
+            ^
+  symbol:   class ButtonWidget
+  location: class FeeshmanConfigScreen
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanConfigScreen.java:19: 
+error: cannot find symbol
+    private ButtonWidget doneButton;
+            ^
+  symbol:   class ButtonWidget
+  location: class FeeshmanConfigScreen
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanConfigScreen.java:25: 
+error: cannot find symbol
+    public FeeshmanConfigScreen(Screen parent) {
+                                ^
+  symbol:   class Screen
+  location: class FeeshmanConfigScreen
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanConfigScreen.java:92: 
+error: cannot find symbol
+    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+                       ^
+  symbol:   class DrawContext
+  location: class FeeshmanConfigScreen
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanDeeluxClient.java:6: error: 
+package net.fabricmc.fabric.api.client.keybinding.v1 does not exist
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+                                                   ^
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanDeeluxClient.java:9: error: 
+cannot find symbol
+import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+                                                  ^
+  symbol:   class HudRenderCallback
+  location: package net.fabricmc.fabric.api.client.rendering.v1
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanDeeluxClient.java:10: 
+error: package net.minecraft.client.option does not exist
+import net.minecraft.client.option.KeyBinding;
+                                  ^
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanDeeluxClient.java:11: 
+error: package net.minecraft.client.util does not exist
+import net.minecraft.client.util.InputUtil;
+                                ^
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanDeeluxClient.java:12: 
+error: package net.minecraft.text does not exist
+import net.minecraft.text.Text;
+                         ^
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanDeeluxClient.java:13: 
+error: package net.minecraft.client.network does not exist
+import net.minecraft.client.network.ClientPlayerEntity;
+                                   ^
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanDeeluxClient.java:14: 
+error: cannot find symbol
+import net.minecraft.util.Identifier;
+                         ^
+  symbol:   class Identifier
+  location: package net.minecraft.util
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanDeeluxClient.java:15: 
+error: package net.minecraft.sound does not exist
+import net.minecraft.sound.SoundEvent;
+                          ^
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanDeeluxClient.java:16: 
+error: package net.minecraft.registry does not exist
+import net.minecraft.registry.Registries;
+                             ^
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanDeeluxClient.java:17: 
+error: package net.minecraft.registry does not exist
+import net.minecraft.registry.Registry;
+                             ^
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanDeeluxClient.java:18: 
+error: package net.minecraft.registry does not exist
+import net.minecraft.registry.RegistryKeys;
+                             ^
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanDeeluxClient.java:19: 
+error: package net.minecraft.registry.tag does not exist
+import net.minecraft.registry.tag.TagKey;
+                                 ^
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanDeeluxClient.java:20: 
+error: package net.minecraft.item does not exist
+import net.minecraft.item.ItemStack;
+                         ^
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanDeeluxClient.java:21: 
+error: package net.minecraft.item does not exist
+import net.minecraft.item.Items;
+                         ^
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanDeeluxClient.java:22: 
+error: cannot find symbol
+import net.minecraft.client.gui.DrawContext;
+                               ^
+  symbol:   class DrawContext
+  location: package net.minecraft.client.gui
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanDeeluxClient.java:23: 
+error: package net.minecraft.client.toast does not exist
+import net.minecraft.client.toast.SystemToast;
+                                 ^
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanDeeluxClient.java:24: 
+error: package net.minecraft.world.biome does not exist
+import net.minecraft.world.biome.Biome;
+                                ^
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanDeeluxClient.java:25: 
+error: package net.minecraft.registry.entry does not exist
+import net.minecraft.registry.entry.RegistryEntry;
+                                   ^
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanDeeluxClient.java:29: 
+error: cannot find symbol
+import net.minecraft.client.MinecraftClient;
+                           ^
+  symbol:   class MinecraftClient
+  location: package net.minecraft.client
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanDeeluxClient.java:30: 
+error: package net.minecraft.item does not exist
+import net.minecraft.item.Item;
+                         ^
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanDeeluxClient.java:40: 
+error: cannot find symbol
+    private static KeyBinding toggleKey;
+                   ^
+  symbol:   class KeyBinding
+  location: class FeeshmanDeeluxClient
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanDeeluxClient.java:44: 
+error: cannot find symbol
+    public static final Identifier BITE_ALERT_ID = Identifier.of("feeshmandeelux", "bite_alert");
+                        ^
+  symbol:   class Identifier
+  location: class FeeshmanDeeluxClient
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanDeeluxClient.java:45: 
+error: cannot find symbol
+    public static final SoundEvent BITE_ALERT_SOUND = SoundEvent.of(BITE_ALERT_ID);
+                        ^
+  symbol:   class SoundEvent
+  location: class FeeshmanDeeluxClient
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanDeeluxClient.java:202: 
+error: cannot find symbol
+    private void renderPolishedHUD(DrawContext context) {
+                                   ^
+  symbol:   class DrawContext
+  location: class FeeshmanDeeluxClient
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanDeeluxClient.java:358: 
+error: cannot find symbol
+    private static final TagKey<Item> TAG_TREASURE = TagKey.of(RegistryKeys.ITEM, Identifier.of("feeshmandeelux", 
+"treasure"));
+                         ^
+  symbol:   class TagKey
+  location: class FeeshmanDeeluxClient
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanDeeluxClient.java:358: 
+error: cannot find symbol
+    private static final TagKey<Item> TAG_TREASURE = TagKey.of(RegistryKeys.ITEM, Identifier.of("feeshmandeelux", 
+"treasure"));
+                                ^
+  symbol:   class Item
+  location: class FeeshmanDeeluxClient
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanDeeluxClient.java:359: 
+error: cannot find symbol
+    private static final TagKey<Item> TAG_JUNK = TagKey.of(RegistryKeys.ITEM, Identifier.of("feeshmandeelux", "junk"));
+                         ^
+  symbol:   class TagKey
+  location: class FeeshmanDeeluxClient
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanDeeluxClient.java:359: 
+error: cannot find symbol
+    private static final TagKey<Item> TAG_JUNK = TagKey.of(RegistryKeys.ITEM, Identifier.of("feeshmandeelux", "junk"));
+                                ^
+  symbol:   class Item
+  location: class FeeshmanDeeluxClient
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanDeeluxClient.java:375: 
+error: cannot find symbol
+    private static void showAchievementToastIfMilestone(MinecraftClient client, int prevSession, int prevLifetime,
+                                                        ^
+  symbol:   class MinecraftClient
+  location: class FeeshmanDeeluxClient
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanDeeluxClient.java:418: 
+error: cannot find symbol
+    private void showEnhancedWelcomeMessage(ClientPlayerEntity player) {
+                                            ^
+  symbol:   class ClientPlayerEntity
+  location: class FeeshmanDeeluxClient
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanServerCommands.java:6: 
+error: package net.minecraft.server.command does not exist
+import net.minecraft.server.command.CommandManager;
+                                   ^
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanServerCommands.java:7: 
+error: package net.minecraft.server.command does not exist
+import net.minecraft.server.command.ServerCommandSource;
+                                   ^
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanServerCommands.java:8: 
+error: cannot find symbol
+import net.minecraft.server.network.ServerPlayerEntity;
+                                   ^
+  symbol:   class ServerPlayerEntity
+  location: package net.minecraft.server.network
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanServerCommands.java:9: 
+error: package net.minecraft.text does not exist
+import net.minecraft.text.Text;
+                         ^
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanServerCommands.java:10: 
+error: package net.minecraft.registry.entry does not exist
+import net.minecraft.registry.entry.RegistryEntry;
+                                   ^
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanServerCommands.java:11: 
+error: package net.minecraft.world.biome does not exist
+import net.minecraft.world.biome.Biome;
+                                ^
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanServerCommands.java:32: 
+error: cannot find symbol
+    private static void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher) {
+                                                           ^
+  symbol:   class ServerCommandSource
+  location: class FeeshmanServerCommands
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshmanServerCommands.java:54: 
+error: cannot find symbol
+    private static int executeFeeshmanHelp(CommandContext<ServerCommandSource> ctx) {
+                                                          ^
+  symbol:   class ServerCommandSource
+  location: class FeeshmanServerCommands
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\AutoFishService.java:196: warning: 
+[deprecation] addCatch(PlayerEntity) in FeeshLeaderboard has been deprecated
+        FeeshLeaderboard.addCatch(player);
+                        ^
+C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\FeeshLeaderboard.java:89: warning: 
+[dep-ann] deprecated item is not annotated with @Deprecated
+    public static void addCatch(PlayerEntity player) {
+                       ^
+100 errors
+2 warnings
+
+> Task :compileJava FAILED
+
+[Incubating] Problems report is available at: file:///C:/Users/home/Desktop/AI/Feeshman-Deelux/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':compileJava' (registered by plugin class 'org.gradle.api.plugins.JavaBasePlugin').
+> Compilation failed; see the compiler output below.
+  C:\Users\home\Desktop\AI\Feeshman-Deelux\src\main\java\com\yourname\feeshmandeelux\AutoFishService.java:7: error: 
+package net.minecraft.entity.projectile does not exist
+  import net.minecraft.entity.projectile.FishingBobberEntity;
+                                        ^
+  100 errors
+  2 warnings
+
+* Try:
+> Check your code and dependencies to fix the compilation error(s)
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.6.0-20260503004846+0000/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 55s
+1 actionable task: 1 executed

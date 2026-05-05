@@ -16,7 +16,9 @@
 - 💡 **[Community Tips](helpfromchat.md)** - Player wisdom and tricks
 
 ### 👨‍💻 **For Developers**
-- 📋 **[DOCS/](../DOCS/)** — SCRATCHPAD, SUMMARY, SBOM, CHANGELOG, ARCHITECTURE (status docs)
+- 🤖 **[AI / agent handoff](SCRATCHPAD.md)** — Start at **“AI RESUME HERE — 2026-05-04”** in `docs/SCRATCHPAD.md` to continue work (26.1.2 migration + SQLite build blocker).
+- 📋 **[DOCS/](../DOCS/)** — SCRATCHPAD, SUMMARY, SBOM, CHANGELOG, ARCHITECTURE (status docs)  
+  [AMENDED 2026-05-04]: This repo’s living status docs are under **`docs/`** (this folder). The `../DOCS/` path may not exist on disk — prefer links under **`docs/`** (e.g. [SCRATCHPAD](SCRATCHPAD.md), [SUMMARY](SUMMARY.md)).
 - 🛠️ **[Development Guide](DEVELOPMENT_GUIDE.md)** - Complete contributor handbook
 - 🏗️ **[Build Guide](BUILD_GUIDE.md)** - Setup, build, and troubleshoot
 - 🔧 **[Technical Documentation](techdoc.md)** - Architecture and implementation

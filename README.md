@@ -1,11 +1,11 @@
 <!-- PRESERVATION RULE: Never delete or replace content. Append or annotate only. -->
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Minecraft-1.21.11-62B47A?style=for-the-badge" alt="Minecraft" width="180" height="28"/>
-  <img src="https://img.shields.io/badge/Fabric-0.141.3-DFDFDF?style=for-the-badge" alt="Fabric" width="180" height="28"/>
-  <img src="https://img.shields.io/badge/Java-21-ED8B00?style=for-the-badge" alt="Java 21" width="180" height="28"/>
-  <img src="https://img.shields.io/badge/Gradle-9.2.1-02303A?style=for-the-badge&logo=gradle" alt="Gradle" width="180" height="28"/>
-  <img src="https://img.shields.io/badge/Loom-1.14.1-DFDFDF?style=for-the-badge" alt="Loom" width="180" height="28"/>
+  <img src="https://img.shields.io/badge/Minecraft-26.1.2-62B47A?style=for-the-badge" alt="Minecraft" width="180" height="28"/>
+  <img src="https://img.shields.io/badge/Fabric-0.148.0-DFDFDF?style=for-the-badge" alt="Fabric" width="180" height="28"/>
+  <img src="https://img.shields.io/badge/Java-25-ED8B00?style=for-the-badge" alt="Java 25" width="180" height="28"/>
+  <img src="https://img.shields.io/badge/Gradle-9.6%20nightly-02303A?style=for-the-badge&logo=gradle" alt="Gradle" width="180" height="28"/>
+  <img src="https://img.shields.io/badge/Loom-1.16.1-DFDFDF?style=for-the-badge" alt="Loom" width="180" height="28"/>
   <img src="https://img.shields.io/badge/License-MIT-A31F34?style=for-the-badge" alt="MIT" width="180" height="28"/>
 </p>
 
@@ -22,7 +22,7 @@
   <strong>Advanced Auto-Fishing for Minecraft Fabric</strong>
 </p>
 <p align="center">
-  <em>5-method bite detection • Live HUD • Smart safety • Achievement tracking</em>
+  <em>Smart bite detection • Live HUD • SQLite stats • Achievement tracking</em>
 </p>
 
 ---
@@ -31,18 +31,18 @@
 
 | Feature | What You Get |
 |---------|--------------|
-| **Bite Detection** | 5-method system (velocity, position, water validation, bobber dip) — 0.15–0.6s human-like reaction |
+| **Bite Detection** | In-water bobber signals + confirm window — 0.15–0.6s reel delay; skips bite timing when bobber hooks an entity |
 | **Automation** | Auto-cast & auto-reel, 2–4s randomized delays, stuck detection, mob avoidance |
 | **HUD** | Fish count, session time, rod durability bar, weather, biome, catch rate, status |
-| **Safety** | Durability warnings, 3s no-rod grace period, mob collision detection |
+| **Safety** | Durability warnings, 3s no-rod grace period, hooked-entity guard (no false bite on mob snag) |
 | **Stats** | Session + lifetime tracking, biome analytics, leaderboard, achievement toasts |
 
 ---
 
 ## 🚀 Quick Start
 
-1. Install [Fabric Loader 0.18.1+](https://fabricmc.net/use/installer/)
-2. Add [Fabric API 0.141.3+1.21.11](https://modrinth.com/mod/fabric-api)
+1. Install [Fabric Loader 0.19.2+](https://fabricmc.net/use/installer/)
+2. Add [Fabric API 0.148.0+26.1.2](https://modrinth.com/mod/fabric-api)
 3. Drop **Feeshman Deelux** into your `mods` folder
 4. In-game: equip rod → press **[O]** → fish
 
@@ -58,7 +58,8 @@
 | Help | `/feeshman` |
 | Stats | `/feeshstats` |
 | Biome breakdown | `/feeshstats biome` |
-| Leaderboard | `/feeshleaderboard` |
+| Leaderboard (all-time / today / week) | `/feeshleaderboard` · `today` · `week` |
+| Catch history / top items | `/feeshhistory [n]` · `/feeshtopitems [n]` |
 
 ---
 
@@ -86,12 +87,9 @@ cd Feeshman-Deelux
 ./gradlew build
 ```
 
-**Requires:** Java 21, Gradle 8.12+ (wrapper included)
+**Requires:** Java 25 (see `build.gradle` toolchain), Gradle **9.6** snapshot (wrapper included — see `gradle/wrapper/gradle-wrapper.properties`)
 
-If `gradlew build` fails with a wrapper error, run:
-```bash
-gradle wrapper --gradle-version 8.12
-```
+If `gradlew build` fails with a wrapper error, regenerate the wrapper for your Gradle version or use the committed wrapper as-is.
 
 ---
 

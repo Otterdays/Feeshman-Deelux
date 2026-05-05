@@ -7,18 +7,16 @@ import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
  */
 public final class FeeshmanNetworking {
 
-    public static void registerPayloads() {
-        PayloadTypeRegistry.playS2C().register(
-                FeeshmanPayloads.FishCaughtPayload.ID,
-                FeeshmanPayloads.FishCaughtPayload.CODEC);
-        PayloadTypeRegistry.playS2C().register(
-                FeeshmanPayloads.ItemAnnouncementPayload.ID,
-                FeeshmanPayloads.ItemAnnouncementPayload.CODEC);
-        PayloadTypeRegistry.playS2C().register(
-                FeeshmanPayloads.DurabilityWarningPayload.ID,
-                FeeshmanPayloads.DurabilityWarningPayload.CODEC);
-        PayloadTypeRegistry.playS2C().register(
-                FeeshmanPayloads.StatsSyncPayload.ID,
-                FeeshmanPayloads.StatsSyncPayload.CODEC);
-    }
+	public static void registerPayloads() {
+		PayloadTypeRegistry.clientboundPlay().register(FeeshmanPayloads.FishCaughtPayload.TYPE,
+				FeeshmanPayloads.FishCaughtPayload.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(FeeshmanPayloads.ItemAnnouncementPayload.TYPE,
+				FeeshmanPayloads.ItemAnnouncementPayload.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(FeeshmanPayloads.DurabilityWarningPayload.TYPE,
+				FeeshmanPayloads.DurabilityWarningPayload.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(FeeshmanPayloads.StatsSyncPayload.TYPE,
+				FeeshmanPayloads.StatsSyncPayload.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(FeeshmanPayloads.AchievementsSyncPayload.TYPE,
+				FeeshmanPayloads.AchievementsSyncPayload.CODEC);
+	}
 }

@@ -24,6 +24,13 @@ Requires Gradle installed: `winget install Gradle.Gradle` or [gradle.org/install
 
 ---
 
+## [AMENDED 2026-05-04]: Gradle wrapper (current)
+
+- **Gradle** (wrapper): **9.6.0-20260503004846+0000** (nightly snapshot from `services.gradle.org/distributions-snapshots/…`).
+- To regenerate the wrapper (e.g. missing `gradle-wrapper.jar`): `gradle wrapper --gradle-version="<full-version>"` from the project root.
+
+---
+
 ## [AMENDED 2026-03-19]: Minecraft 1.21.11 Build Requirements
 
 - **Minecraft**: 1.21.11
@@ -31,7 +38,7 @@ Requires Gradle installed: `winget install Gradle.Gradle` or [gradle.org/install
 - **Fabric Loader**: 0.18.1
 - **Fabric API**: 0.141.3+1.21.11
 - **Fabric Loom**: 1.14.1
-- **Gradle**: 9.2.1 (wrapper regenerated)
+- **Gradle**: 9.6.0-20260503004846+0000 (nightly wrapper; *[supersedes 9.2.1 — updated 2026-05-04]*)
 - **Yarn mappings**: 1.21.11+build.4
 - **ModMenu**: 17.0.0-beta.2
 - **Text Placeholder API**: 2.8.2+1.21.10 (closest available)
@@ -277,3 +284,12 @@ The mod is now fully functional with:
 - Ready foundation for fishing mechanics
 
 Next development phase: Implement actual auto-fishing functionality! 🎣 
+
+---
+
+## [AMENDED 2026-05-04]: Minecraft **26.1.2**, SQLite, and **Loom 1.16**
+
+- **Target game**: Minecraft **26.1.2** (see `gradle.properties`). Jars are **unobfuscated**; Fabric expects the **`net.fabricmc.fabric-loom`** Gradle plugin (not the legacy `fabric-loom` id). **Do not** add a Yarn `mappings` dependency — the wrong plugin id previously produced `Configuration 'mappings' has no dependencies`.
+- **Gradle JVM**: Loom requires the **JDK that runs Gradle** to be **25+**. If `java -version` shows 26 but `./gradlew` still says *“Gradle is using 21”*, set **`JAVA_HOME`** to a real JDK root (e.g. `C:\Program Files\Java\jdk-26`), not the Oracle `java.exe` shim under `Common Files`.
+- **Sources vs 26.1**: Code must compile against **Mojang 26.1** packages (e.g. `net.minecraft.world.item.ItemStack`, `net.minecraft.server.level.ServerPlayer`). Old **Yarn-style** imports (`net.minecraft.item.*`, `ServerPlayerEntity`, …) will fail `compileJava` until migrated — that failure is **separate from the SQLite logic** (which lives under `com.yourname.feeshmandeelux.db` and opens `config/feeshmandeelux/stats.sqlite` on `SERVER_STARTING`).
+- **SQLite dependency**: `implementation include("org.xerial:sqlite-jdbc:3.46.1.3")` in `build.gradle` (see `docs/SBOM.md` when updated).

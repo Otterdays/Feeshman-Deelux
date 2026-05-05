@@ -2,6 +2,10 @@
 
 <!-- PRESERVATION RULE: Never delete or replace content. Append or annotate only. -->
 
+## [AMENDED 2026-05-04]
+
+- **Gradle** (wrapper): **9.6.0-20260503004846+0000** (nightly snapshot). Authoritative dependency list: `docs/SBOM.md`; quick links: `docs/SUMMARY.md`.
+
 ## Recent Major Updates (March 19, 2026) ✅
 
 ### 🛠️ Minecraft 1.21.11 Upgrade

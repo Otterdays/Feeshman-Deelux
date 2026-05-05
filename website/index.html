@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Feeshman Deelux — Fabric mod for Minecraft: advanced auto-fishing, HUD, stats, and achievements." />
+  <meta name="theme-color" content="#0c1520" />
+  <title>Feeshman Deelux · Fabric auto-fishing mod</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand">
+      <span aria-hidden="true">🎣</span>
+      <a href="index.html">Feeshman Deelux</a>
+    </div>
+    <nav class="nav" aria-label="External links">
+      <a href="https://github.com/Otterdays/Feeshman-Deelux" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <a href="https://github.com/Otterdays/Feeshman-Deelux/issues" target="_blank" rel="noopener noreferrer">Issues</a>
+      <a href="https://fabricmc.net/use/installer/" target="_blank" rel="noopener noreferrer">Fabric</a>
+      <a href="https://modrinth.com/mod/fabric-api" target="_blank" rel="noopener noreferrer">Fabric API</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero wrap" aria-labelledby="hero-title">
+      <p class="hero-badge">Minecraft 26.1.2 · Fabric</p>
+      <h1 id="hero-title">Fish smarter, not harder</h1>
+      <p class="hero-lead">
+        <strong>Feeshman Deelux</strong> adds advanced auto-fishing for Fabric: human-like bite detection,
+        a live HUD, session and lifetime stats, SQLite-backed persistence, and optional ModMenu integration.
+      </p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="https://github.com/Otterdays/Feeshman-Deelux/releases" target="_blank" rel="noopener noreferrer">Download releases</a>
+        <a class="btn btn-ghost" href="https://github.com/Otterdays/Feeshman-Deelux" target="_blank" rel="noopener noreferrer">View source</a>
+      </div>
+    </section>
+
+    <section class="wrap" aria-labelledby="features-heading">
+      <h2 id="features-heading">Features</h2>
+      <div class="card-grid">
+        <article class="card">
+          <h3>Bite detection</h3>
+          <p>Multi-method detection—velocity, bobber behavior, water checks—with timing that feels natural.</p>
+        </article>
+        <article class="card">
+          <h3>Automation</h3>
+          <p>Auto-cast and reel with randomized delays, stuck handling, and sensible mob avoidance.</p>
+        </article>
+        <article class="card">
+          <h3>HUD</h3>
+          <p>Session counts, rod durability, weather, biome, catch rate, and status at a glance.</p>
+        </article>
+        <article class="card">
+          <h3>Stats &amp; achievements</h3>
+          <p>SQLite-backed stats, leaderboards, commands for history and tops—plus milestone toasts.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="wrap" aria-labelledby="install-heading">
+      <h2 id="install-heading">Quick install</h2>
+      <p style="margin: 0 0 1rem; color: var(--muted);">Current mod version <strong style="color: var(--text);">1.4.0</strong> — requires Fabric Loader and Fabric API versions compatible with your game build.</p>
+      <div class="requirements" role="list">
+        <span class="chip" role="listitem"><strong>Minecraft</strong> 26.1.2</span>
+        <span class="chip" role="listitem"><strong>Loader</strong> 0.19.2+</span>
+        <span class="chip" role="listitem"><strong>Fabric API</strong> 0.148.0+26.1.2</span>
+        <span class="chip" role="listitem"><strong>Java</strong> 25+ (runtime)</span>
+      </div>
+      <ol class="steps" style="margin-top: 1.25rem;">
+        <li>Install <a href="https://fabricmc.net/use/installer/" target="_blank" rel="noopener noreferrer">Fabric Loader</a> for your Minecraft version.</li>
+        <li>Add <a href="https://modrinth.com/mod/fabric-api" target="_blank" rel="noopener noreferrer">Fabric API</a> to your <code style="color: var(--accent);">mods</code> folder.</li>
+        <li>Drop <strong>Feeshman Deelux</strong> into <code style="color: var(--accent);">mods</code>.</li>
+        <li>In-game: equip a fishing rod, press <strong>O</strong> to toggle auto-fishing.</li>
+      </ol>
+      <p style="margin-top: 1rem; font-size: 0.95rem; color: var(--muted);">
+        Optional: <a href="https://modrinth.com/mod/modmenu" target="_blank" rel="noopener noreferrer">Mod Menu</a> for in-game config (sound, achievements screen).
+      </p>
+    </section>
+
+    <section class="wrap" aria-labelledby="commands-heading">
+      <h2 id="commands-heading">Commands</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Command</th>
+              <th scope="col">What it does</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>/feeshman</code></td>
+              <td>Help and usage</td>
+            </tr>
+            <tr>
+              <td><code>/feeshstats</code></td>
+              <td>Player fishing stats</td>
+            </tr>
+            <tr>
+              <td><code>/feeshstats biome</code></td>
+              <td>Breakdown by biome</td>
+            </tr>
+            <tr>
+              <td><code>/feeshleaderboard</code></td>
+              <td>Leaderboard</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>
+      <strong>Feeshman Deelux</strong> · MIT License · by Otterdays ·
+      <a href="https://github.com/Otterdays/Feeshman-Deelux" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </p>
+  </footer>
+</body>
+</html>

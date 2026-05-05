@@ -3,6 +3,8 @@
 > **For Developers, Contributors, and Curious Minds**  
 > *Everything you need to know to contribute to the ultimate fishing mod!*
 
+> **[AMENDED 2026-05-04] — AI / returning contributor:** Start with **`docs/SCRATCHPAD.md`** section **“AI RESUME HERE — 2026-05-04”** (active toolchain, SQLite status, compile blocker, next steps). The **Quick Start** below still mentions **Java 21 / MC 1.21.4** — **stale**; authoritative versions are **`gradle.properties`** (currently **26.1.2**, **JDK 25+** for Gradle, Loom **`net.fabricmc.fabric-loom`**) and **`docs/BUILD_GUIDE.md`**.
+
 ---
 
 ## 🎯 **Quick Start for Developers**

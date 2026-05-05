@@ -4,7 +4,29 @@
 
 All notable changes to Feeshman Deelux. [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [Unreleased]
+## [1.4.0] — Unreleased
+
+### Changed
+- Retargeted to **Minecraft 26.1.2** (Fabric Loader 0.19.2, Fabric API 0.148.0+26.1.2, Loom 1.16.1)
+- Java **Gradle toolchain** set to **26** (was release 25 in earlier 1.4.0 attempt)
+- [2026-05-05] Java **25** toolchain + **`release 25`** again for shipped JAR compatibility with **Java 25** runtimes (see Fixed)
+- ModMenu updated to 18.0.0-alpha.8; Placeholder API to 3.0.0+26.1
+- All user-facing docs updated to reflect 26.1.2
+- **Mojang 26.1 source port:** Yarn-era imports replaced across server + client (e.g. `ServerPlayer`, `Commands`/`CommandSourceStack`, `Component`, `FishingHook`, `HudElementRegistry` + `GuiGraphicsExtractor`, `PayloadTypeRegistry.clientboundPlay()`, `KeyMappingHelper`, ModMenu screens on `extractRenderState`)
+
+### Fixed
+- **Prism / Java 25 launchers:** `UnsupportedClassVersionError` (mod **v70** vs JVM **≤ v69**) — build now emits **Java 25** bytecode (`toolchain` 25, `options.release = 25`)
+- `FeeshmanDatabase.read` / `writeReturning` now accept `ThrowingFunction` so SQLite DAO lambdas that `throws Exception` compile on Java 26
+
+### Added
+- SQLite persistence layer (`org.xerial:sqlite-jdbc 3.46.1.3`) — stats DB at `config/feeshmandeelux/stats.sqlite`
+
+## [Unreleased — docs]
+
+### Changed
+- Docs: **`SCRATCHPAD.md`** — added **“AI RESUME HERE — 2026-05-04”** handoff (26.1.2 toolchain, SQLite implementation status, `compileJava` blocker, ordered next steps, key paths). **`SUMMARY.md`** — amend block + Quick Link to SCRATCHPAD; note stale “Current Version” table. **`docs/README.md`** — AI agent pointer to SCRATCHPAD resume block.
+- Docs: `SBOM.md` consolidated (single dependency + toolchain view); `SUMMARY.md`, `BUILD_GUIDE.md`, root `summary.md`, `README.md` (Gradle badge) aligned with nightly wrapper **9.6.0-20260503004846+0000**
+- [2026-05-05] Project audit: **`docs/FEATURES_STATUS.md`**, **`docs/MODRINTH_DESCRIPTION.md`**, **`docs/PROJECT_STATUS.md`**, **`docs/SUMMARY.md`**, root **`README.md`** (toolchain badges, commands, hooked-entity guard vs old mob-collision copy, SQLite)
 
 ### Added
 - (none)

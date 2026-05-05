@@ -1,72 +1,95 @@
 package com.yourname.feeshmandeelux.network;
 
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.Identifier;
 
 /**
  * Custom payloads for server-to-client sync (bite sound, HUD stats, announcements, toasts).
  */
 public final class FeeshmanPayloads {
 
-    public record FishCaughtPayload(int sessionFish, int lifetimeFish, String luckyCompliment, int biomeCount)
-            implements CustomPayload {
-        public static final CustomPayload.Id<FishCaughtPayload> ID = new CustomPayload.Id<>(Identifier.of("feeshmandeelux", "fish_caught"));
-        public static final PacketCodec<RegistryByteBuf, FishCaughtPayload> CODEC = PacketCodec.tuple(
-                PacketCodecs.INTEGER, FishCaughtPayload::sessionFish,
-                PacketCodecs.INTEGER, FishCaughtPayload::lifetimeFish,
-                PacketCodecs.STRING, FishCaughtPayload::luckyCompliment,
-                PacketCodecs.INTEGER, FishCaughtPayload::biomeCount,
-                FishCaughtPayload::new);
-        public static final CustomPayload.Type<RegistryByteBuf, FishCaughtPayload> TYPE = new CustomPayload.Type<>(ID, CODEC);
+	private static Identifier id(String path) {
+		return Identifier.fromNamespaceAndPath("feeshmandeelux", path);
+	}
 
-        @Override
-        public Id<? extends CustomPayload> getId() {
-            return ID;
-        }
-    }
+	public record FishCaughtPayload(int sessionFish, int lifetimeFish, String luckyCompliment, int biomeCount)
+			implements CustomPacketPayload {
+		public static final CustomPacketPayload.Type<FishCaughtPayload> TYPE = new CustomPacketPayload.Type<>(
+				id("fish_caught"));
+		public static final StreamCodec<RegistryFriendlyByteBuf, FishCaughtPayload> CODEC = StreamCodec.composite(
+				ByteBufCodecs.VAR_INT, FishCaughtPayload::sessionFish,
+				ByteBufCodecs.VAR_INT, FishCaughtPayload::lifetimeFish,
+				ByteBufCodecs.STRING_UTF8, FishCaughtPayload::luckyCompliment,
+				ByteBufCodecs.VAR_INT, FishCaughtPayload::biomeCount,
+				FishCaughtPayload::new);
 
-    public record ItemAnnouncementPayload(String itemId, boolean hasEnchantments) implements CustomPayload {
-        public static final CustomPayload.Id<ItemAnnouncementPayload> ID = new CustomPayload.Id<>(Identifier.of("feeshmandeelux", "item_announcement"));
-        public static final PacketCodec<RegistryByteBuf, ItemAnnouncementPayload> CODEC = PacketCodec.tuple(
-                PacketCodecs.STRING, ItemAnnouncementPayload::itemId,
-                PacketCodecs.BOOLEAN, ItemAnnouncementPayload::hasEnchantments,
-                ItemAnnouncementPayload::new);
-        public static final CustomPayload.Type<RegistryByteBuf, ItemAnnouncementPayload> TYPE = new CustomPayload.Type<>(ID, CODEC);
+		@Override
+		public Type<? extends CustomPacketPayload> type() {
+			return TYPE;
+		}
+	}
 
-        @Override
-        public Id<? extends CustomPayload> getId() {
-            return ID;
-        }
-    }
+	public record ItemAnnouncementPayload(String itemId, boolean hasEnchantments) implements CustomPacketPayload {
+		public static final CustomPacketPayload.Type<ItemAnnouncementPayload> TYPE = new CustomPacketPayload.Type<>(
+				id("item_announcement"));
+		public static final StreamCodec<RegistryFriendlyByteBuf, ItemAnnouncementPayload> CODEC =
+				StreamCodec.composite(
+						ByteBufCodecs.STRING_UTF8, ItemAnnouncementPayload::itemId,
+						ByteBufCodecs.BOOL, ItemAnnouncementPayload::hasEnchantments,
+						ItemAnnouncementPayload::new);
 
-    public record DurabilityWarningPayload(int remainingUses) implements CustomPayload {
-        public static final CustomPayload.Id<DurabilityWarningPayload> ID = new CustomPayload.Id<>(Identifier.of("feeshmandeelux", "durability_warning"));
-        public static final PacketCodec<RegistryByteBuf, DurabilityWarningPayload> CODEC = PacketCodec.tuple(
-                PacketCodecs.INTEGER, DurabilityWarningPayload::remainingUses, DurabilityWarningPayload::new);
-        public static final CustomPayload.Type<RegistryByteBuf, DurabilityWarningPayload> TYPE = new CustomPayload.Type<>(ID, CODEC);
+		@Override
+		public Type<? extends CustomPacketPayload> type() {
+			return TYPE;
+		}
+	}
 
-        @Override
-        public Id<? extends CustomPayload> getId() {
-            return ID;
-        }
-    }
+	public record DurabilityWarningPayload(int remainingUses) implements CustomPacketPayload {
+		public static final CustomPacketPayload.Type<DurabilityWarningPayload> TYPE = new CustomPacketPayload.Type<>(
+				id("durability_warning"));
+		public static final StreamCodec<RegistryFriendlyByteBuf, DurabilityWarningPayload> CODEC =
+				StreamCodec.composite(
+						ByteBufCodecs.VAR_INT, DurabilityWarningPayload::remainingUses,
+						DurabilityWarningPayload::new);
 
-    public record StatsSyncPayload(int sessionFish, int lifetimeFish, long sessionStartTime, int biomeCount) implements CustomPayload {
-        public static final CustomPayload.Id<StatsSyncPayload> ID = new CustomPayload.Id<>(Identifier.of("feeshmandeelux", "stats_sync"));
-        public static final PacketCodec<RegistryByteBuf, StatsSyncPayload> CODEC = PacketCodec.tuple(
-                PacketCodecs.INTEGER, StatsSyncPayload::sessionFish,
-                PacketCodecs.INTEGER, StatsSyncPayload::lifetimeFish,
-                PacketCodecs.LONG, StatsSyncPayload::sessionStartTime,
-                PacketCodecs.INTEGER, StatsSyncPayload::biomeCount,
-                StatsSyncPayload::new);
-        public static final CustomPayload.Type<RegistryByteBuf, StatsSyncPayload> TYPE = new CustomPayload.Type<>(ID, CODEC);
+		@Override
+		public Type<? extends CustomPacketPayload> type() {
+			return TYPE;
+		}
+	}
 
-        @Override
-        public Id<? extends CustomPayload> getId() {
-            return ID;
-        }
-    }
+	public record StatsSyncPayload(int sessionFish, int lifetimeFish, long sessionStartTime, int biomeCount)
+			implements CustomPacketPayload {
+		public static final CustomPacketPayload.Type<StatsSyncPayload> TYPE = new CustomPacketPayload.Type<>(
+				id("stats_sync"));
+		public static final StreamCodec<RegistryFriendlyByteBuf, StatsSyncPayload> CODEC = StreamCodec.composite(
+				ByteBufCodecs.VAR_INT, StatsSyncPayload::sessionFish,
+				ByteBufCodecs.VAR_INT, StatsSyncPayload::lifetimeFish,
+				ByteBufCodecs.VAR_LONG, StatsSyncPayload::sessionStartTime,
+				ByteBufCodecs.VAR_INT, StatsSyncPayload::biomeCount,
+				StatsSyncPayload::new);
+
+		@Override
+		public Type<? extends CustomPacketPayload> type() {
+			return TYPE;
+		}
+	}
+
+	/** Server-to-client comma-separated persisted achievement IDs (SQLite). */
+	public record AchievementsSyncPayload(String achievementIdsCsv) implements CustomPacketPayload {
+		public static final CustomPacketPayload.Type<AchievementsSyncPayload> TYPE = new CustomPacketPayload.Type<>(
+				id("achievements_sync"));
+		public static final StreamCodec<RegistryFriendlyByteBuf, AchievementsSyncPayload> CODEC =
+				StreamCodec.composite(
+						ByteBufCodecs.STRING_UTF8, AchievementsSyncPayload::achievementIdsCsv,
+						AchievementsSyncPayload::new);
+
+		@Override
+		public Type<? extends CustomPacketPayload> type() {
+			return TYPE;
+		}
+	}
 }

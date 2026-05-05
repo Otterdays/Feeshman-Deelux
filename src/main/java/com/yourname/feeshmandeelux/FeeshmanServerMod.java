@@ -17,7 +17,6 @@ public class FeeshmanServerMod implements DedicatedServerModInitializer {
     public void onInitializeServer() {
         LOGGER.info("Feeshman Deelux Server Initializing!");
         FeeshmanConfig.load();
-        FeeshLeaderboard.load();
         FeeshmanNetworking.registerPayloads();
         AutoFishService.register();
         FeeshmanServerCommands.register();

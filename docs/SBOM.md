@@ -2,41 +2,52 @@
 
 # SBOM — Software Bill of Materials
 
-## Dependencies (from build.gradle)
+Authoritative inventory for **Feeshman Deelux**. **Sources of truth:** `build.gradle`, `gradle.properties`, `gradle/wrapper/gradle-wrapper.properties`.
+
+## This mod
+
+| | |
+|:---|:---|
+| **mod_id** | `feeshmandeelux` |
+| **Version** | 1.4.0 |
+| **Maven group** | `com.yourname.feeshmandeelux` |
+| **Artifact base** | `feeshmandeelux` |
+
+## Dependencies (`build.gradle` / `gradle.properties`)
 
 | Package | Version | Purpose |
 |---------|---------|---------|
-| com.mojang:minecraft | 1.21.6 | Game runtime |
-| net.fabricmc:yarn | 1.21.6+build.1 | Mappings |
-| net.fabricmc:fabric-loader | 0.16.14 | Mod loader |
-| net.fabricmc.fabric-api:fabric-api | 0.127.0+1.21.6 | Fabric API |
-| com.terraformersmc:modmenu | 13.0.3 | Config screen integration |
-| eu.pb4:placeholder-api | 2.5.2+1.21.3 | ModMenu dependency |
+| com.mojang:minecraft | 26.1.2 | Game |
+| net.fabricmc:fabric-loader | 0.19.2 | Loader |
+| net.fabricmc.fabric-api:fabric-api | 0.148.0+26.1.2 | Fabric API |
+| com.terraformersmc:modmenu | 18.0.0-alpha.8 | Config screen |
+| eu.pb4:placeholder-api | 3.0.0+26.1 | ModMenu dependency |
+| org.xerial:sqlite-jdbc | 3.46.1.3 | Stats DB driver (jar-in-jar) |
 
-## Build Toolchain
-- Gradle 8.12
-- Fabric Loom 1.10.5
-- Java 21
+## Gradle plugins
 
-## Last Updated
-2025-03-18 — No package changes this session
+| ID | Version |
+|----|---------|
+| `net.fabricmc.fabric-loom` | 1.16.1 |
+| `maven-publish` | (core) |
 
-## [AMENDED 2026-03-19]
+## Toolchain
 
-### Mod Version
-- **feeshmandeelux**: 1.3.01 (build output: feeshmandeelux-1.3.01.jar)
+| Item | Value |
+|------|--------|
+| Java | 26 (Gradle `java { toolchain { languageVersion = 26 } }` in `build.gradle`) |
+| Gradle (wrapper) | 9.6.0-20260503004846+0000 (nightly snapshot) |
+| Fabric Loom | 1.16.1 |
 
-### Updated Dependencies
-| Package | Version | Purpose |
-|---------|---------|---------|
-| com.mojang:minecraft | 1.21.11 | Game runtime |
-| net.fabricmc:yarn | 1.21.11+build.4 | Mappings |
-| net.fabricmc:fabric-loader | 0.18.1 | Mod loader |
-| net.fabricmc.fabric-api:fabric-api | 0.141.3+1.21.11 | Fabric API |
-| com.terraformersmc:modmenu | 17.0.0-beta.2 | Config screen integration |
-| eu.pb4:placeholder-api | 2.8.2+1.21.10 | ModMenu dependency (closest available) |
+[AMENDED 2026-05-05]: Java row was **25** when docs assumed `--release 25`; build now uses **JDK 26 toolchain** from `build.gradle`.
 
-### Updated Build Toolchain
-- Gradle wrapper: 9.2.1
-- Fabric Loom: 1.14.1
-- Java: 21
+[AMENDED 2026-05-05 — shipping bytecode]: `build.gradle` now uses **`languageVersion = 25`** and **`JavaCompile.options.release = 25`** so the mod JAR emits **class file version 69** (Java 25). This avoids `UnsupportedClassVersionError` on typical Fabric setups (e.g. PrismLauncher with **Java 25**), which cannot load **v70** (Java 26) bytecode.
+
+## Extra repositories
+
+`mavenCentral`, `https://maven.fabricmc.net/`, `https://maven.terraformersmc.com/`, `https://maven.nucleoid.xyz/` — see `build.gradle`.
+
+## Last updated
+
+2026-05-04 — Updated to Minecraft 26.1.2 / mod 1.4.0. Source of truth: `gradle.properties` + `build.gradle`.
+2026-05-05 — Mojang source port complete; Java toolchain **26**; `FeeshmanDatabase` `ThrowingFunction` for DB lambdas.

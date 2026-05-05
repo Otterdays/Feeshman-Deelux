@@ -4,6 +4,27 @@
 
 **Last Updated**: March 18, 2025
 
+## [AMENDED 2026-05-05]: Audit — docs & build snapshot
+- **`./gradlew compileJava`** / **`build`** align with **Minecraft 26.1.2** + **Fabric Loom 1.16.1** toolchain (see `gradle.properties`).
+- **`docs/FEATURES_STATUS.md`** and **`docs/MODRINTH_DESCRIPTION.md`** updated for **SQLite** commands (`feeshhistory`, `feeshtopitems`, leaderboard `today`/`week`), **hooked-entity guard** (replaces outdated “mob collision near entities” wording), and **HudElementRegistry** (HUD migration done).
+- Older narrative blocks below still describe historical **1.21.x** work — treat **`docs/SUMMARY.md`** + **`gradle.properties`** as authoritative for current versions.
+
+## Current Target: Minecraft 26.1.2 — mod 1.4.0
+
+| | |
+|:---|:---|
+| **Minecraft** | 26.1.2 |
+| **Mod version** | 1.4.0 |
+| **Fabric Loader** | 0.19.2 |
+| **Fabric API** | 0.148.0+26.1.2 |
+| **Loom** | 1.16.1 |
+| **Java** | 25 |
+
+- **Where to continue:** `docs/SCRATCHPAD.md` → **”AI RESUME HERE — 2026-05-04”** (toolchain, DB package list, `compileJava` failure mode, ordered tasks).
+- **Build state:** `./gradlew compileJava` reports errors (Yarn-style `net.minecraft.*` imports vs Mojang unobfuscated 26.1 packages). SQLite persistence code exists but is not shippable until the port finishes.
+- **[AMENDED 2026-05-05]:** **Stale:** `compileJava` / SQLite ship readiness — **26.1.2 port is built in-tree**; run **`./gradlew build`** locally. SCRATCHPAD “AI RESUME” still lists historical ordered tasks.
+- **Narrative below** (1.21.11 “production ready”) describes the previous stable line.
+
 ## [AMENDED 2026-03-29]: Documentation and remote sync
 - **Last verified**: 2026-03-29 — Working tree clean; `main` matches `origin/main`.
 - **Version alignment**: Mod **1.3.01**, Minecraft **1.21.11** (see `docs/SUMMARY.md`, `docs/CHANGELOG.md` [1.3.01]).
