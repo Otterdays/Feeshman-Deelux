@@ -170,4 +170,15 @@ public final class FeeshLeaderboard {
     public static List<Map.Entry<String, Integer>> getTop(int limit) {
         return FeeshmanDatabase.read(c -> LeaderboardDao.topAllTime(c, limit), List.of());
     }
+
+    public static void saveAutoFishPreference(String uuid, boolean enabled) {
+        if (!FeeshmanDatabase.isOpen()) return;
+        FeeshmanDatabase.write(c -> KvStore.put(c, "autofish." + uuid, enabled ? "1" : "0"));
+    }
+
+    public static Boolean loadAutoFishPreference(String uuid) {
+        if (!FeeshmanDatabase.isOpen()) return null;
+        String val = FeeshmanDatabase.read(c -> KvStore.get(c, "autofish." + uuid).orElse(null), null);
+        return val != null ? "1".equals(val) : null;
+    }
 }

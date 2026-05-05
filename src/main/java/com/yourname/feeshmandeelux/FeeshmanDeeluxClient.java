@@ -40,7 +40,10 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
     private static FeeshmanDeeluxClient instance;
 
     private static KeyMapping toggleKey;
+    private static KeyMapping hudCycleKey;
     private boolean autoFishEnabled = false;
+    // 0 = full HUD, 1 = compact, 2 = hidden
+    private int hudDisplayMode = 0;
 
     public static final Identifier BITE_ALERT_ID = Identifier.fromNamespaceAndPath("feeshmandeelux", "bite_alert");
     public static final SoundEvent BITE_ALERT_SOUND = SoundEvent.createVariableRangeEvent(BITE_ALERT_ID);
@@ -52,6 +55,14 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
     private int lifetimeFishCaught = 0;
     private int biomeCount = 0;
     private long sessionStartTime = 0;
+    // Set on first FishCaughtPayload; used for accurate catch-rate denominator
+    private long firstCatchTime = 0;
+
+    private int sessionTreasureCount = 0;
+    private int sessionJunkCount = 0;
+    private String lastCaughtItemName = null;
+    private boolean lastCaughtTreasure = false;
+    private boolean lastCaughtJunk = false;
 
     private final Set<String> syncedAchievementIds = Collections.synchronizedSet(new HashSet<>());
 
@@ -122,11 +133,24 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
                 KeyMapping.Category.MISC
         ));
 
+        hudCycleKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+                "key.feeshmandeelux.hud_cycle",
+                InputConstants.Type.KEYSYM,
+                GLFW.GLFW_KEY_I,
+                KeyMapping.Category.MISC
+        ));
+
         HudElementRegistry.addLast(HUD_ELEMENT_ID, this::extractHudRenderState);
 
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
             sessionStartTime = System.currentTimeMillis();
+            firstCatchTime = 0;
             syncedAchievementIds.clear();
+            sessionTreasureCount = 0;
+            sessionJunkCount = 0;
+            lastCaughtItemName = null;
+            lastCaughtTreasure = false;
+            lastCaughtJunk = false;
             if (client.player != null) {
                 lifetimeFishCaught = FeeshLeaderboard.getPlayerTotal(client.player);
             }
@@ -148,6 +172,9 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
                 if (instance != null) {
                     int prevSession = instance.totalFishCaught;
                     int prevLifetime = instance.lifetimeFishCaught;
+                    if (instance.firstCatchTime == 0 && payload.sessionFish() > 0) {
+                        instance.firstCatchTime = System.currentTimeMillis();
+                    }
                     instance.totalFishCaught = payload.sessionFish();
                     instance.lifetimeFishCaught = payload.lifetimeFish();
                     instance.biomeCount = payload.biomeCount();
@@ -180,6 +207,20 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
 
         ClientPlayNetworking.registerGlobalReceiver(FeeshmanPayloads.ItemAnnouncementPayload.TYPE, (payload, context) -> {
             context.client().execute(() -> {
+                if (instance != null) {
+                    Identifier parsed = Identifier.tryParse(payload.itemId());
+                    if (parsed != null) {
+                        Item item = BuiltInRegistries.ITEM.getOptional(parsed).orElse(null);
+                        if (item != null && item != Items.AIR) {
+                            ItemStack stack = new ItemStack(item);
+                            instance.lastCaughtItemName = stack.getHoverName().getString();
+                            instance.lastCaughtTreasure = stack.is(h -> h.is(TAG_TREASURE));
+                            instance.lastCaughtJunk = stack.is(h -> h.is(TAG_JUNK));
+                            if (instance.lastCaughtTreasure) instance.sessionTreasureCount++;
+                            else if (instance.lastCaughtJunk) instance.sessionJunkCount++;
+                        }
+                    }
+                }
                 if (context.player() != null) {
                     String msg = formatItemAnnouncement(payload.itemId(), payload.hasEnchantments());
                     if (msg != null) {
@@ -202,17 +243,63 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (toggleKey.consumeClick() && client.player != null && client.getConnection() != null) {
+                boolean wasEnabled = autoFishEnabled;
                 autoFishEnabled = !autoFishEnabled;
                 client.getConnection().sendCommand(autoFishEnabled ? "feeshman enable" : "feeshman disable");
+                if (wasEnabled && !autoFishEnabled) {
+                    sendSessionSummary(client);
+                }
+            }
+            if (hudCycleKey.consumeClick() && autoFishEnabled) {
+                hudDisplayMode = (hudDisplayMode + 1) % 3;
             }
         });
+    }
+
+    // Prints session stats to chat when auto-fish is toggled off
+    private void sendSessionSummary(Minecraft client) {
+        if (client.player == null) return;
+        long elapsed = sessionStartTime > 0 ? System.currentTimeMillis() - sessionStartTime : 0;
+        int totalSecs = (int) (elapsed / 1000);
+        int mins = totalSecs / 60, secs = totalSecs % 60;
+        long rateMs = firstCatchTime > 0 ? System.currentTimeMillis() - firstCatchTime : elapsed;
+        float rate = (rateMs > 0 && totalFishCaught > 0) ? (float) totalFishCaught / (rateMs / 60000f) : 0f;
+        String msg = String.format(
+                "§6[Feeshman] §7Session: §a%d fish §7in §a%02d:%02d §7(§a%.1f/min§7) | §6T:§a%d §7J:§c%d",
+                totalFishCaught, mins, secs, Math.max(0f, rate), sessionTreasureCount, sessionJunkCount);
+        client.player.sendSystemMessage(Component.literal(msg));
     }
 
     private void extractHudRenderState(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
         if (!autoFishEnabled) {
             return;
         }
+        if (hudDisplayMode == 2) return;
+        if (hudDisplayMode == 1) {
+            renderCompactHud(graphics);
+            return;
+        }
         renderPolishedHud(graphics);
+    }
+
+    private void renderCompactHud(GuiGraphicsExtractor context) {
+        Minecraft client = Minecraft.getInstance();
+        if (client.player == null || client.font == null) return;
+        var font = client.font;
+
+        int hudX = 6, hudY = 6, hudWidth = 210, hudHeight = 26;
+        context.fill(hudX - 1, hudY - 1, hudX + hudWidth + 1, hudY + hudHeight + 1, 0x80000000);
+        context.fill(hudX, hudY, hudX + hudWidth, hudY + hudHeight, 0x90001122);
+
+        long elapsed = sessionStartTime > 0 ? System.currentTimeMillis() - sessionStartTime : 0;
+        int totalSecs = (int) (elapsed / 1000);
+        int mins = totalSecs / 60, secs = totalSecs % 60;
+        long rateMs = firstCatchTime > 0 ? System.currentTimeMillis() - firstCatchTime : elapsed;
+        float rate = (rateMs > 0 && totalFishCaught > 0) ? (float) totalFishCaught / (rateMs / 60000f) : 0f;
+
+        String line = String.format("⚡ %d | %02d:%02d | %.1f/min | T:%d J:%d",
+                totalFishCaught, mins, secs, Math.max(0f, rate), sessionTreasureCount, sessionJunkCount);
+        context.text(font, line, hudX + 4, hudY + 9, 0xFF00DDFF, true);
     }
 
     private void renderPolishedHud(GuiGraphicsExtractor context) {
@@ -225,20 +312,14 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
         int hudX = 6;
         int hudY = 6;
         int hudWidth = 220;
-        int hudHeight = 160;
+        int hudHeight = 216;
 
-        int outerBorderColor = 0x80000000;
-        int innerBorderColor = 0xA0222222;
-        int backgroundColorMain = 0x85000000;
-        int titleBackgroundColor = 0xB0004466;
-        int accentColor = 0xFF00DDFF;
+        context.fill(hudX - 2, hudY - 2, hudX + hudWidth + 2, hudY + hudHeight + 2, 0x80000000);
+        context.fill(hudX - 1, hudY - 1, hudX + hudWidth + 1, hudY + hudHeight + 1, 0xA0222222);
+        context.fill(hudX, hudY, hudX + hudWidth, hudY + hudHeight, 0x85000000);
 
-        context.fill(hudX - 2, hudY - 2, hudX + hudWidth + 2, hudY + hudHeight + 2, outerBorderColor);
-        context.fill(hudX - 1, hudY - 1, hudX + hudWidth + 1, hudY + hudHeight + 1, innerBorderColor);
-        context.fill(hudX, hudY, hudX + hudWidth, hudY + hudHeight, backgroundColorMain);
-
-        context.fill(hudX, hudY, hudX + hudWidth, hudY + 20, titleBackgroundColor);
-        context.fill(hudX, hudY + 18, hudX + hudWidth, hudY + 20, accentColor);
+        context.fill(hudX, hudY, hudX + hudWidth, hudY + 20, 0xB0004466);
+        context.fill(hudX, hudY + 18, hudX + hudWidth, hudY + 20, 0xFF00DDFF);
 
         String title = "⚡ Feeshman Deelux";
         int titleWidth = font.width(title);
@@ -249,10 +330,28 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
         int lineHeight = 14;
         int currentLine = 0;
 
+        // Inventory warning shown first if near-full
+        int freeSlots = 0;
+        var playerInv = client.player.getInventory();
+        for (int i = 0; i < 36; i++) {
+            if (playerInv.getItem(i).isEmpty()) freeSlots++;
+        }
+        if (freeSlots <= 4) {
+            String warnText = String.format("⚠ Inventory: %d slots left", freeSlots);
+            context.text(font, warnText, hudX + 8, contentY + (currentLine * lineHeight), 0xFFFF4444, true);
+            currentLine++;
+        }
+
         String fishText = totalFishCaught > 0
                 ? String.format("◆ Fish: %d caught", totalFishCaught)
                 : "◆ Fish: Use /feeshstats for stats";
         context.text(font, fishText, hudX + 8, contentY + (currentLine * lineHeight), 0xFF4AE54A, true);
+        currentLine++;
+
+        // Session treasure / junk / fish tally
+        int fishOnly = Math.max(0, totalFishCaught - sessionTreasureCount - sessionJunkCount);
+        String tallyText = String.format("⬡ T:%d  J:%d  F:%d", sessionTreasureCount, sessionJunkCount, fishOnly);
+        context.text(font, tallyText, hudX + 8, contentY + (currentLine * lineHeight), 0xFFCCCCCC, true);
         currentLine++;
 
         int sessionTicks = sessionStartTime > 0
@@ -279,11 +378,9 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
             int barHeight = 4;
             int barX = hudX + hudWidth - barWidth - 10;
             int barY = contentY + (currentLine * lineHeight) + 3;
-
             context.fill(barX, barY, barX + barWidth, barY + barHeight, 0x60333333);
             int fillWidth = (barWidth * durabilityPercent) / 100;
             context.fill(barX, barY, barX + fillWidth, barY + barHeight, color);
-
             currentLine++;
         }
 
@@ -310,29 +407,25 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
             String biomeText = String.format("▼ Biome: %s", capitalizeWords(biomeName));
 
             int biomeColor = 0xFF40E0D0;
-            if (biomeName.contains("ocean")) {
-                biomeColor = 0xFF0080FF;
-            } else if (biomeName.contains("river")) {
-                biomeColor = 0xFF87CEEB;
-            } else if (biomeName.contains("swamp")) {
-                biomeColor = 0xFF90EE90;
-            } else if (biomeName.contains("jungle")) {
-                biomeColor = 0xFF32CD32;
-            } else if (biomeName.contains("desert")) {
-                biomeColor = 0xFFFFA500;
-            } else if (biomeName.contains("forest")) {
-                biomeColor = 0xFF228B22;
-            }
+            if (biomeName.contains("ocean")) biomeColor = 0xFF0080FF;
+            else if (biomeName.contains("river")) biomeColor = 0xFF87CEEB;
+            else if (biomeName.contains("swamp")) biomeColor = 0xFF90EE90;
+            else if (biomeName.contains("jungle")) biomeColor = 0xFF32CD32;
+            else if (biomeName.contains("desert")) biomeColor = 0xFFFFA500;
+            else if (biomeName.contains("forest")) biomeColor = 0xFF228B22;
 
             context.text(font, biomeText, hudX + 8, contentY + (currentLine * lineHeight), biomeColor, true);
             currentLine++;
         }
 
-        int rateTicks = sessionStartTime > 0 ? (int) ((System.currentTimeMillis() - sessionStartTime) / 50) : fishingSessionTicks;
-        if (rateTicks > 0) {
-            float catchRate = (float) totalFishCaught / (rateTicks / 1200.0f);
+        // Rate uses firstCatchTime for an accurate denominator (ignores idle pre-fishing time)
+        long rateMs = firstCatchTime > 0
+                ? System.currentTimeMillis() - firstCatchTime
+                : (sessionStartTime > 0 ? System.currentTimeMillis() - sessionStartTime : 0);
+        if (rateMs > 0 && totalFishCaught > 0) {
+            float catchRate = (float) totalFishCaught / (rateMs / 60000f);
             String efficiency = catchRate > 2.0f ? "Excellent" : catchRate > 1.0f ? "Good" : catchRate > 0.5f ? "Fair" : "Slow";
-            String rateText = String.format("✦ Rate: %.1f/min (%s)", Math.max(0, catchRate), efficiency);
+            String rateText = String.format("✦ Rate: %.1f/min (%s)", catchRate, efficiency);
             int rateColor = catchRate > 2.0f ? 0xFF4AE54A : catchRate > 1.0f ? 0xFF9ACD32 : catchRate > 0.5f ? 0xFFFFB347 : 0xFFFF7F50;
             context.text(font, rateText, hudX + 8, contentY + (currentLine * lineHeight), rateColor, true);
             currentLine++;
@@ -343,10 +436,42 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
         context.text(font, statusText, hudX + 8, contentY + (currentLine * lineHeight), statusColor, true);
         currentLine++;
 
+        if (lastCaughtItemName != null) {
+            int itemColor = lastCaughtTreasure ? 0xFFFFD700 : lastCaughtJunk ? 0xFF999999 : 0xFF4AE54A;
+            String itemText = (lastCaughtTreasure ? "✨" : "▸") + " Last: " + lastCaughtItemName;
+            context.text(font, itemText, hudX + 8, contentY + (currentLine * lineHeight), itemColor, true);
+            currentLine++;
+        }
+
+        String nextAchievement = getNextAchievementProgress();
+        if (nextAchievement != null) {
+            context.text(font, nextAchievement, hudX + 8, contentY + (currentLine * lineHeight), 0xFFAAAAAA, true);
+            currentLine++;
+        }
+
         if (lifetimeFishCaught > 0) {
             String lifetimeText = String.format("★ Lifetime: %d total catches", lifetimeFishCaught);
             context.text(font, lifetimeText, hudX + 8, contentY + (currentLine * lineHeight), 0xFFFFD700, true);
         }
+    }
+
+    private String getNextAchievementProgress() {
+        int[] sessionMilestones = {10, 25, 50, 100};
+        for (int m : sessionMilestones) {
+            if (totalFishCaught < m) {
+                return String.format("↑ Next: %d session (%d more)", m, m - totalFishCaught);
+            }
+        }
+        int[] lifetimeMilestones = {100, 500, 1000};
+        for (int m : lifetimeMilestones) {
+            if (lifetimeFishCaught < m) {
+                return String.format("↑ Next: %d lifetime (%d more)", m, m - lifetimeFishCaught);
+            }
+        }
+        if (biomeCount < 5) {
+            return String.format("↑ Explorer: %d/5 biomes", biomeCount);
+        }
+        return null;
     }
 
     private static final TagKey<Item> TAG_TREASURE = TagKey.create(Registries.ITEM,

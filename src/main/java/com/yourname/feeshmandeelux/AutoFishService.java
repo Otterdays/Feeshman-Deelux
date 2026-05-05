@@ -26,10 +26,6 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
-/**
- * Server-side auto-fishing logic. Uses authoritative bobber state (hooked entity)
- * instead of client heuristics.
- */
 public final class AutoFishService {
 
     private static final Logger LOGGER = LogManager.getLogger("FeeshmanDeelux");
@@ -79,6 +75,13 @@ public final class AutoFishService {
             PlayerFishingState state = PLAYER_STATES.computeIfAbsent(player.getUUID(), u -> new PlayerFishingState());
             state.sessionStartTime = System.currentTimeMillis();
             state.sessionRowId = FeeshLeaderboard.beginSession(player);
+
+            // Restore persisted per-player auto-fish preference
+            Boolean saved = FeeshLeaderboard.loadAutoFishPreference(player.getStringUUID());
+            if (saved != null) {
+                state.autoFishEnabled = saved;
+            }
+
             if (ServerPlayNetworking.canSend(player, FeeshmanPayloads.StatsSyncPayload.TYPE)) {
                 int lifetime = FeeshLeaderboard.getPlayerTotal(player);
                 int biomes = FeeshmanServerCommands.getBiomeCount(player);
@@ -137,11 +140,17 @@ public final class AutoFishService {
         }
 
         if (player.getMainHandItem().getItem() != Items.FISHING_ROD) {
+            // Try to swap to another rod in the hotbar before counting grace ticks
+            if (tryEquipRodFromHotbar(player)) {
+                state.noRodGraceTicks = 0;
+                return;
+            }
             state.noRodGraceTicks++;
             if (state.noRodGraceTicks >= NO_ROD_GRACE_PERIOD) {
                 player.sendSystemMessage(
                         Component.literal("§e⚠️ No fishing rod detected. Auto-fishing disabled."), false);
                 state.autoFishEnabled = false;
+                FeeshLeaderboard.saveAutoFishPreference(player.getStringUUID(), false);
                 state.noRodGraceTicks = 0;
             }
             return;
@@ -174,6 +183,16 @@ public final class AutoFishService {
 
         FishingHook bobber = player.fishing;
         if (bobber == null) {
+            if (!hasInventorySpace(player)) {
+                if (!state.inventoryFullWarned) {
+                    state.inventoryFullWarned = true;
+                    player.sendSystemMessage(
+                            Component.literal("§e⚠️ Inventory full! Auto-fishing paused."), false);
+                }
+                state.recastDelayTicks = 100;
+                return;
+            }
+            state.inventoryFullWarned = false;
             cast(player, state);
             return;
         }
@@ -216,6 +235,7 @@ public final class AutoFishService {
     public static void setAutoFishEnabled(ServerPlayer player, boolean enabled) {
         PlayerFishingState state = PLAYER_STATES.computeIfAbsent(player.getUUID(), u -> new PlayerFishingState());
         state.autoFishEnabled = enabled;
+        FeeshLeaderboard.saveAutoFishPreference(player.getStringUUID(), enabled);
     }
 
     public static Boolean getAutoFishEnabled(ServerPlayer player) {
@@ -232,39 +252,44 @@ public final class AutoFishService {
         state.bobberStuckCheckPos = null;
         state.bobberStuckTicks = 0;
         state.biteConfirmTicks = 0;
+        if (state.firstCastTime == 0) {
+            state.firstCastTime = System.currentTimeMillis();
+        }
     }
 
     private static void reelIn(ServerPlayer player, PlayerFishingState state) {
         Map<String, Integer> before = snapshotItemCounts(player);
         player.gameMode.useItem(player, player.level(), player.getMainHandItem(), InteractionHand.MAIN_HAND);
         state.recastDelayTicks = BASE_RECAST_DELAY + ThreadLocalRandom.current().nextInt(40);
-        state.totalFishCaught++;
         state.bobberStuckCheckPos = null;
         state.bobberStuckTicks = 0;
         state.biteConfirmTicks = 0;
 
         Map<String, Integer> after = snapshotItemCounts(player);
-        CatchDelta delta = detectCatchDelta(player, before, after);
-        String biomeId = player.level() != null
-                ? player.level().getBiome(player.blockPosition()).unwrapKey()
-                .map(k -> k.identifier().toString()).orElse("unknown")
-                : "unknown";
-        int lifetime = FeeshLeaderboard.recordCatch(player, biomeId, delta, state.totalFishCaught);
+        CatchDelta delta = detectCatchAndAnnounce(player, before, after);
 
-        sendItemAnnouncementIfDetected(player, before, after);
+        // Only count and record when something actually landed in inventory
+        if (delta.itemId() != null) {
+            state.totalFishCaught++;
+            String biomeId = player.level() != null
+                    ? player.level().getBiome(player.blockPosition()).unwrapKey()
+                    .map(k -> k.identifier().toString()).orElse("unknown")
+                    : "unknown";
+            int lifetime = FeeshLeaderboard.recordCatch(player, biomeId, delta, state.totalFishCaught);
 
-        int biomes = FeeshmanServerCommands.getBiomeCount(player);
-        String compliment = ThreadLocalRandom.current().nextFloat() < 0.05f
-                ? LUCKY_COMPLIMENTS[ThreadLocalRandom.current().nextInt(LUCKY_COMPLIMENTS.length)]
-                : "";
-        if (ServerPlayNetworking.canSend(player, FeeshmanPayloads.FishCaughtPayload.TYPE)) {
-            ServerPlayNetworking.send(player, new FeeshmanPayloads.FishCaughtPayload(
-                    state.totalFishCaught, lifetime, compliment, biomes));
-        }
+            int biomes = FeeshmanServerCommands.getBiomeCount(player);
+            String compliment = ThreadLocalRandom.current().nextFloat() < 0.05f
+                    ? LUCKY_COMPLIMENTS[ThreadLocalRandom.current().nextInt(LUCKY_COMPLIMENTS.length)]
+                    : "";
+            if (ServerPlayNetworking.canSend(player, FeeshmanPayloads.FishCaughtPayload.TYPE)) {
+                ServerPlayNetworking.send(player, new FeeshmanPayloads.FishCaughtPayload(
+                        state.totalFishCaught, lifetime, compliment, biomes));
+            }
 
-        if (state.totalFishCaught % 5 == 0) {
-            player.sendSystemMessage(
-                    Component.literal("§a" + state.totalFishCaught + " fish caught this session!"), false);
+            if (state.totalFishCaught % 5 == 0) {
+                player.sendSystemMessage(
+                        Component.literal("§a" + state.totalFishCaught + " fish caught this session!"), false);
+            }
         }
     }
 
@@ -283,8 +308,9 @@ public final class AutoFishService {
         return counts;
     }
 
-    private static CatchDelta detectCatchDelta(ServerPlayer player,
-                                                Map<String, Integer> before, Map<String, Integer> after) {
+    // Single inventory scan: detects catch delta AND sends item announcement payload
+    private static CatchDelta detectCatchAndAnnounce(ServerPlayer player,
+                                                      Map<String, Integer> before, Map<String, Integer> after) {
         for (Map.Entry<String, Integer> e : after.entrySet()) {
             int prev = before.getOrDefault(e.getKey(), 0);
             if (e.getValue() > prev) {
@@ -293,26 +319,13 @@ public final class AutoFishService {
                 boolean hasEnchantments = sample != null && !sample.getEnchantments().isEmpty();
                 boolean treasure = sample != null && sample.is(h -> h.is(TAG_TREASURE));
                 boolean junk = sample != null && sample.is(h -> h.is(TAG_JUNK));
+                if (ServerPlayNetworking.canSend(player, FeeshmanPayloads.ItemAnnouncementPayload.TYPE)) {
+                    ServerPlayNetworking.send(player, new FeeshmanPayloads.ItemAnnouncementPayload(itemId, hasEnchantments));
+                }
                 return new CatchDelta(itemId, treasure, junk, hasEnchantments);
             }
         }
         return CatchDelta.unknown();
-    }
-
-    private static void sendItemAnnouncementIfDetected(ServerPlayer player,
-                                                     Map<String, Integer> before, Map<String, Integer> after) {
-        for (Map.Entry<String, Integer> e : after.entrySet()) {
-            int prev = before.getOrDefault(e.getKey(), 0);
-            if (e.getValue() > prev) {
-                String itemId = e.getKey();
-                ItemStack sample = findStackOf(player, itemId);
-                boolean hasEnchantments = sample != null && !sample.getEnchantments().isEmpty();
-                if (ServerPlayNetworking.canSend(player, FeeshmanPayloads.ItemAnnouncementPayload.TYPE)) {
-                    ServerPlayNetworking.send(player, new FeeshmanPayloads.ItemAnnouncementPayload(itemId, hasEnchantments));
-                }
-                return;
-            }
-        }
     }
 
     private static ItemStack findStackOf(ServerPlayer player, String itemId) {
@@ -365,6 +378,26 @@ public final class AutoFishService {
         return state.bobberStuckTicks >= BOBBER_STUCK_THRESHOLD;
     }
 
+    private static boolean hasInventorySpace(ServerPlayer player) {
+        var inv = player.getInventory();
+        for (int i = 0; i < 36; i++) {
+            if (inv.getItem(i).isEmpty()) return true;
+        }
+        return false;
+    }
+
+    // Scans hotbar slots 0-8 for a fishing rod and switches to it
+    private static boolean tryEquipRodFromHotbar(ServerPlayer player) {
+        var inv = player.getInventory();
+        for (int i = 0; i < 9; i++) {
+            if (i != inv.selected && inv.getItem(i).getItem() == Items.FISHING_ROD) {
+                inv.selected = i;
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static int getSessionFishCount(ServerPlayer player) {
         PlayerFishingState state = PLAYER_STATES.get(player.getUUID());
         return state != null ? state.totalFishCaught : 0;
@@ -375,12 +408,18 @@ public final class AutoFishService {
         if (state != null) {
             state.totalFishCaught = 0;
             state.sessionStartTime = System.currentTimeMillis();
+            state.firstCastTime = 0;
         }
     }
 
     public static long getSessionStartTime(ServerPlayer player) {
         PlayerFishingState state = PLAYER_STATES.get(player.getUUID());
         return state != null ? state.sessionStartTime : System.currentTimeMillis();
+    }
+
+    public static long getFirstCastTime(ServerPlayer player) {
+        PlayerFishingState state = PLAYER_STATES.get(player.getUUID());
+        return state != null ? state.firstCastTime : 0;
     }
 
     private static class PlayerFishingState {
@@ -391,11 +430,13 @@ public final class AutoFishService {
         long sessionRowId = -1L;
         int fishingSecondTicks = 0;
         long sessionStartTime = System.currentTimeMillis();
+        long firstCastTime = 0;
         int noRodGraceTicks = 0;
         Vec3 bobberStuckCheckPos = null;
         int bobberStuckTicks = 0;
         Vec3 lastValidBobberPos = null;
         boolean durabilityWarned = false;
+        boolean inventoryFullWarned = false;
         int biteConfirmTicks = 0;
     }
 }
