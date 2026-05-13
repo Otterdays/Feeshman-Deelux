@@ -41,6 +41,8 @@ public final class AutoFishService {
     private static final int DURABILITY_WARNING_THRESHOLD = 10;
     private static final double BITE_VELOCITY_THRESHOLD = -0.04;
     private static final int BITE_CONFIRM_TICKS = 2;
+    private static final int CATCH_DETECTION_WINDOW_TICKS = 8;
+    private static final int HOOKED_ENTITY_RECAST_TICKS = 2;
 
     private static final String[] LUCKY_COMPLIMENTS = {
             "What a catch!", "You're on fire!", "Legendary angler!",
@@ -83,12 +85,7 @@ public final class AutoFishService {
                 state.autoFishEnabled = saved;
             }
 
-            if (canSendPayload(player, FeeshmanPayloads.StatsSyncPayload.TYPE)) {
-                int lifetime = FeeshLeaderboard.getPlayerTotal(player);
-                int biomes = FeeshmanServerCommands.getBiomeCount(player);
-                ServerPlayNetworking.send(player, new FeeshmanPayloads.StatsSyncPayload(
-                        state.totalFishCaught, lifetime, state.sessionStartTime, biomes));
-            }
+            sendStatsSync(player, state);
             if (canSendPayload(player, FeeshmanPayloads.AchievementsSyncPayload.TYPE)) {
                 String csv = FeeshLeaderboard.exportAchievementCsv(player);
                 sendPayload(player, achievementsSyncPayload(csv));
@@ -136,6 +133,18 @@ public final class AutoFishService {
     private static void tickPlayer(ServerPlayer player) {
         PlayerFishingState state = PLAYER_STATES.computeIfAbsent(player.getUUID(), u -> new PlayerFishingState());
 
+        boolean fishingActive = player.fishing != null;
+        if (fishingActive && state.activeFishingBaseline == null) {
+            state.activeFishingBaseline = snapshotItemCounts(player);
+            state.activeFishingBiomeId = getBiomeId(player);
+        } else if (!fishingActive && state.activeFishingBaseline != null) {
+            armPendingCatchDetection(state, state.activeFishingBaseline, state.activeFishingBiomeId);
+            state.activeFishingBaseline = null;
+            state.activeFishingBiomeId = null;
+        }
+
+        tickPendingCatchDetection(player, state);
+
         if (!isAutoFishEnabled(player, state)) {
             return;
         }
@@ -153,6 +162,7 @@ public final class AutoFishService {
                 state.autoFishEnabled = false;
                 FeeshLeaderboard.saveAutoFishPreference(player.getStringUUID(), false);
                 state.noRodGraceTicks = 0;
+                sendStatsSync(player, state);
             }
             return;
         }
@@ -202,8 +212,16 @@ public final class AutoFishService {
             state.biteConfirmTicks = 0;
             state.bobberStuckCheckPos = null;
             state.bobberStuckTicks = 0;
+            state.hookedEntityTicks++;
+            if (state.hookedEntityTicks >= HOOKED_ENTITY_RECAST_TICKS) {
+                LOGGER.info("Feeshman Deelux: Hook snag detected, recasting...");
+                player.sendSystemMessage(
+                        Component.literal("§e⚠️ Hook snagged an entity, recasting..."), false);
+                recast(player, state);
+            }
             return;
         }
+        state.hookedEntityTicks = 0;
 
         if (bobber.isInWater() && bobber.getDeltaMovement().y < BITE_VELOCITY_THRESHOLD) {
             state.biteConfirmTicks++;
@@ -237,6 +255,7 @@ public final class AutoFishService {
         PlayerFishingState state = PLAYER_STATES.computeIfAbsent(player.getUUID(), u -> new PlayerFishingState());
         state.autoFishEnabled = enabled;
         FeeshLeaderboard.saveAutoFishPreference(player.getStringUUID(), enabled);
+        sendStatsSync(player, state);
     }
 
     public static Boolean getAutoFishEnabled(ServerPlayer player) {
@@ -253,6 +272,7 @@ public final class AutoFishService {
         state.bobberStuckCheckPos = null;
         state.bobberStuckTicks = 0;
         state.biteConfirmTicks = 0;
+        state.hookedEntityTicks = 0;
         if (state.firstCastTime == 0) {
             state.firstCastTime = System.currentTimeMillis();
         }
@@ -260,34 +280,15 @@ public final class AutoFishService {
 
     private static void reelIn(ServerPlayer player, PlayerFishingState state) {
         Map<String, Integer> before = snapshotItemCounts(player);
+        String biomeId = getBiomeId(player);
         player.gameMode.useItem(player, player.level(), player.getMainHandItem(), InteractionHand.MAIN_HAND);
         state.recastDelayTicks = BASE_RECAST_DELAY + ThreadLocalRandom.current().nextInt(40);
         state.bobberStuckCheckPos = null;
         state.bobberStuckTicks = 0;
         state.biteConfirmTicks = 0;
-
-        Map<String, Integer> after = snapshotItemCounts(player);
-        CatchDelta delta = detectCatchAndAnnounce(player, before, after);
-
-        // Only count and record when something actually landed in inventory
-        if (delta.itemId() != null) {
-            state.totalFishCaught++;
-            String biomeId = getBiomeId(player);
-            int lifetime = FeeshLeaderboard.recordCatch(player, biomeId, delta, state.totalFishCaught);
-
-            int biomes = FeeshmanServerCommands.getBiomeCount(player);
-            String compliment = ThreadLocalRandom.current().nextFloat() < 0.05f
-                    ? LUCKY_COMPLIMENTS[ThreadLocalRandom.current().nextInt(LUCKY_COMPLIMENTS.length)]
-                    : "";
-            if (canSendPayload(player, FeeshmanPayloads.FishCaughtPayload.TYPE)) {
-                sendPayload(player, fishCaughtPayload(state.totalFishCaught, lifetime, compliment, biomes));
-            }
-
-            if (state.totalFishCaught % 5 == 0) {
-                player.sendSystemMessage(
-                        Component.literal("§a" + state.totalFishCaught + " fish caught this session!"), false);
-            }
-        }
+        state.hookedEntityTicks = 0;
+        armPendingCatchDetection(state, before, biomeId);
+        tickPendingCatchDetection(player, state);
     }
 
     private static Map<String, Integer> snapshotItemCounts(ServerPlayer player) {
@@ -326,6 +327,57 @@ public final class AutoFishService {
         return CatchDelta.unknown();
     }
 
+    private static void armPendingCatchDetection(PlayerFishingState state,
+                                                 Map<String, Integer> baselineInventory,
+                                                 String biomeId) {
+        state.pendingCatchBaseline = new HashMap<>(baselineInventory);
+        state.pendingCatchBiomeId = biomeId;
+        state.pendingCatchWindowTicks = CATCH_DETECTION_WINDOW_TICKS;
+    }
+
+    private static void tickPendingCatchDetection(ServerPlayer player, PlayerFishingState state) {
+        if (state.pendingCatchWindowTicks <= 0 || state.pendingCatchBaseline == null) {
+            return;
+        }
+
+        CatchDelta delta = detectCatchAndAnnounce(player, state.pendingCatchBaseline, snapshotItemCounts(player));
+        if (delta.itemId() != null) {
+            recordConfirmedCatch(player, state, delta);
+            clearPendingCatchDetection(state);
+            return;
+        }
+
+        state.pendingCatchWindowTicks--;
+        if (state.pendingCatchWindowTicks <= 0) {
+            clearPendingCatchDetection(state);
+        }
+    }
+
+    private static void recordConfirmedCatch(ServerPlayer player, PlayerFishingState state, CatchDelta delta) {
+        state.totalFishCaught++;
+        String biomeId = state.pendingCatchBiomeId != null ? state.pendingCatchBiomeId : getBiomeId(player);
+        int lifetime = FeeshLeaderboard.recordCatch(player, biomeId, delta, state.totalFishCaught);
+
+        int biomes = FeeshmanServerCommands.getBiomeCount(player);
+        String compliment = ThreadLocalRandom.current().nextFloat() < 0.05f
+                ? LUCKY_COMPLIMENTS[ThreadLocalRandom.current().nextInt(LUCKY_COMPLIMENTS.length)]
+                : "";
+        if (canSendPayload(player, FeeshmanPayloads.FishCaughtPayload.TYPE)) {
+            sendPayload(player, fishCaughtPayload(state.totalFishCaught, lifetime, compliment, biomes));
+        }
+
+        if (state.totalFishCaught % 5 == 0) {
+            player.sendSystemMessage(
+                    Component.literal("§a" + state.totalFishCaught + " fish caught this session!"), false);
+        }
+    }
+
+    private static void clearPendingCatchDetection(PlayerFishingState state) {
+        state.pendingCatchBaseline = null;
+        state.pendingCatchBiomeId = null;
+        state.pendingCatchWindowTicks = 0;
+    }
+
     private static ItemStack findStackOf(ServerPlayer player, String itemId) {
         Identifier id = parseIdentifier(itemId);
         if (id == null) {
@@ -346,11 +398,23 @@ public final class AutoFishService {
     }
 
     private static void recast(ServerPlayer player, PlayerFishingState state) {
+        clearPendingCatchDetection(state);
         player.gameMode.useItem(player, player.level(), player.getMainHandItem(), InteractionHand.MAIN_HAND);
         state.recastDelayTicks = 40;
         state.bobberStuckCheckPos = null;
         state.bobberStuckTicks = 0;
         state.biteConfirmTicks = 0;
+        state.hookedEntityTicks = 0;
+    }
+
+    private static void sendStatsSync(ServerPlayer player, PlayerFishingState state) {
+        if (!canSendPayload(player, FeeshmanPayloads.StatsSyncPayload.TYPE)) {
+            return;
+        }
+        int lifetime = FeeshLeaderboard.getPlayerTotal(player);
+        int biomes = FeeshmanServerCommands.getBiomeCount(player);
+        sendPayload(player, statsSyncPayload(
+                state.totalFishCaught, lifetime, state.sessionStartTime, biomes, isAutoFishEnabled(player, state)));
     }
 
     private static boolean checkBobberStuck(PlayerFishingState state, Vec3 currentPos) {
@@ -419,6 +483,13 @@ public final class AutoFishService {
     }
 
     @SuppressWarnings("null")
+    private static FeeshmanPayloads.StatsSyncPayload statsSyncPayload(
+            int sessionFish, int lifetimeFish, long sessionStartTime, int biomeCount, boolean autoFishEnabled) {
+        return new FeeshmanPayloads.StatsSyncPayload(
+                sessionFish, lifetimeFish, sessionStartTime, biomeCount, autoFishEnabled);
+    }
+
+    @SuppressWarnings("null")
     private static FeeshmanPayloads.ItemAnnouncementPayload itemAnnouncementPayload(
             String itemId, boolean hasEnchantments) {
         return new FeeshmanPayloads.ItemAnnouncementPayload(itemId, hasEnchantments);
@@ -480,5 +551,11 @@ public final class AutoFishService {
         boolean durabilityWarned = false;
         boolean inventoryFullWarned = false;
         int biteConfirmTicks = 0;
+        int hookedEntityTicks = 0;
+        Map<String, Integer> pendingCatchBaseline = null;
+        String pendingCatchBiomeId = null;
+        int pendingCatchWindowTicks = 0;
+        Map<String, Integer> activeFishingBaseline = null;
+        String activeFishingBiomeId = null;
     }
 }

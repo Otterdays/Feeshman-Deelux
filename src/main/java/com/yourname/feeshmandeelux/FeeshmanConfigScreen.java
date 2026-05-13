@@ -49,12 +49,11 @@ public class FeeshmanConfigScreen extends Screen {
         };
 
         this.enabledButton = Button.builder(
-                        Component.literal("Auto-Fishing: " + (autoFishEnabled ? "§aEnabled" : "§cDisabled")),
+                        singleplayerDefaultLabel(),
                         button -> {
                             autoFishEnabled = !autoFishEnabled;
                             FeeshmanConfig.setAutoFishEnabled(autoFishEnabled);
-                            button.setMessage(Component.literal("Auto-Fishing: "
-                                    + (autoFishEnabled ? "§aEnabled" : "§cDisabled")));
+                            button.setMessage(singleplayerDefaultLabel());
                         })
                 .bounds(centerX - 100, startY + 40, 200, 20)
                 .build();
@@ -103,11 +102,15 @@ public class FeeshmanConfigScreen extends Screen {
                 this.width / 2, this.height - 50, 0xFFFF55);
 
         graphics.centeredText(this.font,
-                Component.literal("ModMenu Integration • Volume Controls • Human-like Timing")
+                Component.literal("Singleplayer default only • Multiplayer uses synced server state")
                         .withStyle(ChatFormatting.GREEN),
                 this.width / 2, this.height - 35, 0x55FF55);
 
         super.extractRenderState(graphics, mouseX, mouseY, partialTick);
+    }
+
+    private @NonNull Component singleplayerDefaultLabel() {
+        return Component.literal("Singleplayer Default: " + (autoFishEnabled ? "§aEnabled" : "§cDisabled"));
     }
 
     @Override

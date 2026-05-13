@@ -53,6 +53,7 @@ public final class FeeshmanPayloads {
 				ByteBufCodecs.VAR_INT, StatsSyncPayload::lifetimeFish,
 				ByteBufCodecs.VAR_LONG, StatsSyncPayload::sessionStartTime,
 				ByteBufCodecs.VAR_INT, StatsSyncPayload::biomeCount,
+				ByteBufCodecs.BOOL, StatsSyncPayload::autoFishEnabled,
 				StatsSyncPayload::new);
 	}
 
@@ -96,7 +97,8 @@ public final class FeeshmanPayloads {
 		}
 	}
 
-	public record StatsSyncPayload(int sessionFish, int lifetimeFish, long sessionStartTime, int biomeCount)
+	public record StatsSyncPayload(int sessionFish, int lifetimeFish, long sessionStartTime, int biomeCount,
+	                               boolean autoFishEnabled)
 			implements CustomPacketPayload {
 		public static final CustomPacketPayload.@NonNull Type<StatsSyncPayload> TYPE = payloadType("stats_sync");
 		public static final StreamCodec<RegistryFriendlyByteBuf, StatsSyncPayload> CODEC = statsSyncCodec();

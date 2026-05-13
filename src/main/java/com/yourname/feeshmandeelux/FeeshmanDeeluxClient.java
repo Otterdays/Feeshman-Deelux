@@ -145,6 +145,7 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
         HudElementRegistry.addLast(HUD_ELEMENT_ID, this::extractHudRenderState);
 
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
+            autoFishEnabled = false;
             sessionStartTime = System.currentTimeMillis();
             firstCatchTime = 0;
             syncedAchievementIds.clear();
@@ -167,7 +168,10 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
             }
         });
 
-        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> FeeshLeaderboard.flushIfDirty());
+        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
+            autoFishEnabled = false;
+            FeeshLeaderboard.flushIfDirty();
+        });
 
         ClientPlayNetworking.registerGlobalReceiver(FeeshmanPayloads.FishCaughtPayload.TYPE, (payload, context) -> {
             context.client().execute(() -> {
@@ -181,7 +185,7 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
                     instance.lifetimeFishCaught = payload.lifetimeFish();
                     instance.biomeCount = payload.biomeCount();
                     if (context.player() != null) {
-                        context.player().playSound(BITE_ALERT_SOUND, 0.5f, 1.0f);
+                        context.player().playSound(BITE_ALERT_SOUND, FeeshmanConfig.getBiteAlertVolume(), 1.0f);
                         if (!payload.luckyCompliment().isEmpty()) {
                             context.player().sendSystemMessage(Component.literal("§6§l" + payload.luckyCompliment()));
                         }
@@ -195,10 +199,15 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
         ClientPlayNetworking.registerGlobalReceiver(FeeshmanPayloads.StatsSyncPayload.TYPE, (payload, context) -> {
             context.client().execute(() -> {
                 if (instance != null) {
+                    boolean wasEnabled = instance.autoFishEnabled;
                     instance.totalFishCaught = payload.sessionFish();
                     instance.lifetimeFishCaught = payload.lifetimeFish();
                     instance.sessionStartTime = payload.sessionStartTime();
                     instance.biomeCount = payload.biomeCount();
+                    instance.autoFishEnabled = payload.autoFishEnabled();
+                    if (wasEnabled && !instance.autoFishEnabled) {
+                        instance.sendSessionSummary(context.client());
+                    }
                 }
             });
         });
@@ -246,12 +255,7 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             var connection = client.getConnection();
             if (toggleKey.consumeClick() && client.player != null && connection != null) {
-                boolean wasEnabled = autoFishEnabled;
-                autoFishEnabled = !autoFishEnabled;
-                connection.sendCommand(autoFishEnabled ? "feeshman enable" : "feeshman disable");
-                if (wasEnabled && !autoFishEnabled) {
-                    sendSessionSummary(client);
-                }
+                connection.sendCommand("feeshman toggle");
             }
             if (hudCycleKey.consumeClick() && autoFishEnabled) {
                 hudDisplayMode = (hudDisplayMode + 1) % 3;

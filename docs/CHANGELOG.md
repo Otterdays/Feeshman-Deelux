@@ -6,6 +6,25 @@ All notable changes to Feeshman Deelux. [Keep a Changelog](https://keepachangelo
 
 ## [1.4.0] — Unreleased
 
+### Fixed (2026-05-13 snag timing)
+- Tightened hooked-entity recovery in `AutoFishService` from a long timeout to a 2-tick confirmation window so mob snags like a fox thrashing in water retract/recast promptly instead of waiting for roughly a second of uninterrupted hook state.
+
+### Changed (2026-05-13 ModMenu wording)
+- ModMenu config screen now labels the auto-fish option as `Singleplayer Default` and explicitly notes that multiplayer uses synced server state, reducing confusion between local config and live server-authoritative toggles.
+
+### Fixed (2026-05-13 follow-up polish)
+- Auto-fish enabled state is now synced from server to client through `StatsSyncPayload`, so reconnects, command-based toggles, and automatic no-rod shutdowns keep the HUD and `[O]` toggle state aligned with the real server state.
+- Client `[O]` toggle now sends `/feeshman toggle` and waits for synced state instead of guessing the next enabled/disabled value locally.
+- Bite alert volume setting now affects actual alert playback instead of leaving the config slider disconnected from the fish-caught sound.
+- Hooked-entity snags now recover by reeling/recasting after a short timeout instead of parking the auto-fish loop indefinitely.
+
+### Fixed (2026-05-13 catch detection)
+- `AutoFishService.reelIn(...)` now keeps a short post-reel detection window instead of requiring caught items to appear in inventory during the same method call, which better matches the 26.1.2 behavior after the Mojang-name migration.
+- Confirmed catches now share one delayed record path so item announcements, session/lifetime stats, SQLite catch rows, and HUD sync stay aligned when the caught stack shows up a few ticks after reeling.
+
+### Changed (2026-05-13 debugging docs)
+- Added `docs/debugs/debug_2026-05-13_stats-catch-detection.md` documenting the current stats regression analysis: catch/session/lifetime updates are all gated behind immediate inventory-diff detection in `AutoFishService.reelIn(...)`, with no fallback when item classification misses.
+
 ### Fixed (2026-05-13 build tooling)
 - Restored the missing `gradle/wrapper/gradle-wrapper.jar`, so `gradlew`, `gradlew.bat`, and `build-jar.bat` can start again on this repo.
 - Repaired the wrapper launch scripts to use the standard classpath bootstrap (`org.gradle.wrapper.GradleWrapperMain`) instead of invoking the wrapper jar with `-jar`.

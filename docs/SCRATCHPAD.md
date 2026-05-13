@@ -2,6 +2,37 @@
 
 # SCRATCHPAD
 
+## [AMENDED 2026-05-13]: Fox snag timing tweak
+
+- User runtime repro showed a hooked fox in water was not being reeled quickly enough.
+- Tightened `AutoFishService` hooked-entity recovery from 20 ticks down to 2 ticks so moving mob snags do not need a long continuous hook state before the loop retracts/recasts.
+- Verification: `ReadLints` clean for `AutoFishService.java`; `./gradlew build` remains green.
+
+## [AMENDED 2026-05-13]: ModMenu singleplayer wording
+
+- Renamed the ModMenu auto-fishing button text in `FeeshmanConfigScreen` to `Singleplayer Default` so it no longer reads like a live multiplayer/server toggle.
+- Added matching footer copy clarifying that the setting is local singleplayer default behavior and multiplayer uses synced server state instead.
+- Verification: `ReadLints` is clean for `FeeshmanConfigScreen.java` and `./gradlew build` remains green.
+
+## [AMENDED 2026-05-13]: Top-3 follow-up fixes
+
+- Implemented server-authoritative auto-fish state sync: `StatsSyncPayload` now carries `autoFishEnabled`, `AutoFishService` pushes state on join/toggle/auto-disable, and the client `[O]` key now sends `/feeshman toggle` instead of assuming the new state locally.
+- Wired the bite alert volume setting into actual playback in `FeeshmanDeeluxClient`, so ModMenu/config slider changes now affect the fish-caught sound.
+- Added hooked-entity recovery in `AutoFishService`: if `bobber.getHookedIn() != null` persists for ~1s, the mod reels/recasts instead of stalling the loop forever.
+- Verification so far: `./gradlew build` is green. Next runtime pass should confirm join-time HUD state, volume slider effect, and snag recovery behavior on 26.1.2.
+
+## [AMENDED 2026-05-13]: Deferred catch detection fix
+
+- Implemented a 26.1.2-safe catch-detection pass in `AutoFishService.java`: after `reelIn(...)`, the mod now keeps the pre-reel inventory snapshot and retries item-delta detection for up to 8 ticks instead of requiring the caught stack to appear immediately in the same method.
+- Confirmed catches now flow through one shared record path so item announcements, session/lifetime counters, SQLite catch rows, and `FishCaughtPayload` all update off the same delayed detection result.
+- Verification so far: `./gradlew build` is green after the change. Next runtime check is to confirm real caught item names and `/feeshhistory` rows repopulate correctly on 26.1.2.
+
+## [AMENDED 2026-05-13]: Catch stats investigation
+
+- Added `docs/debugs/debug_2026-05-13_stats-catch-detection.md` to capture the current stats regression analysis and a recommended fix order.
+- Current diagnosis: `AutoFishService.reelIn(...)` only records stats when `detectCatchAndAnnounce(...)` finds an immediate inventory delta after `useItem(...)`; if that diff misses, session count, lifetime count, SQLite rows, achievements, and HUD sync are all skipped together.
+- Next implementation target when code changes resume: decouple stat counting from item classification and add a deferred/fallback detection path before tuning any client UX around the counters.
+
 ## [AMENDED 2026-05-13]: Gradle wrapper repair
 
 - Restored `gradle/wrapper/gradle-wrapper.jar` by generating a fresh wrapper jar in an isolated temp bootstrap project and copying it into this repo.
