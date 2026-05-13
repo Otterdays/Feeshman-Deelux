@@ -8,6 +8,7 @@ import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import org.jspecify.annotations.NonNull;
 
 @Environment(EnvType.CLIENT)
 public class FeeshmanConfigScreen extends Screen {
@@ -79,7 +80,8 @@ public class FeeshmanConfigScreen extends Screen {
     }
 
     @Override
-    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+    public void extractRenderState(@NonNull GuiGraphicsExtractor graphics,
+                                   int mouseX, int mouseY, float partialTick) {
         graphics.fill(0, 0, this.width, this.height, 0xE0101010);
 
         graphics.centeredText(this.font,
@@ -110,11 +112,7 @@ public class FeeshmanConfigScreen extends Screen {
 
     @Override
     public void onClose() {
-        if (this.minecraft != null) {
-            this.minecraft.setScreen(this.parent);
-        } else {
-            super.onClose();
-        }
+        this.minecraft.setScreen(this.parent);
     }
 
     @Override

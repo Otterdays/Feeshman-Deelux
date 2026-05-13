@@ -86,10 +86,13 @@ public final class FeeshLeaderboard {
         if (!(player instanceof ServerPlayer sp)) {
             return;
         }
-        String biomeKey = sp.level() != null
-                ? sp.level().getBiome(sp.blockPosition()).unwrapKey()
-                .map(k -> k.identifier().toString()).orElse("unknown")
-                : "unknown";
+        String biomeKey = "unknown";
+        if (sp.level() != null) {
+            var biomeResourceKey = sp.level().getBiome(sp.blockPosition()).unwrapKey();
+            if (biomeResourceKey.isPresent()) {
+                biomeKey = biomeResourceKey.get().identifier().toString();
+            }
+        }
         int session = AutoFishService.getSessionFishCount(sp);
         recordCatch(sp, biomeKey, CatchDelta.unknown(), session);
     }

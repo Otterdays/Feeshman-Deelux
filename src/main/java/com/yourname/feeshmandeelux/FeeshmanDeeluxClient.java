@@ -21,12 +21,14 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.biome.Biome;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jspecify.annotations.NonNull;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.Collections;
@@ -45,10 +47,10 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
     // 0 = full HUD, 1 = compact, 2 = hidden
     private int hudDisplayMode = 0;
 
-    public static final Identifier BITE_ALERT_ID = Identifier.fromNamespaceAndPath("feeshmandeelux", "bite_alert");
-    public static final SoundEvent BITE_ALERT_SOUND = SoundEvent.createVariableRangeEvent(BITE_ALERT_ID);
+    public static final @NonNull Identifier BITE_ALERT_ID = modIdentifier("bite_alert");
+    public static final @NonNull SoundEvent BITE_ALERT_SOUND = createVariableRangeSound(BITE_ALERT_ID);
 
-    private static final Identifier HUD_ELEMENT_ID = Identifier.fromNamespaceAndPath("feeshmandeelux", "stats_hud");
+    private static final @NonNull Identifier HUD_ELEMENT_ID = modIdentifier("stats_hud");
 
     private int fishingSessionTicks = 0;
     private int totalFishCaught = 0;
@@ -124,7 +126,7 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
 
         instance = this;
 
-        Registry.register(BuiltInRegistries.SOUND_EVENT, BITE_ALERT_ID, BITE_ALERT_SOUND);
+        registerSound(BITE_ALERT_ID, BITE_ALERT_SOUND);
 
         toggleKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
                 "key.feeshmandeelux.toggle",
@@ -214,8 +216,8 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
                         if (item != null && item != Items.AIR) {
                             ItemStack stack = new ItemStack(item);
                             instance.lastCaughtItemName = stack.getHoverName().getString();
-                            instance.lastCaughtTreasure = stack.is(h -> h.is(TAG_TREASURE));
-                            instance.lastCaughtJunk = stack.is(h -> h.is(TAG_JUNK));
+                            instance.lastCaughtTreasure = stackHasTag(stack, TAG_TREASURE);
+                            instance.lastCaughtJunk = stackHasTag(stack, TAG_JUNK);
                             if (instance.lastCaughtTreasure) instance.sessionTreasureCount++;
                             else if (instance.lastCaughtJunk) instance.sessionJunkCount++;
                         }
@@ -242,10 +244,11 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
         });
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if (toggleKey.consumeClick() && client.player != null && client.getConnection() != null) {
+            var connection = client.getConnection();
+            if (toggleKey.consumeClick() && client.player != null && connection != null) {
                 boolean wasEnabled = autoFishEnabled;
                 autoFishEnabled = !autoFishEnabled;
-                client.getConnection().sendCommand(autoFishEnabled ? "feeshman enable" : "feeshman disable");
+                connection.sendCommand(autoFishEnabled ? "feeshman enable" : "feeshman disable");
                 if (wasEnabled && !autoFishEnabled) {
                     sendSessionSummary(client);
                 }
@@ -258,7 +261,8 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
 
     // Prints session stats to chat when auto-fish is toggled off
     private void sendSessionSummary(Minecraft client) {
-        if (client.player == null) return;
+        var player = client.player;
+        if (player == null) return;
         long elapsed = sessionStartTime > 0 ? System.currentTimeMillis() - sessionStartTime : 0;
         int totalSecs = (int) (elapsed / 1000);
         int mins = totalSecs / 60, secs = totalSecs % 60;
@@ -267,7 +271,7 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
         String msg = String.format(
                 "§6[Feeshman] §7Session: §a%d fish §7in §a%02d:%02d §7(§a%.1f/min§7) | §6T:§a%d §7J:§c%d",
                 totalFishCaught, mins, secs, Math.max(0f, rate), sessionTreasureCount, sessionJunkCount);
-        client.player.sendSystemMessage(Component.literal(msg));
+        sendSystemMessage(player, msg);
     }
 
     private void extractHudRenderState(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
@@ -304,7 +308,9 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
 
     private void renderPolishedHud(GuiGraphicsExtractor context) {
         Minecraft client = Minecraft.getInstance();
-        if (client.player == null || client.font == null) {
+        var player = client.player;
+        var level = client.level;
+        if (player == null || client.font == null) {
             return;
         }
         var font = client.font;
@@ -332,7 +338,7 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
 
         // Inventory warning shown first if near-full
         int freeSlots = 0;
-        var playerInv = client.player.getInventory();
+        var playerInv = player.getInventory();
         for (int i = 0; i < 36; i++) {
             if (playerInv.getItem(i).isEmpty()) freeSlots++;
         }
@@ -363,7 +369,7 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
         context.text(font, timeText, hudX + 8, contentY + (currentLine * lineHeight), 0xFFFFA500, true);
         currentLine++;
 
-        ItemStack rod = client.player.getMainHandItem();
+        ItemStack rod = player.getMainHandItem();
         if (rod.getItem() == Items.FISHING_ROD) {
             int maxDurability = rod.getMaxDamage();
             int currentDamage = rod.getDamageValue();
@@ -384,15 +390,15 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
             currentLine++;
         }
 
-        if (client.level != null) {
-            String weatherText = client.level.isRaining()
-                    ? (client.level.isThundering() ? "♦ Weather: Thunder" : "♦ Weather: Rainy")
+        if (level != null) {
+            String weatherText = level.isRaining()
+                    ? (level.isThundering() ? "♦ Weather: Thunder" : "♦ Weather: Rainy")
                     : "♦ Weather: Clear";
-            int weatherColor = client.level.isRaining() ? 0xFF4A9AFF : 0xFFFFD700;
+            int weatherColor = level.isRaining() ? 0xFF4A9AFF : 0xFFFFD700;
             context.text(font, weatherText, hudX + 8, contentY + (currentLine * lineHeight), weatherColor, true);
             currentLine++;
 
-            long timeOfDay = client.level.getOverworldClockTime() % 24000;
+            long timeOfDay = level.getOverworldClockTime() % 24000;
             boolean isDay = timeOfDay < 12000;
             String dayNightText = isDay ? "☀ Time: Day" : "☽ Time: Night";
             int timeColor = isDay ? 0xFFFFD700 : 0xFFADD8E6;
@@ -400,9 +406,9 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
             currentLine++;
         }
 
-        if (client.level != null) {
-            Holder<Biome> biome = client.level.getBiome(client.player.blockPosition());
-            String biomeName = biome.unwrapKey().map(k -> k.identifier().toString()).orElse("unknown");
+        if (level != null) {
+            Holder<Biome> biome = level.getBiome(player.blockPosition());
+            String biomeName = getBiomeKey(biome);
             biomeName = biomeName.replace("minecraft:", "").replace("_", " ");
             String biomeText = String.format("▼ Biome: %s", capitalizeWords(biomeName));
 
@@ -474,13 +480,11 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
         return null;
     }
 
-    private static final TagKey<Item> TAG_TREASURE = TagKey.create(Registries.ITEM,
-            Identifier.fromNamespaceAndPath("feeshmandeelux", "treasure"));
-    private static final TagKey<Item> TAG_JUNK = TagKey.create(Registries.ITEM,
-            Identifier.fromNamespaceAndPath("feeshmandeelux", "junk"));
+    private static final TagKey<Item> TAG_TREASURE = TagKey.create(Registries.ITEM, modIdentifier("treasure"));
+    private static final TagKey<Item> TAG_JUNK = TagKey.create(Registries.ITEM, modIdentifier("junk"));
 
-    private static String formatItemAnnouncement(String itemId, boolean hasEnchantments) {
-        Identifier parsed = Identifier.tryParse(itemId);
+    private static String formatItemAnnouncement(@NonNull String itemId, boolean hasEnchantments) {
+        Identifier parsed = parseIdentifier(itemId);
         if (parsed == null) {
             return null;
         }
@@ -490,10 +494,10 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
         }
         ItemStack stack = new ItemStack(item);
         String name = stack.getHoverName().getString();
-        if (stack.is(h -> h.is(TAG_TREASURE))) {
+        if (stackHasTag(stack, TAG_TREASURE)) {
             return "§6§l✨ " + (hasEnchantments ? "§d" : "§6") + name + " §6§l✨";
         }
-        if (stack.is(h -> h.is(TAG_JUNK))) {
+        if (stackHasTag(stack, TAG_JUNK)) {
             return "§7▸ " + name;
         }
         return "§a▸ " + name;
@@ -502,9 +506,6 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
     private static void showAchievementToastIfMilestone(Minecraft client, int prevSession, int prevLifetime,
                                                         int sessionFish, int lifetimeFish) {
         var manager = client.getToastManager();
-        if (manager == null) {
-            return;
-        }
         String title = null;
         String desc = null;
         int[] sessionMilestones = {1, 10, 25, 50, 100};
@@ -542,5 +543,45 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
             }
         }
         return result.toString().trim();
+    }
+
+    @SuppressWarnings("null")
+    private static @NonNull Identifier modIdentifier(@NonNull String path) {
+        return Identifier.fromNamespaceAndPath("feeshmandeelux", path);
+    }
+
+    @SuppressWarnings("null")
+    private static @NonNull SoundEvent createVariableRangeSound(@NonNull Identifier id) {
+        return SoundEvent.createVariableRangeEvent(id);
+    }
+
+    @SuppressWarnings("null")
+    private static Identifier parseIdentifier(@NonNull String value) {
+        return Identifier.tryParse(value);
+    }
+
+    @SuppressWarnings("null")
+    private static boolean stackHasTag(ItemStack stack, TagKey<Item> tag) {
+        return stack.is(tag);
+    }
+
+    @SuppressWarnings("null")
+    private static @NonNull String getBiomeKey(Holder<Biome> biome) {
+        return biome.unwrapKey().map(key -> key.identifier().toString()).orElse("unknown");
+    }
+
+    @SuppressWarnings("null")
+    private static @NonNull Component literal(@NonNull String value) {
+        return Component.literal(value);
+    }
+
+    @SuppressWarnings("null")
+    private static void registerSound(@NonNull Identifier id, @NonNull SoundEvent sound) {
+        Registry.register(BuiltInRegistries.SOUND_EVENT, id, sound);
+    }
+
+    @SuppressWarnings("null")
+    private static void sendSystemMessage(Player player, String value) {
+        player.sendSystemMessage(literal(value));
     }
 }

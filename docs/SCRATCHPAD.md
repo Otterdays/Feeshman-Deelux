@@ -2,6 +2,29 @@
 
 # SCRATCHPAD
 
+## [AMENDED 2026-05-13]: `FeeshmanDeeluxClient` nullability cleanup
+
+- `FeeshmanDeeluxClient.java`: normalized Identifier / SoundEvent / TagKey access through small helpers, replaced a few nullable client/player/level chains with guarded locals, and cleaned the last `sendSystemMessage(...)` null-analysis warning. File is now lint-clean.
+
+## [AMENDED 2026-05-13]: `FeeshmanPayloads` suppression cleanup
+
+- `network/FeeshmanPayloads.java`: removed stale `@SuppressWarnings("null")` annotations from the helper methods (`id(...)`, `payloadType(...)`) because the remaining `1102` IDE diagnostics were attached to those suppression tokens; retained targeted suppression on the `StreamCodec.composite(...)` factory methods where Mojang/Fabric generics still trigger noisy nullability warnings.
+
+## [AMENDED 2026-05-13]: `FeeshLeaderboard` nullability warning cleanup
+
+- `FeeshLeaderboard.java`: replaced the chained biome `Optional.map(...).orElse(...)` expression in deprecated `addCatch(...)` with an explicit `"unknown"` default plus `isPresent()` guard to avoid the IDE's unsafe `Optional` nullability interpretation warning.
+
+## [AMENDED 2026-05-13]: IDE diagnostic cleanup follow-up
+
+- `FeeshmanConfigScreen.java`: matched `Screen.extractRenderState(...)` nullability contract with `@NonNull GuiGraphicsExtractor` and removed the unreachable `onClose()` fallback branch flagged as dead code.
+
+## [AMENDED 2026-05-13]: IDE diagnostic fix pass
+
+- `AutoFishService.java`: replaced direct `Inventory.selected` access with `getSelectedSlot()` / `setSelectedSlot(...)` for the 26.1 Mojang-named inventory API.
+- Reduced noisy Eclipse null-analysis warnings in the same file by routing Fabric payload checks through a small helper and simplifying a few item/biome lookup paths.
+- `FeeshmanAchievementsScreen.java`: added the inherited non-null render parameter annotation and removed an unreachable `onClose()` fallback branch; file now lint-clean.
+- `network/FeeshmanPayloads.java`: centralized `CustomPacketPayload.Type` / `StreamCodec` initialization through non-null-safe helpers and annotated payload strings/type returns; file now lint-clean.
+
 ## [AMENDED 2026-05-05]: Canonical Execution Queue (Top 3)
 
 This is now the **single source of truth** for actionable work. Treat older roadmap/task lists in other docs as historical unless explicitly amended after this block.

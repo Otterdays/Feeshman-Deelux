@@ -1,6 +1,7 @@
 package com.yourname.feeshmandeelux;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -9,7 +10,6 @@ import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
@@ -54,15 +54,20 @@ public final class FeeshmanServerCommands {
 
         dispatcher.register(Commands.literal("feeshhistory")
                 .executes(ctx -> executeFeeshhistory(ctx, 10))
-                .then(Commands.argument("n", IntegerArgumentType.integer(1, 50))
+                .then(Commands.argument("n", integerArgument(1, 50))
                         .executes(ctx -> executeFeeshhistory(ctx, IntegerArgumentType.getInteger(ctx, "n"))))
         );
 
         dispatcher.register(Commands.literal("feeshtopitems")
                 .executes(ctx -> executeFeeshtopitems(ctx, 10))
-                .then(Commands.argument("n", IntegerArgumentType.integer(1, 50))
+                .then(Commands.argument("n", integerArgument(1, 50))
                         .executes(ctx -> executeFeeshtopitems(ctx, IntegerArgumentType.getInteger(ctx, "n"))))
         );
+    }
+
+    @SuppressWarnings("null")
+    private static ArgumentType<Integer> integerArgument(int min, int max) {
+        return IntegerArgumentType.integer(min, max);
     }
 
     private static int executeFeeshmanHelp(CommandContext<CommandSourceStack> ctx) {
@@ -205,7 +210,9 @@ public final class FeeshmanServerCommands {
         }
         int rank = 1;
         for (Map.Entry<String, Integer> entry : top) {
-            player.sendSystemMessage(Component.literal(String.format("§e#%d §7%s: §a%d fish", rank, entry.getKey(), entry.getValue())), false);
+            player.sendSystemMessage(
+                    Component.literal("§e#" + rank + " §7" + entry.getKey() + ": §a" + entry.getValue() + " fish"),
+                    false);
             rank++;
         }
     }
@@ -242,7 +249,9 @@ public final class FeeshmanServerCommands {
         }
         int rank = 1;
         for (Map.Entry<String, Integer> e : top) {
-            player.sendSystemMessage(Component.literal(String.format("§e#%d §7%s §a×%d", rank, e.getKey(), e.getValue())), false);
+            player.sendSystemMessage(
+                    Component.literal("§e#" + rank + " §7" + e.getKey() + " §a×" + e.getValue()),
+                    false);
             rank++;
         }
         return 1;

@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
@@ -82,13 +83,13 @@ public final class AutoFishService {
                 state.autoFishEnabled = saved;
             }
 
-            if (ServerPlayNetworking.canSend(player, FeeshmanPayloads.StatsSyncPayload.TYPE)) {
+            if (canSendPayload(player, FeeshmanPayloads.StatsSyncPayload.TYPE)) {
                 int lifetime = FeeshLeaderboard.getPlayerTotal(player);
                 int biomes = FeeshmanServerCommands.getBiomeCount(player);
                 ServerPlayNetworking.send(player, new FeeshmanPayloads.StatsSyncPayload(
                         state.totalFishCaught, lifetime, state.sessionStartTime, biomes));
             }
-            if (ServerPlayNetworking.canSend(player, FeeshmanPayloads.AchievementsSyncPayload.TYPE)) {
+            if (canSendPayload(player, FeeshmanPayloads.AchievementsSyncPayload.TYPE)) {
                 String csv = FeeshLeaderboard.exportAchievementCsv(player);
                 ServerPlayNetworking.send(player, new FeeshmanPayloads.AchievementsSyncPayload(csv));
             }
@@ -163,7 +164,7 @@ public final class AutoFishService {
             state.durabilityWarned = false;
         } else if (!state.durabilityWarned) {
             state.durabilityWarned = true;
-            if (ServerPlayNetworking.canSend(player, FeeshmanPayloads.DurabilityWarningPayload.TYPE)) {
+            if (canSendPayload(player, FeeshmanPayloads.DurabilityWarningPayload.TYPE)) {
                 ServerPlayNetworking.send(player, new FeeshmanPayloads.DurabilityWarningPayload(remainingUses));
             }
         }
@@ -271,17 +272,14 @@ public final class AutoFishService {
         // Only count and record when something actually landed in inventory
         if (delta.itemId() != null) {
             state.totalFishCaught++;
-            String biomeId = player.level() != null
-                    ? player.level().getBiome(player.blockPosition()).unwrapKey()
-                    .map(k -> k.identifier().toString()).orElse("unknown")
-                    : "unknown";
+            String biomeId = getBiomeId(player);
             int lifetime = FeeshLeaderboard.recordCatch(player, biomeId, delta, state.totalFishCaught);
 
             int biomes = FeeshmanServerCommands.getBiomeCount(player);
             String compliment = ThreadLocalRandom.current().nextFloat() < 0.05f
                     ? LUCKY_COMPLIMENTS[ThreadLocalRandom.current().nextInt(LUCKY_COMPLIMENTS.length)]
                     : "";
-            if (ServerPlayNetworking.canSend(player, FeeshmanPayloads.FishCaughtPayload.TYPE)) {
+            if (canSendPayload(player, FeeshmanPayloads.FishCaughtPayload.TYPE)) {
                 ServerPlayNetworking.send(player, new FeeshmanPayloads.FishCaughtPayload(
                         state.totalFishCaught, lifetime, compliment, biomes));
             }
@@ -301,7 +299,8 @@ public final class AutoFishService {
             if (!stack.isEmpty()) {
                 Identifier key = BuiltInRegistries.ITEM.getKey(stack.getItem());
                 if (key != null) {
-                    counts.merge(key.toString(), stack.getCount(), Integer::sum);
+                    String itemId = key.toString();
+                    counts.put(itemId, counts.getOrDefault(itemId, 0) + stack.getCount());
                 }
             }
         }
@@ -316,11 +315,11 @@ public final class AutoFishService {
             if (e.getValue() > prev) {
                 String itemId = e.getKey();
                 ItemStack sample = findStackOf(player, itemId);
-                boolean hasEnchantments = sample != null && !sample.getEnchantments().isEmpty();
-                boolean treasure = sample != null && sample.is(h -> h.is(TAG_TREASURE));
-                boolean junk = sample != null && sample.is(h -> h.is(TAG_JUNK));
-                if (ServerPlayNetworking.canSend(player, FeeshmanPayloads.ItemAnnouncementPayload.TYPE)) {
-                    ServerPlayNetworking.send(player, new FeeshmanPayloads.ItemAnnouncementPayload(itemId, hasEnchantments));
+                boolean hasEnchantments = !sample.isEmpty() && !sample.getEnchantments().isEmpty();
+                boolean treasure = !sample.isEmpty() && stackHasTag(sample, TAG_TREASURE);
+                boolean junk = !sample.isEmpty() && stackHasTag(sample, TAG_JUNK);
+                if (canSendPayload(player, FeeshmanPayloads.ItemAnnouncementPayload.TYPE)) {
+                    sendPayload(player, new FeeshmanPayloads.ItemAnnouncementPayload(itemId, hasEnchantments));
                 }
                 return new CatchDelta(itemId, treasure, junk, hasEnchantments);
             }
@@ -329,13 +328,13 @@ public final class AutoFishService {
     }
 
     private static ItemStack findStackOf(ServerPlayer player, String itemId) {
-        Identifier id = Identifier.tryParse(itemId);
+        Identifier id = parseIdentifier(itemId);
         if (id == null) {
-            return null;
+            return ItemStack.EMPTY;
         }
         Item item = BuiltInRegistries.ITEM.getOptional(id).orElse(null);
         if (item == null || item == Items.AIR) {
-            return null;
+            return ItemStack.EMPTY;
         }
         var inv = player.getInventory();
         for (int i = 0; i < inv.getContainerSize(); i++) {
@@ -344,7 +343,7 @@ public final class AutoFishService {
                 return stack;
             }
         }
-        return null;
+        return ItemStack.EMPTY;
     }
 
     private static void recast(ServerPlayer player, PlayerFishingState state) {
@@ -389,13 +388,41 @@ public final class AutoFishService {
     // Scans hotbar slots 0-8 for a fishing rod and switches to it
     private static boolean tryEquipRodFromHotbar(ServerPlayer player) {
         var inv = player.getInventory();
+        int selectedSlot = inv.getSelectedSlot();
         for (int i = 0; i < 9; i++) {
-            if (i != inv.selected && inv.getItem(i).getItem() == Items.FISHING_ROD) {
-                inv.selected = i;
+            if (i != selectedSlot && inv.getItem(i).getItem() == Items.FISHING_ROD) {
+                inv.setSelectedSlot(i);
                 return true;
             }
         }
         return false;
+    }
+
+    @SuppressWarnings("null")
+    private static boolean canSendPayload(ServerPlayer player, CustomPacketPayload.Type<?> payloadType) {
+        return ServerPlayNetworking.canSend(player, payloadType);
+    }
+
+    @SuppressWarnings("null")
+    private static void sendPayload(ServerPlayer player, CustomPacketPayload payload) {
+        ServerPlayNetworking.send(player, payload);
+    }
+
+    @SuppressWarnings("null")
+    private static Identifier parseIdentifier(String value) {
+        return Identifier.tryParse(value);
+    }
+
+    @SuppressWarnings("null")
+    private static String getBiomeId(ServerPlayer player) {
+        return player.level().getBiome(player.blockPosition()).unwrapKey()
+                .map(key -> key.identifier().toString())
+                .orElse("unknown");
+    }
+
+    @SuppressWarnings("null")
+    private static boolean stackHasTag(ItemStack stack, TagKey<Item> tag) {
+        return stack.is(tag);
     }
 
     public static int getSessionFishCount(ServerPlayer player) {
