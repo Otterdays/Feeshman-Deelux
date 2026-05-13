@@ -2,6 +2,12 @@
 
 # SCRATCHPAD
 
+## [AMENDED 2026-05-13]: Gradle wrapper repair
+
+- Restored `gradle/wrapper/gradle-wrapper.jar` by generating a fresh wrapper jar in an isolated temp bootstrap project and copying it into this repo.
+- Repaired both `gradlew.bat` and `gradlew` to use the standard classpath launcher (`org.gradle.wrapper.GradleWrapperMain`) instead of `-jar`, which was preventing the wrapper from starting.
+- Verified `build-jar.bat` now succeeds locally on the 26.1.2 tree. Current non-blocking note: Loom reports `org.xerial:sqlite-jdbc:3.46.1.3` is not valid semver during `processIncludeJars`, but the build still completes successfully.
+
 ## [AMENDED 2026-05-13]: `AutoFishService` suppression trim
 
 - `AutoFishService.java`: removed the stale `@SuppressWarnings("null")` annotation above `getBiomeId(...)` after the remaining IDE warning (`1102`) proved to be attached to the suppression token rather than an active nullability issue.

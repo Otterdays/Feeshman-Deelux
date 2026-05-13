@@ -2,10 +2,16 @@
 
 # SUMMARY
 
+## [AMENDED 2026-05-13]: Wrapper/build verification
+
+- Local wrapper verification is no longer blocked: `gradle/wrapper/gradle-wrapper.jar` was restored and both wrapper scripts were repaired.
+- `build-jar.bat` now completes successfully on the 26.1.2 tree. Remaining build note is non-blocking: Loom prints that `org.xerial:sqlite-jdbc:3.46.1.3` is not valid semver during `processIncludeJars`.
+
 ## [AMENDED 2026-05-13]: IDE diagnostics follow-up
 
 - The targeted 26.1 nullability / `1102` IDE warning sweep is complete across the core touched files: `AutoFishService`, `FeeshmanDeeluxClient`, `FeeshmanNetworking`, `network/FeeshmanPayloads`, `FeeshLeaderboard`, `FeeshmanServerCommands`, `FeeshmanConfigScreen`, and `FeeshmanAchievementsScreen`.
 - Verification for this pass is file-level IDE lint cleanup (`ReadLints`), not a fresh full Gradle build; local wrapper verification is still blocked on the missing `gradle-wrapper.jar`.
+- [AMENDED 2026-05-13]: Wrapper verification is now complete; see the section above for the repaired wrapper/build status.
 
 ## [AMENDED 2026-05-04]: For the next AI agent — resume work
 

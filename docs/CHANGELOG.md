@@ -6,6 +6,11 @@ All notable changes to Feeshman Deelux. [Keep a Changelog](https://keepachangelo
 
 ## [1.4.0] — Unreleased
 
+### Fixed (2026-05-13 build tooling)
+- Restored the missing `gradle/wrapper/gradle-wrapper.jar`, so `gradlew`, `gradlew.bat`, and `build-jar.bat` can start again on this repo.
+- Repaired the wrapper launch scripts to use the standard classpath bootstrap (`org.gradle.wrapper.GradleWrapperMain`) instead of invoking the wrapper jar with `-jar`.
+- Verified a successful local `build-jar.bat` / `gradlew build` path on the 26.1.2 tree after the wrapper repair.
+
 ### Fixed (2026-05-13 IDE diagnostics)
 - Reduced Eclipse/JSpecify null-analysis noise across client, server, and networking helpers by removing stale `@SuppressWarnings("null")` annotations where they triggered `1102` warnings and keeping targeted suppressions only at Mojang/Fabric interop boundaries that still need them.
 - `FeeshmanConfigScreen` and `FeeshmanAchievementsScreen` now match inherited screen nullability expectations and no longer carry unreachable `onClose()` fallback branches flagged as dead code.

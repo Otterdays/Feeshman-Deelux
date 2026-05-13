@@ -49,5 +49,6 @@ Authoritative inventory for **Feeshman Deelux**. **Sources of truth:** `build.gr
 
 ## Last updated
 
+2026-05-13 — Restored committed Gradle wrapper runtime (`gradle/wrapper/gradle-wrapper.jar`) and repaired `gradlew` / `gradlew.bat` bootstrap lines; `build-jar.bat` now succeeds locally on Gradle `9.6.0-20260503004846+0000`. Non-blocking build note: Loom warns that `org.xerial:sqlite-jdbc:3.46.1.3` is not valid semver during `processIncludeJars`.
 2026-05-04 — Updated to Minecraft 26.1.2 / mod 1.4.0. Source of truth: `gradle.properties` + `build.gradle`.
 2026-05-05 — Mojang source port complete; Java toolchain **26**; `FeeshmanDatabase` `ThrowingFunction` for DB lambdas.
