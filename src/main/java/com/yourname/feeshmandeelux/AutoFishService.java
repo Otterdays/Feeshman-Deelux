@@ -41,7 +41,7 @@ public final class AutoFishService {
     private static final int DURABILITY_WARNING_THRESHOLD = 10;
     private static final double BITE_VELOCITY_THRESHOLD = -0.04;
     private static final int BITE_CONFIRM_TICKS = 2;
-    private static final int CATCH_DETECTION_WINDOW_TICKS = 8;
+    private static final int CATCH_DETECTION_WINDOW_TICKS = 40;
     private static final int HOOKED_ENTITY_RECAST_TICKS = 2;
 
     private static final String[] LUCKY_COMPLIMENTS = {
