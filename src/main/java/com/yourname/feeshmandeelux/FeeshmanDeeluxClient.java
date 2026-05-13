@@ -545,17 +545,14 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
         return result.toString().trim();
     }
 
-    @SuppressWarnings("null")
     private static @NonNull Identifier modIdentifier(@NonNull String path) {
         return Identifier.fromNamespaceAndPath("feeshmandeelux", path);
     }
 
-    @SuppressWarnings("null")
     private static @NonNull SoundEvent createVariableRangeSound(@NonNull Identifier id) {
         return SoundEvent.createVariableRangeEvent(id);
     }
 
-    @SuppressWarnings("null")
     private static Identifier parseIdentifier(@NonNull String value) {
         return Identifier.tryParse(value);
     }
@@ -570,7 +567,6 @@ public class FeeshmanDeeluxClient implements ClientModInitializer {
         return biome.unwrapKey().map(key -> key.identifier().toString()).orElse("unknown");
     }
 
-    @SuppressWarnings("null")
     private static @NonNull Component literal(@NonNull String value) {
         return Component.literal(value);
     }

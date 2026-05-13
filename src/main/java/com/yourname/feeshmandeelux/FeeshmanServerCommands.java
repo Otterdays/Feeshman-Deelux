@@ -9,6 +9,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 import java.util.Map;
@@ -66,7 +67,7 @@ public final class FeeshmanServerCommands {
     }
 
     @SuppressWarnings("null")
-    private static ArgumentType<Integer> integerArgument(int min, int max) {
+    private static @NonNull ArgumentType<Integer> integerArgument(int min, int max) {
         return IntegerArgumentType.integer(min, max);
     }
 

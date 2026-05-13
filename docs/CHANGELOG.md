@@ -6,6 +6,14 @@ All notable changes to Feeshman Deelux. [Keep a Changelog](https://keepachangelo
 
 ## [1.4.0] — Unreleased
 
+### Fixed (2026-05-13 IDE diagnostics)
+- Reduced Eclipse/JSpecify null-analysis noise across client, server, and networking helpers by removing stale `@SuppressWarnings("null")` annotations where they triggered `1102` warnings and keeping targeted suppressions only at Mojang/Fabric interop boundaries that still need them.
+- `FeeshmanConfigScreen` and `FeeshmanAchievementsScreen` now match inherited screen nullability expectations and no longer carry unreachable `onClose()` fallback branches flagged as dead code.
+- `FeeshLeaderboard` biome lookup and `FeeshmanServerCommands` Brigadier/string formatting paths were simplified to clear unchecked nullability warnings without changing gameplay behavior.
+- `AutoFishService`, `FeeshmanDeeluxClient`, `FeeshmanNetworking`, and `network/FeeshmanPayloads` received small helper cleanup passes so the touched files are IDE-lint clean again.
+- Follow-up pass: `AutoFishService` payload string constructors now go through tiny helper factories, and stale suppression tokens above `getBiomeId(...)`, client helper methods, and payload helper methods were trimmed where they were the source of the remaining `1102` warnings.
+- Result: the 26.1 port files touched in this diagnostics sweep (`AutoFishService`, `FeeshmanDeeluxClient`, `FeeshmanNetworking`, `FeeshmanPayloads`, `FeeshLeaderboard`, `FeeshmanServerCommands`, `FeeshmanConfigScreen`, `FeeshmanAchievementsScreen`) are IDE-lint clean without gameplay changes.
+
 ### Added (2026-05-05 QoL pass)
 - **Rod hotbar fallback** — when the main-hand rod is gone, scans hotbar slots 0–8 and swaps before counting grace ticks
 - **Inventory full guard** — pauses auto-casting with a chat warning when no free slots remain; retries every 5s

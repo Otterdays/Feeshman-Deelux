@@ -2,6 +2,11 @@
 
 # SUMMARY
 
+## [AMENDED 2026-05-13]: IDE diagnostics follow-up
+
+- The targeted 26.1 nullability / `1102` IDE warning sweep is complete across the core touched files: `AutoFishService`, `FeeshmanDeeluxClient`, `FeeshmanNetworking`, `network/FeeshmanPayloads`, `FeeshLeaderboard`, `FeeshmanServerCommands`, `FeeshmanConfigScreen`, and `FeeshmanAchievementsScreen`.
+- Verification for this pass is file-level IDE lint cleanup (`ReadLints`), not a fresh full Gradle build; local wrapper verification is still blocked on the missing `gradle-wrapper.jar`.
+
 ## [AMENDED 2026-05-04]: For the next AI agent — resume work
 
 1. Open **`docs/SCRATCHPAD.md`** and read **“AI RESUME HERE — 2026-05-04”** (toolchain, SQLite status, compile blocker, ordered next steps).

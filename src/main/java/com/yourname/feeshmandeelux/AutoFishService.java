@@ -91,7 +91,7 @@ public final class AutoFishService {
             }
             if (canSendPayload(player, FeeshmanPayloads.AchievementsSyncPayload.TYPE)) {
                 String csv = FeeshLeaderboard.exportAchievementCsv(player);
-                ServerPlayNetworking.send(player, new FeeshmanPayloads.AchievementsSyncPayload(csv));
+                sendPayload(player, achievementsSyncPayload(csv));
             }
             player.sendSystemMessage(
                     Component.literal(
@@ -280,8 +280,7 @@ public final class AutoFishService {
                     ? LUCKY_COMPLIMENTS[ThreadLocalRandom.current().nextInt(LUCKY_COMPLIMENTS.length)]
                     : "";
             if (canSendPayload(player, FeeshmanPayloads.FishCaughtPayload.TYPE)) {
-                ServerPlayNetworking.send(player, new FeeshmanPayloads.FishCaughtPayload(
-                        state.totalFishCaught, lifetime, compliment, biomes));
+                sendPayload(player, fishCaughtPayload(state.totalFishCaught, lifetime, compliment, biomes));
             }
 
             if (state.totalFishCaught % 5 == 0) {
@@ -319,7 +318,7 @@ public final class AutoFishService {
                 boolean treasure = !sample.isEmpty() && stackHasTag(sample, TAG_TREASURE);
                 boolean junk = !sample.isEmpty() && stackHasTag(sample, TAG_JUNK);
                 if (canSendPayload(player, FeeshmanPayloads.ItemAnnouncementPayload.TYPE)) {
-                    sendPayload(player, new FeeshmanPayloads.ItemAnnouncementPayload(itemId, hasEnchantments));
+                    sendPayload(player, itemAnnouncementPayload(itemId, hasEnchantments));
                 }
                 return new CatchDelta(itemId, treasure, junk, hasEnchantments);
             }
@@ -409,11 +408,27 @@ public final class AutoFishService {
     }
 
     @SuppressWarnings("null")
+    private static FeeshmanPayloads.AchievementsSyncPayload achievementsSyncPayload(String csv) {
+        return new FeeshmanPayloads.AchievementsSyncPayload(csv);
+    }
+
+    @SuppressWarnings("null")
+    private static FeeshmanPayloads.FishCaughtPayload fishCaughtPayload(
+            int sessionFish, int lifetimeFish, String compliment, int biomeCount) {
+        return new FeeshmanPayloads.FishCaughtPayload(sessionFish, lifetimeFish, compliment, biomeCount);
+    }
+
+    @SuppressWarnings("null")
+    private static FeeshmanPayloads.ItemAnnouncementPayload itemAnnouncementPayload(
+            String itemId, boolean hasEnchantments) {
+        return new FeeshmanPayloads.ItemAnnouncementPayload(itemId, hasEnchantments);
+    }
+
+    @SuppressWarnings("null")
     private static Identifier parseIdentifier(String value) {
         return Identifier.tryParse(value);
     }
 
-    @SuppressWarnings("null")
     private static String getBiomeId(ServerPlayer player) {
         return player.level().getBiome(player.blockPosition()).unwrapKey()
                 .map(key -> key.identifier().toString())

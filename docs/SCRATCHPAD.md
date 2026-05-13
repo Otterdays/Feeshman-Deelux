@@ -2,6 +2,26 @@
 
 # SCRATCHPAD
 
+## [AMENDED 2026-05-13]: `AutoFishService` suppression trim
+
+- `AutoFishService.java`: removed the stale `@SuppressWarnings("null")` annotation above `getBiomeId(...)` after the remaining IDE warning (`1102`) proved to be attached to the suppression token rather than an active nullability issue.
+
+## [AMENDED 2026-05-13]: `AutoFishService` payload string cleanup
+
+- `AutoFishService.java`: replaced the remaining direct payload constructor calls that passed plain `String` values (`csv`, `compliment`, `itemId`) with tiny helper factories carrying the targeted nullability suppression. File is now lint-clean again.
+
+## [AMENDED 2026-05-13]: `FeeshmanDeeluxClient` suppression trim
+
+- `FeeshmanDeeluxClient.java`: removed stale `@SuppressWarnings("null")` annotations from helper methods `modIdentifier(...)`, `createVariableRangeSound(...)`, `parseIdentifier(...)`, and `literal(...)` because the remaining `1102` diagnostics were attached to the suppression tokens rather than active client nullability issues.
+
+## [AMENDED 2026-05-13]: `FeeshmanServerCommands` IDE cleanup
+
+- `FeeshmanServerCommands.java`: removed the unused `Instant` import, localized Brigadier/jspecify nullability noise behind a tiny `@NonNull integerArgument(...)` helper for `/feeshhistory` and `/feeshtopitems`, and replaced two `String.format(...)` leaderboard lines with plain concatenation to avoid unchecked `@NonNull String` warnings.
+
+## [AMENDED 2026-05-13]: `FeeshmanNetworking` registry nullability cleanup
+
+- `network/FeeshmanNetworking.java`: wrapped repeated `PayloadTypeRegistry.clientboundPlay().register(...)` calls in a single typed helper with targeted nullability suppression so Fabric `StreamCodec` registration warnings are absorbed once. File is now lint-clean.
+
 ## [AMENDED 2026-05-13]: `FeeshmanDeeluxClient` nullability cleanup
 
 - `FeeshmanDeeluxClient.java`: normalized Identifier / SoundEvent / TagKey access through small helpers, replaced a few nullable client/player/level chains with guarded locals, and cleaned the last `sendSystemMessage(...)` null-analysis warning. File is now lint-clean.
