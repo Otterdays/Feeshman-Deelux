@@ -4,6 +4,11 @@
 
 **Last Updated**: March 18, 2025
 
+## [AMENDED 2026-05-05]: Roadmap list deprecation
+- The legacy roadmap/checklist sections in this file are deprecated for active planning.
+- They remain for historical context only (append-only rule).
+- Use `docs/SCRATCHPAD.md` → **Canonical Execution Queue (Top 3)** as the only active roadmap.
+
 ## [AMENDED 2026-05-05]: Audit — docs & build snapshot
 - **`./gradlew compileJava`** / **`build`** align with **Minecraft 26.1.2** + **Fabric Loom 1.16.1** toolchain (see `gradle.properties`).
 - **`docs/FEATURES_STATUS.md`** and **`docs/MODRINTH_DESCRIPTION.md`** updated for **SQLite** commands (`feeshhistory`, `feeshtopitems`, leaderboard `today`/`week`), **hooked-entity guard** (replaces outdated “mob collision near entities” wording), and **HudElementRegistry** (HUD migration done).

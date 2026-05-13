@@ -6,6 +6,22 @@ All notable changes to Feeshman Deelux. [Keep a Changelog](https://keepachangelo
 
 ## [1.4.0] — Unreleased
 
+### Added (2026-05-05 QoL pass)
+- **Rod hotbar fallback** — when the main-hand rod is gone, scans hotbar slots 0–8 and swaps before counting grace ticks
+- **Inventory full guard** — pauses auto-casting with a chat warning when no free slots remain; retries every 5s
+- **Per-player toggle persistence** — `autoFishEnabled` saved to `kv` table on change, restored on next join
+- **HUD: T/J/F session tally** — `⬡ T:X J:Y F:Z` line shows treasure / junk / fish breakdown for the session
+- **HUD: last caught item** — `▸ Last: <name>` line (gold for treasure, gray for junk, green for fish)
+- **HUD: next achievement progress** — `↑ Next: N session (X more)` / lifetime / biome hint at bottom of HUD
+- **HUD: inventory warning** — red `⚠ Inventory: N slots left` line appears when ≤4 free slots
+- **HUD compact mode** — `[I]` cycles full → compact (one-line `⚡ N | MM:SS | X.X/min | T:N J:N`) → hidden
+- **Session summary on disable** — pressing `[O]` to stop prints fish count, elapsed time, rate, T/J counts to chat
+
+### Fixed (2026-05-05 QoL pass)
+- Catch counter no longer inflates on empty reels — `totalFishCaught++` now gated on confirmed inventory delta
+- Catch rate denominator uses `firstCatchTime` (first confirmed catch) instead of session start — idle pre-fishing time no longer deflates the displayed rate
+- `detectCatchDelta` + `sendItemAnnouncementIfDetected` merged into single inventory scan per reel (`detectCatchAndAnnounce`), eliminating duplicate iteration
+
 ### Changed
 - Retargeted to **Minecraft 26.1.2** (Fabric Loader 0.19.2, Fabric API 0.148.0+26.1.2, Loom 1.16.1)
 - Java **Gradle toolchain** set to **26** (was release 25 in earlier 1.4.0 attempt)

@@ -14,7 +14,9 @@
 - 3-second rod grace period — won't stop fishing if you swap items briefly
 
 ### Live HUD
-Nine live stats right on your screen: fish count, session time, rod durability bar, weather, day/night + moon phase, biome, catch rate, and current status.
+14 live stats right on your screen: fish count, session T/J/F tally, last caught item, session time, rod durability bar, weather, day/night, biome (color-coded by type), catch rate + quality label, next achievement progress, status, inventory warning, and lifetime total.
+
+Press `[I]` to cycle between **full**, **compact** (single line: `⚡ N | MM:SS | X/min | T:N J:N`), and **hidden**.
 
 ### Stats & Competition
 - Session and lifetime fish tracking — **SQLite** at `config/feeshmandeelux/stats.sqlite` (legacy leaderboard file imported once if present)
@@ -30,6 +32,10 @@ Nine live stats right on your screen: fish count, session time, rod durability b
 
 ### Quality of Life
 - **ModMenu support** — config (bite alert volume, auto-fish toggle, open achievements screen)
+- **Rod hotbar fallback** — auto-swaps to the next fishing rod in your hotbar when the current one breaks
+- **Inventory full guard** — pauses fishing with a warning when your inventory is full; resumes automatically when space frees up
+- **Toggle persistence** — auto-fish on/off preference saved per-player; survives server restarts
+- **Session summary** — pressing `[O]` to stop prints fish count, time, rate, and T/J breakdown to chat
 - Colored catch announcements: fish in green, treasure in gold, junk in gray
 - Tag-based item detection (`#minecraft:fishes`, custom treasure/junk tags) — modpack friendly
 - Dedicated server entrypoint — works on multiplayer servers out of the box

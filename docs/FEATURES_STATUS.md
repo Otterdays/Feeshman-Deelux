@@ -1,10 +1,14 @@
+<!-- PRESERVATION RULE: Never delete or replace content. Append or annotate only. -->
+
 # Feeshman Deelux — Features
+
+<!-- PRESERVATION RULE: Never delete or replace content. Append or annotate only. -->
 
 > **Version**: 1.4.0 | **Minecraft**: 26.1.2 | **Fabric Loader**: 0.19.2+ | **Fabric API**: 0.148.0+26.1.2
 
 ---
 
-## Implemented (25 / 45)
+## Implemented (34 / 45)
 
 ### Core Auto-Fishing
 | # | Feature | Notes |
@@ -16,11 +20,18 @@
 | 5 | **3-Second Grace Period** | ~3s (60 ticks) before disabling when rod leaves hand |
 | 6 | **Hooked-entity guard** | While the bobber has `getHookedIn() != null`, bite logic is skipped (avoids false reels when snagged on a mob) |
 | 7 | **Rod Durability Warnings** | Alerts when durability runs low |
+| 7a | **Rod Hotbar Fallback** | When main-hand rod is missing, scans hotbar slots 0–8 and auto-swaps to the next fishing rod before incrementing grace ticks |
+| 7b | **Inventory Full Guard** | Before each cast, checks for free inventory slots; pauses with warning and retries every 5s until space is available — prevents item loss |
+| 7c | **Per-Player Toggle Persistence** | `autoFishEnabled` state written to `kv` table on change; restored on next join — no need to re-enable after restart |
+| 7d | **Confirmed-Catch Counter** | `totalFishCaught` increments only when inventory delta detects a real item gain — empty reels no longer inflate the count |
 
 ### HUD & Display
 | # | Feature | Notes |
 |---|---------|-------|
-| 8 | **Live HUD (9 elements)** | Fish count, session time, rod durability bar, weather, day/night + moon phase, biome, catch rate, status |
+| 8 | **Live HUD (14 elements)** | Fish count, T/J/F session tally, session time, rod durability bar, weather, day/night, biome (color-coded), catch rate + quality label, status, last caught item, next achievement progress, lifetime, inventory warning |
+| 8a | **HUD Compact Mode** | `[I]` key cycles full → compact (one-line: `⚡ N \| MM:SS \| X/min \| T:N J:N`) → hidden; resets to full on join |
+| 8b | **Accurate Catch Rate** | Rate denominator uses `firstCatchTime` (set on first confirmed catch) instead of session start — idle pre-fishing time no longer deflates the rate |
+| 8c | **Session Summary on Disable** | Toggling off via `[O]` prints a chat summary: fish count, elapsed time, rate, T/J tally |
 | 9 | **Item Catch Announcements** | Color-coded: fish §a green, treasure §6 gold, junk §7 gray |
 
 ### Stats & Progression
@@ -68,12 +79,20 @@
 
 ---
 
+## [AMENDED 2026-05-05]: Planning List Deprecation
+
+- `## Planned` below is deprecated as an active task queue.
+- Keep it for feature history/ideas only.
+- Active execution order now lives in `docs/SCRATCHPAD.md` under **Canonical Execution Queue (Top 3)**.
+
+---
+
 ## Planned
 
 ### High Priority
 - **AFK Safety Timer** — auto-disable after configurable duration (default 60 min)
 - **Splash Particles** — visual water particles on catch
-- **Auto-Reequip** — swap to next rod in inventory when current breaks
+- ~~**Auto-Reequip**~~ — **done:** hotbar fallback auto-swaps to next fishing rod (7a)
 - ~~**HUD API Migration**~~ — **done:** client uses `HudElementRegistry` (26.1 HUD API)
 
 ### Medium Priority

@@ -41,19 +41,23 @@
       <div class="card-grid">
         <article class="card">
           <h3>Bite detection</h3>
-          <p>Multi-method detection—velocity, bobber behavior, water checks—with timing that feels natural.</p>
+          <p>Multi-method detection — velocity, bobber behavior, water checks — with human-like reaction timing and 2-tick confirmation to avoid false reels.</p>
         </article>
         <article class="card">
           <h3>Automation</h3>
-          <p>Auto-cast and reel with randomized delays, stuck handling, and sensible mob avoidance.</p>
+          <p>Auto-cast and reel with randomized delays, stuck-bobber recast, and rod hotbar fallback (auto-swaps to next rod when yours breaks). Pauses automatically when inventory is full.</p>
         </article>
         <article class="card">
           <h3>HUD</h3>
-          <p>Session counts, rod durability, weather, biome, catch rate, and status at a glance.</p>
+          <p>14 live stats: fish count, T/J/F tally, last catch, rod durability bar, weather, biome, catch rate, next achievement, and more. Press <strong>[I]</strong> to collapse to a compact one-liner or hide entirely.</p>
         </article>
         <article class="card">
           <h3>Stats &amp; achievements</h3>
-          <p>SQLite-backed stats, leaderboards, commands for history and tops—plus milestone toasts.</p>
+          <p>SQLite-backed lifetime stats, biome breakdown, leaderboards (all-time / today / week), catch history, and top items — plus 10 milestone achievements with toast notifications.</p>
+        </article>
+        <article class="card">
+          <h3>Quality of life</h3>
+          <p>Toggle preference persists across restarts. Session summary (fish, time, rate, T/J) prints to chat on disable. Colored item announcements for treasure, junk, and fish.</p>
         </article>
       </div>
     </section>
@@ -71,7 +75,7 @@
         <li>Install <a href="https://fabricmc.net/use/installer/" target="_blank" rel="noopener noreferrer">Fabric Loader</a> for your Minecraft version.</li>
         <li>Add <a href="https://modrinth.com/mod/fabric-api" target="_blank" rel="noopener noreferrer">Fabric API</a> to your <code style="color: var(--accent);">mods</code> folder.</li>
         <li>Drop <strong>Feeshman Deelux</strong> into <code style="color: var(--accent);">mods</code>.</li>
-        <li>In-game: equip a fishing rod, press <strong>O</strong> to toggle auto-fishing.</li>
+        <li>In-game: equip a fishing rod, press <strong>[O]</strong> to toggle auto-fishing. Press <strong>[I]</strong> to cycle the HUD between full, compact, and hidden.</li>
       </ol>
       <p style="margin-top: 1rem; font-size: 0.95rem; color: var(--muted);">
         Optional: <a href="https://modrinth.com/mod/modmenu" target="_blank" rel="noopener noreferrer">Mod Menu</a> for in-game config (sound, achievements screen).
@@ -94,16 +98,36 @@
               <td>Help and usage</td>
             </tr>
             <tr>
+              <td><code>/feeshman toggle</code></td>
+              <td>Toggle auto-fishing on/off</td>
+            </tr>
+            <tr>
               <td><code>/feeshstats</code></td>
-              <td>Player fishing stats</td>
+              <td>Session + lifetime stats</td>
             </tr>
             <tr>
               <td><code>/feeshstats biome</code></td>
-              <td>Breakdown by biome</td>
+              <td>Top 5 biomes by catch count</td>
             </tr>
             <tr>
               <td><code>/feeshleaderboard</code></td>
-              <td>Leaderboard</td>
+              <td>All-time top 5</td>
+            </tr>
+            <tr>
+              <td><code>/feeshleaderboard today</code></td>
+              <td>Top 5 since UTC midnight</td>
+            </tr>
+            <tr>
+              <td><code>/feeshleaderboard week</code></td>
+              <td>Top 5 for the last 7 days</td>
+            </tr>
+            <tr>
+              <td><code>/feeshhistory [n]</code></td>
+              <td>Last <em>n</em> catches (default 10)</td>
+            </tr>
+            <tr>
+              <td><code>/feeshtopitems [n]</code></td>
+              <td>Top <em>n</em> caught items (default 10)</td>
             </tr>
           </tbody>
         </table>

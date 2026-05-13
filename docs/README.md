@@ -213,3 +213,28 @@
 **[⬆️ Back to Top](#-feeshman-deelux---documentation-hub)**
 
 </div> 
+
+---
+
+## [AMENDED 2026-05-05]: Documentation organization (canonical map)
+
+Use this order when resuming work:
+1. `docs/SUMMARY.md`
+2. `docs/SBOM.md`
+3. `docs/SCRATCHPAD.md`
+4. `docs/STYLE_GUIDE.md`
+
+Core status docs:
+- `docs/SUMMARY.md` — current project snapshot and quick links
+- `docs/SCRATCHPAD.md` — active tasks, handoff, last actions
+- `docs/SBOM.md` — dependency/toolchain truth table
+- `docs/CHANGELOG.md` — release/history notes
+- `docs/PROJECT_STATUS.md` — narrative status timeline
+- `docs/FEATURES_STATUS.md` — implemented vs planned features
+- `docs/ARCHITECTURE.md` — architecture and flow diagrams
+- `docs/STYLE_GUIDE.md` — coding/doc conventions
+- `docs/My_Thoughts.md` — rationale and decision notes
+
+Notes:
+- Some older sections in this file still describe earlier 1.21.x states.
+- Prefer version/toolchain truth from `gradle.properties`, `build.gradle`, `docs/SUMMARY.md`, and `docs/SBOM.md`.

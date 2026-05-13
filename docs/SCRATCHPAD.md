@@ -2,7 +2,26 @@
 
 # SCRATCHPAD
 
+## [AMENDED 2026-05-05]: Canonical Execution Queue (Top 3)
+
+This is now the **single source of truth** for actionable work. Treat older roadmap/task lists in other docs as historical unless explicitly amended after this block.
+
+1. **Smoke-test runtime (client + dedicated server)**  
+   Validate auto-fish loop, HUD sync, `/feeshleaderboard` (`all-time`, `today`, `week`), `/feeshhistory`, `/feeshtopitems`, and achievement sync in real gameplay.
+2. **Verify SQLite persistence end-to-end**  
+   Confirm `config/feeshmandeelux/stats.sqlite` creation/update, session finalization on disconnect/stop, and one-shot legacy import behavior.
+3. **Docs/version consistency sweep**  
+   Append corrections where stale lines still conflict with MC `26.1.2` / mod `1.4.0` / Java `25` / Loom `1.16.1` reality.
+
+## [AMENDED 2026-05-05]: List Deprecation Notice
+
+- Deprecated as active planning inputs: older unchecked lists under `## Active Tasks` and legacy handoff blocks below.
+- Keep them for historical record only (append-only policy).
+- If priorities change, amend the **Canonical Execution Queue (Top 3)** above rather than creating new parallel lists.
+
 ## Status — 2026-05-05
+
+[2026-05-05]: **Docs organization pass** — added missing `docs/STYLE_GUIDE.md` and `docs/My_Thoughts.md`; appended canonical doc map to `docs/README.md`; added preservation header to `docs/FEATURES_STATUS.md` for consistency.
 
 [2026-05-05]: **Doc audit** — `docs/FEATURES_STATUS.md` (25 features incl. SQLite; hooked-entity guard; command list; HUD item marked done), `docs/MODRINTH_DESCRIPTION.md` (Modrinth body), `docs/PROJECT_STATUS.md` + `docs/SUMMARY.md` (build no longer blocked), root `README.md` (Loom 1.16.1, Java 25, commands).
 

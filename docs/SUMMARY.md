@@ -8,6 +8,11 @@
 2. **Authoritative versions** for builds: **`gradle.properties`** + **`build.gradle`** — not the “Current Version” list below (historical 1.21.11 snapshot).
 3. **[AMENDED 2026-05-05]:** `./gradlew compileJava` is **green** on the 26.1.2 Mojang-named tree; SQLite stack can ship with the mod JAR. Older SCRATCHPAD lines may still mention a historical compile blocker — verify with a fresh **`./gradlew build`** if unsure.
 
+## [AMENDED 2026-05-05]: Active planning source
+
+- Deprecate parallel roadmap/task lists in other docs.
+- Use `docs/SCRATCHPAD.md` → **Canonical Execution Queue (Top 3)** for current priorities.
+
 ## Project Status
 **Feeshman Deelux** — Minecraft 26.1.2 Fabric auto-fishing mod.
 
